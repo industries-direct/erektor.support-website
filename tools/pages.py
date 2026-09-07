@@ -40,6 +40,27 @@ page("index.html", 0, "Support",
   </noscript>
 </section>
 
+<section class="wrap mt-2 decision-rail" aria-labelledby="decision-title">
+  <div class="decision-rail__intro">
+    <h2 id="decision-title">One question decides the route.</h2>
+    <p>Can the leg finish this session?</p>
+  </div>
+  <div class="decision-rail__steps">
+    <div class="decision-rail__step">
+      <span class="decision-rail__answer">Yes</span>
+      <p>Keep it working, then <a href="maintenance.html">flag it for ERS</a>.</p>
+    </div>
+    <div class="decision-rail__step">
+      <span class="decision-rail__answer">No</span>
+      <p><a href="dispatch.html">Request a replacement</a> for the site.</p>
+    </div>
+    <div class="decision-rail__step">
+      <span class="decision-rail__answer">Safe to service</span>
+      <p><a href="docs/faults.html">Check the fault code</a> for the floor procedure.</p>
+    </div>
+  </div>
+</section>
+
 <section class="wrap mt-2">
   <div class="grid grid--3">
     <a class="card card--urgent" href="dispatch.html">
