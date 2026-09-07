@@ -3,8 +3,9 @@
 Assemble the static support portal.
 
 This runs on a workstation and commits its output. It is deliberately NOT a
-deploy-time build: Cloudflare Pages serves the generated HTML directly with no
-build command, which is what the previous Jekyll generation got wrong.
+deploy-time build: Workers static assets serve the generated HTML directly and
+the deploy runs no build step, which is what the previous Jekyll generation got
+wrong.
 
     python3 tools/build.py
 
@@ -45,10 +46,14 @@ FOOT_COLS = [
 
 
 def rel(depth):
+    # Depth "/" means root-absolute. 404.html is served in place of any missing
+    # path, at any depth, so "../" hops would resolve differently per request.
+    if depth == "/":
+        return "/"
     return "../" * depth
 
 
-def shell(depth, title, description, body, page=None):
+def shell(depth, title, description, body, page=None, head_extra=""):
     b = rel(depth)
     nav = "\n".join(
         '        <a href="{b}{href}"{cur} class="{cls}">{label}</a>'.format(
@@ -76,7 +81,7 @@ def shell(depth, title, description, body, page=None):
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title} — EREKTOR Support</title>
-<meta name="description" content="{description}">
+<meta name="description" content="{description}">{head_extra}
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
@@ -151,17 +156,17 @@ def crumbs(depth, trail):
 PAGES = {}
 
 
-def page(path, depth, title, description, body):
-    PAGES[path] = (depth, title, description, body)
+def page(path, depth, title, description, body, head_extra=""):
+    PAGES[path] = (depth, title, description, body, head_extra)
 
 
 def write():
-    for path, (depth, title, description, body) in PAGES.items():
+    for path, (depth, title, description, body, head_extra) in PAGES.items():
         full = os.path.join(ROOT, path)
         os.makedirs(os.path.dirname(full), exist_ok=True)
         # docs/index.html is reached through the "docs/" nav entry
         nav_key = "docs/" if path == "docs/index.html" else path
-        html = shell(depth, title, description, body, page=nav_key)
+        html = shell(depth, title, description, body, page=nav_key, head_extra=head_extra)
         with open(full, "w", encoding="utf-8") as fh:
             fh.write(html)
         print("wrote", path)

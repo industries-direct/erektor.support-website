@@ -4,7 +4,8 @@ The operator-facing edge of the **Erektor Return System**. Field crews use it to
 serviced, get a replacement leg to a site, read the procedures and diagrams, and see what
 firmware their controllers should be running.
 
-Production: **https://erektor.support** — Cloudflare Pages.
+Production: **https://erektor.support** — a Cloudflare Worker with static assets,
+deployed from `main` by GitHub Actions.
 
 ---
 
@@ -58,9 +59,13 @@ data/
 
 assets/css/site.css     Design system (EREKTOR brand tokens, field-tuned)
 assets/js/app.js        Progressive enhancement only
-functions/api/          Cloudflare Pages Functions
+404.html                Served for any missing path (root-absolute links)
+src/index.js            Worker entry — routes /api/*, assets handle the rest
+src/requests.js         Intake endpoint
 tools/                  Page assembler (see below)
 _headers _redirects     Edge config
+wrangler.jsonc          Deploy config
+.assetsignore           Keeps src/, tools/ and repo metadata off the CDN
 ```
 
 **Product facts live in `data/*.json`, never in markup.** The pages fetch and render them at
@@ -71,11 +76,11 @@ no page needs touching.
 
 ## Building
 
-There is **no deploy-time build**. Cloudflare Pages serves the committed HTML directly with
-an empty build command. This is deliberate: the previous generation of this site used Jekyll,
-and the Ruby toolchain is what broke the Pages deploys.
+There is **no deploy-time build**. Wrangler uploads the committed HTML as-is. This is
+deliberate: the previous generation of this site used Jekyll, and the Ruby toolchain is what
+broke the deploys.
 
-The ten pages share a header and footer via a local assembler that you run yourself and
+The eleven pages share a header and footer via a local assembler that you run yourself and
 commit the output of:
 
 ```sh
@@ -86,13 +91,28 @@ Edit page content in `tools/pages.py` and `tools/docs.py`, diagrams in `tools/di
 then re-run and commit. Editing the generated `.html` directly works too, but the next run
 of the assembler will overwrite it.
 
-### Cloudflare Pages settings
+## Deploying
 
-| Setting | Value |
+`.github/workflows/deploy.yml` runs `wrangler deploy` on every push to `main`, matching the
+sibling `industries.direct` site. It needs two repository secrets:
+
+| Secret | Purpose |
 |---|---|
-| Build command | *(empty)* |
-| Build output directory | `/` |
-| Functions directory | `functions` (default) |
+| `CLOUDFLARE_API_TOKEN` | Token with *Edit Cloudflare Workers* on the account |
+| `CLOUDFLARE_ACCOUNT_ID` | Target account |
+
+The `erektor.support` zone must exist in that account — `custom_domain` routes bind an
+existing zone, they do not register the domain.
+
+### How routing works
+
+Requests hit the static-asset layer first, which applies `_headers` and `_redirects` and
+falls back to `404.html`. The one exception is `/api/*`, listed in `run_worker_first`, which
+reaches `src/index.js` instead — without that, `not_found_handling: "404-page"` would answer
+the intake endpoint with the 404 page.
+
+`_headers` only decorates *asset* responses. Responses generated in the Worker set their own
+headers, which is why `src/index.js` repeats them.
 
 ---
 
@@ -106,7 +126,7 @@ the request.
 
 ### Intake API
 
-`POST /api/requests` (`functions/api/requests.js`) takes both routes through one envelope
+`POST /api/requests` (`src/requests.js`) takes both routes through one envelope
 and validates the serial that route is filed against. Two optional bindings:
 
 | Binding | Type | Purpose |
@@ -115,8 +135,14 @@ and validates the serial that route is filed against. Two optional bindings:
 | `INTAKE_WEBHOOK` | secret | URL forwarded to for ticketing and paging |
 
 Both are optional and the endpoint degrades instead of failing — an unbound deployment still
-accepts, validates and acknowledges requests, reporting `received-unstored`. Bind them
-before this carries real traffic.
+accepts, validates and acknowledges requests, reporting `received-unstored`. **Neither is
+bound yet**, so today a submitted request reaches nobody: the operator gets a reference
+number and a copyable summary, and that is all. Bind them before this carries real traffic:
+
+```sh
+wrangler kv namespace create REQUESTS   # then add the id to wrangler.jsonc
+wrangler secret put INTAKE_WEBHOOK
+```
 
 ---
 

@@ -1,9 +1,9 @@
 /**
  * POST /api/requests — service request intake.
  *
- * Cloudflare Pages Function. Both service routes submit the same envelope:
- * they differ in urgency and in which half of the leg's identity they are
- * filed against.
+ * Invoked from the Worker entry in src/index.js. Both service routes submit
+ * the same envelope: they differ in urgency and in which half of the leg's
+ * identity they are filed against.
  *
  *   flag     -> filed against the MECHANICAL serial. Wear and service history
  *               live on the frame, so the flag must survive an electronics
@@ -77,7 +77,7 @@ function validate(body) {
   return problems;
 }
 
-export async function onRequestPost({ request, env }) {
+export async function handleServiceRequest(request, env) {
   if (!(request.headers.get('content-type') || '').includes('application/json')) {
     return json({ error: 'Expected application/json.' }, 415);
   }
@@ -153,6 +153,3 @@ export async function onRequestPost({ request, env }) {
     receivedAt: record.receivedAt
   }, 201);
 }
-
-export const onRequestGet = () =>
-  json({ error: 'Use POST to submit a service request.' }, 405);

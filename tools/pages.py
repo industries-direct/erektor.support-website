@@ -363,6 +363,55 @@ page("maintenance.html", 0, "Flag a leg for ERS",
 </section>
 """)
 
+# ===========================================================================
+# 404 — served by the asset layer in place of any missing path
+#
+# Depth "/" rather than 0: this page answers requests at every depth, so its
+# links have to be root-absolute.
+# ===========================================================================
+page("404.html", "/", "Page not found",
+     "That page does not exist. The service routes, the fault code index and the "
+     "procedures are all one click from here.",
+     """
+<section class="wrap pt-1">
+  <span class="eyebrow">404</span>
+  <h1>That page is not here.</h1>
+  <p class="lede">The link may be from an older generation of this site, or a label may have been
+  mis-keyed. Nothing you were trying to file has been lost &mdash; nothing is submitted until you send
+  it from one of the two forms below.</p>
+</section>
+
+<section class="wrap">
+  <div class="grid grid--3">
+    <a class="card card--urgent" href="/dispatch.html">
+      <h3>Request a replacement leg</h3>
+      <p>A leg cannot finish its session and you need a healthy one from the pool today.</p>
+      <div class="card__meta">Emergency &middot; 24/7</div>
+    </a>
+    <a class="card card--plan" href="/maintenance.html">
+      <h3>Flag a leg for ERS</h3>
+      <p>The leg can finish the job. The flag rides on its record and diverts it at inspection.</p>
+      <div class="card__meta">Planned &middot; no site visit</div>
+    </a>
+    <a class="card card--docs" href="/docs/">
+      <h3>Diagrams and procedures</h3>
+      <p>Leg anatomy, operating procedures, the return line, and the safety cases.</p>
+      <div class="card__meta">Reference</div>
+    </a>
+  </div>
+</section>
+
+<section class="wrap mt-4">
+  <div class="sec-head">
+    <span class="eyebrow">Looking for a code?</span>
+    <h2>Every fault code has a page.</h2>
+    <p>The index resolves a code to one of the three routes and carries it into the right form.</p>
+  </div>
+  <p><a href="/docs/faults.html">Open the fault code index &rarr;</a></p>
+</section>
+""",
+     head_extra='\n<meta name="robots" content="noindex">')
+
 if __name__ == "__main__":
     import docs  # noqa: F401  registers the remaining pages
     write()

@@ -1,12 +1,19 @@
 # Legacy Jekyll paths from the previous site generation.
-/pages/schedule-maintenance      /schedule.html            301
+# Targets are checked against the current page set — the maintenance flow was
+# called "schedule" then, and the two how-tos have been folded into the docs.
+/pages/schedule-maintenance      /maintenance.html         301
 /pages/request-dispatch          /dispatch.html            301
 /pages/howtos                    /docs/                    301
-/pages/howtos/controller-guide   /docs/controller.html     301
-/pages/howtos/leg-replacement    /docs/leg-replacement.html 301
+/pages/howtos/controller-guide   /docs/leg.html#controller 301
+/pages/howtos/leg-replacement    /docs/operating.html      301
 /pages/*                         /                         301
 
 # Stable short links safe to print on equipment labels and QR codes.
+# /schedule predates the rename and stays pointed at the flag flow, because
+# labels carrying it are already out in the field.
 /dispatch                        /dispatch.html            301
-/schedule                        /schedule.html            301
+/maintenance                     /maintenance.html         301
+/schedule                        /maintenance.html         301
+/faults                          /docs/faults.html         301
+/firmware                        /firmware/index.html      301
 /help                            /docs/                    301

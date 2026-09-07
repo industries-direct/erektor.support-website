@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "erektor-support",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-14",
+  "routes": [
+    { "pattern": "erektor.support", "custom_domain": true }
+  ],
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    // The site is committed as plain HTML at the repo root; .assetsignore
+    // keeps the Worker source, the page assembler and repo metadata out of
+    // what gets uploaded.
+    "directory": ".",
+    "binding": "ASSETS",
+    // Unmatched paths get the styled 404 rather than a bare edge error.
+    "not_found_handling": "404-page",
+    // ...which is exactly why the intake endpoint has to jump the queue:
+    // without this it would be answered with 404.html instead of reaching
+    // the Worker.
+    "run_worker_first": ["/api/*"]
+  }
+}
