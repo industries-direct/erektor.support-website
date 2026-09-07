@@ -1,0 +1,15 @@
+title: ERS Support
+description: Erektor Return Systems Support Website
+theme: jekyll-theme-minimal
+remote_theme: pages-themes/minimal@v0.2.0
+
+# GitHub Pages Settings
+domain: support.erektor-return.systems
+url: https://support.erektor-return.systems
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
