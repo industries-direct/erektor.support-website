@@ -225,6 +225,7 @@ pre code { background: none; border: 0; padding: 0; }
   text-transform: uppercase;
 }
 .decision-rail__step p { margin: 0; color: var(--ink-muted); font-size: .92rem; }
+.decision-rail__step a { font-weight: 700; }
 @media (max-width: 700px) {
   .decision-rail { grid-template-columns: 1fr; gap: 1rem; }
   .decision-rail__step { padding: .1rem .7rem; }
@@ -232,7 +233,7 @@ pre code { background: none; border: 0; padding: 0; }
 @media (max-width: 480px) {
   .decision-rail__steps { grid-template-columns: 1fr; gap: .8rem; }
   .decision-rail__step,
-  .decision-rail__step:first-child { padding: .1rem 0 .1rem .8rem; border-left: 2px solid var(--line); }
+  .decision-rail__step:first-child { padding: .1rem 0 .1rem .8rem; border-left: 1px solid var(--line); }
 }
 
 /* ------------------------------------------------------------------- cards */

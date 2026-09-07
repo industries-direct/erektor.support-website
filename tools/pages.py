@@ -55,8 +55,8 @@ page("index.html", 0, "Support",
       <p><a href="dispatch.html">Request a replacement</a> for the site.</p>
     </div>
     <div class="decision-rail__step">
-      <span class="decision-rail__answer">Safe to service</span>
-      <p><a href="docs/faults.html">Check the fault code</a> for the floor procedure.</p>
+      <span class="decision-rail__answer">Fix on the floor</span>
+      <p><a href="docs/faults.html">Check the fault code</a> for the procedure.</p>
     </div>
   </div>
 </section>
