@@ -5,7 +5,7 @@ serviced, get a replacement leg to a site, read the procedures and diagrams, and
 firmware their controllers should be running.
 
 Production: **https://erektor.support** — a Cloudflare Worker with static assets,
-deployed from `main` by GitHub Actions.
+deployed from `main` by Cloudflare's Git integration.
 
 ---
 
@@ -93,16 +93,25 @@ of the assembler will overwrite it.
 
 ## Deploying
 
-`.github/workflows/deploy.yml` runs `wrangler deploy` on every push to `main`, matching the
-sibling `industries.direct` site. It needs two repository secrets:
+Deploys come from **Cloudflare's Git integration** (Workers Builds), which is already
+connected to this repo and reports back as the `Workers Builds:
+support-erektor-return-systems-website` check. Pushing to `main` deploys; other branches get
+preview builds, which is why a PR shows that check too.
 
-| Secret | Purpose |
-|---|---|
-| `CLOUDFLARE_API_TOKEN` | Token with *Edit Cloudflare Workers* on the account |
-| `CLOUDFLARE_ACCOUNT_ID` | Target account |
+There is deliberately **no GitHub Actions deploy workflow** here, unlike the sibling
+`industries.direct` site. Two pipelines both running `wrangler deploy` on the same push would
+race for the same Worker and the same custom domain. Because the integration exists and the
+Actions workflow would have to be given its own credentials, the integration wins.
 
-The `erektor.support` zone must exist in that account — `custom_domain` routes bind an
-existing zone, they do not register the domain.
+Consequences worth knowing:
+
+- `name` in `wrangler.jsonc` must stay equal to the connected Worker service. Change it and a
+  production build deploys a *second* service, binding `erektor.support` to that one and
+  leaving this one orphaned.
+- No `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` repository secrets are needed. The
+  integration carries its own credentials.
+- The `erektor.support` zone must exist in the account — `custom_domain` routes bind an
+  existing zone, they do not register a domain.
 
 ### How routing works
 
