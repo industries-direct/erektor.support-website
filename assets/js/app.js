@@ -44,16 +44,32 @@
     return root.getAttribute('data-theme') ||
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   }
+
+  function syncThemeButtonState() {
+    var buttons = document.querySelectorAll('.themebtn');
+    var isDark = currentTheme() === 'dark';
+    buttons.forEach(function (button) {
+      button.type = 'button';
+      button.setAttribute('aria-pressed', String(isDark));
+      var label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+      button.setAttribute('aria-label', label);
+      button.title = label;
+    });
+  }
+
   try {
     var saved = localStorage.getItem('ers.theme');
     if (saved) root.setAttribute('data-theme', saved);
   } catch (e) { /* private mode */ }
+
+  syncThemeButtonState();
 
   document.addEventListener('click', function (ev) {
     var b = ev.target.closest('.themebtn');
     if (!b) return;
     var next = currentTheme() === 'dark' ? 'light' : 'dark';
     root.setAttribute('data-theme', next);
+    syncThemeButtonState();
     try { localStorage.setItem('ers.theme', next); } catch (e) {}
   });
 
