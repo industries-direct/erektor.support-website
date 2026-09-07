@@ -3,9 +3,9 @@ description: Erektor Return Systems Support Website - Schedule Maintenance, Requ
 theme: jekyll-theme-minimal
 remote_theme: pages-themes/minimal@v0.2.0
 
-# GitHub Pages Settings
-domain: support.erektor-return.systems
-url: https://support.erektor-return.systems
+# Cloudflare Pages Settings
+domain: erektor.support
+url: https://erektor.support
 baseurl: ""
 
 # Build settings
