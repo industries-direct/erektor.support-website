@@ -45,16 +45,22 @@
   the procedure that tells you which of those you actually need.</p>
 </section>
 
-<div class="specstrip band-gap" >
-  <div class="wrap specstrip-in">
-    <div class="spec"><div class="n">3<small>&nbsp;routes</small></div><div class="k">Fix &middot; flag &middot; dispatch</div></div>
-    <div class="spec"><div class="n">2<small>&nbsp;serials</small></div><div class="k">Electronics and mechanical</div></div>
-    <div class="spec"><div class="n">24/7</div><div class="k">Emergency dispatch</div></div>
-    <div class="spec"><div class="n">0<small>&nbsp;field repairs</small></div><div class="k">Legs are swapped, not fixed</div></div>
+<section class="wrap mt-2"  data-triage>
+  <span class="eyebrow eyebrow--plain">Start here</span>
+  <div class="field limit-input" >
+    <label for="triage">Fault code or symptom</label>
+    <input type="search" id="triage" class="mono" data-triage-input placeholder="LFT-45" autocomplete="off">
+    <p class="field__hint">Codes read <code>SUB-nn</code> &mdash; for example <code>DRV-40</code> or <code>NET-20</code>.
+    The table below picks your route and carries the code into the right form.</p>
   </div>
-</div>
+  <div data-triage-out hidden class="mt-1 limit"></div>
+  <noscript>
+    <p class="note note--info">The lookup needs JavaScript. The full
+    <a href="docs/faults.html">fault code index</a> works without it.</p>
+  </noscript>
+</section>
 
-<section class="wrap">
+<section class="wrap mt-2">
   <div class="grid grid--3">
     <a class="card card--urgent" href="dispatch.html">
       <h3>Request a replacement leg</h3>
@@ -75,7 +81,17 @@
       <div class="card__meta">Reference</div>
     </a>
   </div>
+  <p class="mt-1"><a href="docs/faults.html">Browse the full fault code index &rarr;</a></p>
 </section>
+
+<div class="specstrip band-gap" >
+  <div class="wrap specstrip-in">
+    <div class="spec"><div class="n">3<small>&nbsp;routes</small></div><div class="k">Fix &middot; flag &middot; dispatch</div></div>
+    <div class="spec"><div class="n">2<small>&nbsp;serials</small></div><div class="k">Electronics and mechanical</div></div>
+    <div class="spec"><div class="n">24/7</div><div class="k">Emergency dispatch</div></div>
+    <div class="spec"><div class="n">0<small>&nbsp;field repairs</small></div><div class="k">Legs are swapped, not fixed</div></div>
+  </div>
+</div>
 
 <section class="wrap mt-5" >
   <div class="sec-head">
@@ -135,26 +151,6 @@
   <figcaption>The middle route is the one that is easy to miss. Because every leg returns to ERS anyway, a fault that can wait does not need a truck — it needs a flag on the leg&rsquo;s record. Sending a technician to a site is reserved for a leg that cannot finish its session.</figcaption>
 </figure>
 
-</section>
-
-<section class="wrap mt-4"  data-triage>
-  <div class="sec-head">
-    <span class="eyebrow">Start here</span>
-    <h2>Look up the code on the controller.</h2>
-    <p>Type a fault code or a few words. The table decides which route you are on and carries the code
-    into the right form.</p>
-  </div>
-  <div class="field limit-input" >
-    <label for="triage">Fault code or symptom</label>
-    <input type="search" id="triage" class="mono" data-triage-input placeholder="LFT-45" autocomplete="off">
-    <p class="field__hint">Codes read <code>SUB-nn</code> &mdash; for example <code>DRV-40</code> or <code>NET-20</code>.</p>
-  </div>
-  <div data-triage-out hidden class="mt-1 limit"></div>
-  <noscript>
-    <p class="note note--info">The lookup needs JavaScript. The full
-    <a href="docs/faults.html">fault code index</a> works without it.</p>
-  </noscript>
-  <p class="mt-1"><a href="docs/faults.html">Browse the full fault code index &rarr;</a></p>
 </section>
 
 <section class="wrap mt-5" >
