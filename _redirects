@@ -11,8 +11,13 @@
 # Stable short links safe to print on equipment labels and QR codes.
 # /schedule predates the rename and stays pointed at the flag flow, because
 # labels carrying it are already out in the field.
-/dispatch                        /dispatch.html            301
-/maintenance                     /maintenance.html         301
+#
+# /dispatch and /maintenance are deliberately NOT listed here even though
+# they are stable short links too: html_handling defaults to
+# auto-trailing-slash, which already 307s dispatch.html/maintenance.html to
+# exactly those extensionless paths. A 301 rule redirecting the same path
+# back to the .html file creates a redirect loop that browsers report as a
+# bare connection failure, not an error page — do not re-add them.
 /maintence                       /maintenance.html         301
 /schedule                        /maintenance.html         301
 /faults                          /docs/faults.html         301
