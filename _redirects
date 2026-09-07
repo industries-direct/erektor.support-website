@@ -13,6 +13,7 @@
 # labels carrying it are already out in the field.
 /dispatch                        /dispatch.html            301
 /maintenance                     /maintenance.html         301
+/maintence                       /maintenance.html         301
 /schedule                        /maintenance.html         301
 /faults                          /docs/faults.html         301
 /firmware                        /firmware/index.html      301
