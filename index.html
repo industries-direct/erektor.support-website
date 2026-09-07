@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — EREKTOR Support</title>
+<meta name="description" content="Service portal for Erektor legs: schedule maintenance, request a replacement leg on site, read the diagrams and procedures, and track controller firmware.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+<script src="assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="dispatch.html" class="nav--urgent">Dispatch</a>
+        <a href="maintenance.html" class="">Maintenance</a>
+        <a href="docs/" class="">Documentation</a>
+        <a href="docs/faults.html" class="">Fault codes</a>
+        <a href="firmware/index.html" class="">Firmware</a>
+      <button class="themebtn" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="wrap pt-1" >
+  <span class="eyebrow">Erektor Return System</span>
+  <h1>Every leg comes home. This is where you tell us what to do with it.</h1>
+  <p class="lede">The support portal is the operator-facing edge of ERS. Everything here is a write against
+  one leg&rsquo;s record: flag it for the reconditioning line, pull a replacement from the pool, or read
+  the procedure that tells you which of those you actually need.</p>
+</section>
+
+<div class="specstrip band-gap" >
+  <div class="wrap specstrip-in">
+    <div class="spec"><div class="n">3<small>&nbsp;routes</small></div><div class="k">Fix &middot; flag &middot; dispatch</div></div>
+    <div class="spec"><div class="n">2<small>&nbsp;serials</small></div><div class="k">Electronics and mechanical</div></div>
+    <div class="spec"><div class="n">24/7</div><div class="k">Emergency dispatch</div></div>
+    <div class="spec"><div class="n">0<small>&nbsp;field repairs</small></div><div class="k">Legs are swapped, not fixed</div></div>
+  </div>
+</div>
+
+<section class="wrap">
+  <div class="grid grid--3">
+    <a class="card card--urgent" href="dispatch.html">
+      <h3>Request a replacement leg</h3>
+      <p>A leg cannot finish its session. We send a healthy one from the pool and the failed one rides
+      back to check-in with the driver.</p>
+      <div class="card__meta">Emergency &middot; 24/7</div>
+    </a>
+    <a class="card card--plan" href="maintenance.html">
+      <h3>Flag a leg for ERS</h3>
+      <p>Something is wrong but the leg can finish the job. No truck &mdash; the flag rides on its record
+      and ERS diverts it at inspection when it returns.</p>
+      <div class="card__meta">Planned &middot; no site visit</div>
+    </a>
+    <a class="card card--docs" href="docs/">
+      <h3>Diagrams and procedures</h3>
+      <p>Leg anatomy, dock and convergence, module pairing, the return line, and the safety cases &mdash;
+      including the walk-off.</p>
+      <div class="card__meta">Reference</div>
+    </a>
+  </div>
+</section>
+
+<section class="wrap mt-5" >
+  <div class="sec-head">
+    <span class="eyebrow">How the routes relate</span>
+    <h2>Sending a technician is the exception, not the default.</h2>
+    <p>A fielded leg is never repaired where it stands. It shares no wiring, no bus and no rigidity with
+    any other leg, and its module pairing exists only in software &mdash; so the unit of service is the whole
+    leg, swapped from the pool. That makes the interesting question not <em>how do we fix this</em> but
+    <em>can this leg finish its session</em>.</p>
+  </div>
+  
+<figure>
+  <div class="diagram">
+    <svg viewBox="0 0 760 300" role="img" aria-labelledby="dtriT dtriD">
+      <title id="dtriT">The three service routes</title>
+      <desc id="dtriD">A fault code resolves to one of three routes. Operator-serviceable faults are fixed on the floor. Faults that can wait are flagged so ERS diverts the leg at inspection when it returns. Only a leg that cannot finish its session triggers a dispatch.</desc>
+
+      <rect x="24" y="112" width="150" height="66" rx="5" class="d-fill" stroke-width="2"/>
+      <text x="99" y="140" text-anchor="middle" class="d-label">Fault code</text>
+      <text x="99" y="158" text-anchor="middle" class="d-note">on the controller</text>
+
+      <g class="d-fill" stroke-width="2">
+        <rect x="330" y="14" width="180" height="62" rx="5"/>
+        <rect x="330" y="114" width="180" height="62" rx="5"/>
+      </g>
+      <rect x="330" y="214" width="180" height="62" rx="5" class="d-fill" stroke-width="2" stroke="currentColor"/>
+
+      <g class="d-label" text-anchor="middle">
+        <text x="420" y="42">Fix on the floor</text>
+        <text x="420" y="142">Flag for ERS</text>
+        <text x="420" y="242">Dispatch a swap</text>
+      </g>
+      <g class="d-note" text-anchor="middle">
+        <text x="420" y="60">no ticket, no record change</text>
+        <text x="420" y="160">no truck — diverts on return</text>
+        <text x="420" y="260">replacement leg to site now</text>
+      </g>
+
+      <g class="d-accent" stroke-width="2">
+        <path d="M174 138 C 240 138, 250 45, 322 45"/>
+        <path d="M174 145 H 322"/>
+        <path d="M174 152 C 240 152, 250 245, 322 245"/>
+      </g>
+      <g class="d-accent-f">
+        <path d="M330 45 l-9 -5 v10 z"/><path d="M330 145 l-9 -5 v10 z"/><path d="M330 245 l-9 -5 v10 z"/>
+      </g>
+
+      <g class="d-note">
+        <text x="530" y="42">Leg keeps working.</text>
+        <text x="530" y="142">Leg finishes the session,</text>
+        <text x="530" y="158">then leaves the line at inspection.</text>
+        <text x="530" y="242">Leg cannot finish the session.</text>
+        <text x="530" y="258">Failed leg rides back to check-in.</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption>The middle route is the one that is easy to miss. Because every leg returns to ERS anyway, a fault that can wait does not need a truck — it needs a flag on the leg&rsquo;s record. Sending a technician to a site is reserved for a leg that cannot finish its session.</figcaption>
+</figure>
+
+</section>
+
+<section class="wrap mt-4"  data-triage>
+  <div class="sec-head">
+    <span class="eyebrow">Start here</span>
+    <h2>Look up the code on the controller.</h2>
+    <p>Type a fault code or a few words. The table decides which route you are on and carries the code
+    into the right form.</p>
+  </div>
+  <div class="field limit-input" >
+    <label for="triage">Fault code or symptom</label>
+    <input type="search" id="triage" class="mono" data-triage-input placeholder="LFT-45" autocomplete="off">
+    <p class="field__hint">Codes read <code>SUB-nn</code> &mdash; for example <code>DRV-40</code> or <code>NET-20</code>.</p>
+  </div>
+  <div data-triage-out hidden class="mt-1 limit"></div>
+  <noscript>
+    <p class="note note--info">The lookup needs JavaScript. The full
+    <a href="docs/faults.html">fault code index</a> works without it.</p>
+  </noscript>
+  <p class="mt-1"><a href="docs/faults.html">Browse the full fault code index &rarr;</a></p>
+</section>
+
+<section class="wrap mt-5" >
+  <div class="sec-head">
+    <span class="eyebrow">Also here</span>
+    <h2>Fleet and firmware.</h2>
+  </div>
+  <div class="grid grid--2">
+    <a class="card card--fw" href="firmware/index.html">
+      <h3>Controller firmware</h3>
+      <p>Current versions per target, what changed, and how a signed bundle actually reaches a leg that
+      has no internet connection of its own.</p>
+      <div class="card__meta">Manifest &middot; release notes</div>
+    </a>
+    <a class="card" href="docs/leg.html#identity">
+      <h3>Serials and identity</h3>
+      <p>Why a leg carries two serial numbers, which one your request is filed against, and what happens
+      to the wear history when a controller is swapped.</p>
+      <div class="card__meta">Read this before filing anything</div>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="dispatch.html">Request a replacement leg</a></li><li><a href="maintenance.html">Flag a leg for ERS</a></li><li><a href="docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="docs/operating.html">Operating procedures</a></li><li><a href="docs/ers.html">The return line</a></li><li><a href="docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="firmware/index.html">Controller firmware</a></li><li><a href="docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+{
+  "$comment": "Controller firmware manifest. A leg has no internet path: bundles reach this portal's API, land on a session controller over its uplink, and fan out to leg ClearCores over XBee at the next dock. Signed end to end; the leg verifies before it writes.",
+  "manifestVersion": 1,
+  "revision": "2026.09.07",
+  "distribution": {
+    "path": ["portal", "session controller (uplink)", "XBee", "leg ClearCore"],
+    "note": "Nothing is pushed to a leg mid-session. A bundle is staged on the session controller and applied at the next dock, when the leg is stationary and unloaded."
+  },
+  "channels": {
+    "stable": {
+      "label": "Stable",
+      "description": "Default for every fielded leg. Promoted after 30 days on beta with no field regressions."
+    },
+    "beta": {
+      "label": "Beta",
+      "description": "Opt-in per facility. Requires a signed consent record; beta legs are excluded from walk-off sessions."
+    },
+    "hold": {
+      "label": "Hold",
+      "description": "No bundles delivered. Set by EREKTOR engineering while a regression is under investigation."
+    }
+  },
+  "releases": [
+    {
+      "target": "CC-1",
+      "targetLabel": "Leg ClearCore",
+      "version": "4.2.1",
+      "channel": "stable",
+      "released": "2026-08-19",
+      "minVersion": "3.8.0",
+      "sizeBytes": 4718592,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "appliesAt": "dock",
+      "estimatedMinutes": 6,
+      "notes": [
+        "Corrects a levelling overshoot on centre modules at low ambient temperature.",
+        "Raises marginal XBee packet loss into NET-11 instead of retrying silently.",
+        "Drive servo current trend now accrues against the mechanical serial, so a swapped ClearCore no longer resets wear history."
+      ]
+    },
+    {
+      "target": "SC-1",
+      "targetLabel": "Session Controller",
+      "version": "2.6.0",
+      "channel": "stable",
+      "released": "2026-08-19",
+      "minVersion": "2.3.0",
+      "sizeBytes": 61865984,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "appliesAt": "idle",
+      "estimatedMinutes": 15,
+      "notes": [
+        "Stages leg bundles for fan-out at dock rather than on claim.",
+        "Roster now shows both serials per leg; wear and warranty read from the mechanical serial.",
+        "Offline sessions reconcile against the central registry on uplink recovery."
+      ]
+    },
+    {
+      "target": "CC-1",
+      "targetLabel": "Leg ClearCore",
+      "version": "4.3.0-beta.2",
+      "channel": "beta",
+      "released": "2026-09-02",
+      "minVersion": "4.2.0",
+      "sizeBytes": 4980736,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "appliesAt": "ers",
+      "estimatedMinutes": 20,
+      "notes": [
+        "Predictive gearbox-wear estimate exposed as DRV-21 lead time.",
+        "Applied at ERS only: the update re-runs axis calibration on first boot, which must not happen at a site."
+      ]
+    },
+    {
+      "target": "CC-0",
+      "targetLabel": "Leg ClearCore (Pilot)",
+      "version": "1.9.4",
+      "channel": "stable",
+      "released": "2025-03-11",
+      "minVersion": "1.9.0",
+      "sizeBytes": 1048576,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "appliesAt": "ers",
+      "delivery": "cable",
+      "estimatedMinutes": 35,
+      "notes": [
+        "CC-0 accepts no signed bundles and has no remote path. Final maintenance release, applied by cable during an ERS visit."
+      ]
+    }
+  ]
+}

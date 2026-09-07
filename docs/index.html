@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation — EREKTOR Support</title>
+<meta name="description" content="Product diagrams, operating procedures, the ERS return line, fault codes and safety cases for Erektor legs.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script src="../assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
+        <a href="../maintenance.html" class="">Maintenance</a>
+        <a href="../docs/" aria-current="page" class="">Documentation</a>
+        <a href="../docs/faults.html" class="">Fault codes</a>
+        <a href="../firmware/index.html" class="">Firmware</a>
+      <button class="themebtn" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="wrap">
+  <p class="crumbs"><a href="../index.html">Support</a><span>/</span>Documentation</p>
+  <span class="eyebrow">Reference</span>
+  <h1>Documentation</h1>
+  <p class="lede">What a leg is made of, how to run one, what happens when it comes home, and the cases
+  where getting it wrong hurts someone.</p>
+
+  <div class="grid grid--2 mt-3" >
+    <a class="card card--docs" href="leg.html">
+      <h3>Leg anatomy and diagrams</h3>
+      <p>Elevation and plan drawings, the two axes, power, controller and radio &mdash; and why a leg carries
+      two serial numbers that mean different things.</p>
+      <div class="card__meta">Diagrams &middot; identity</div>
+    </a>
+    <a class="card card--docs" href="operating.html">
+      <h3>Operating procedures</h3>
+      <p>Claim, converge, dock, pair, level, self-load, walk off, place, release. The whole cycle, in the
+      order you do it.</p>
+      <div class="card__meta">How-to</div>
+    </a>
+    <a class="card card--docs" href="ers.html">
+      <h3>The return line</h3>
+      <p>Check-in through to the available pool, why charging happens off the belt, service intervals, and
+      the registry that stops a leg being called lost.</p>
+      <div class="card__meta">ERS</div>
+    </a>
+    <a class="card card--urgent" href="faults.html">
+      <h3>Fault code index</h3>
+      <p>Every code, what it means, and which of the three service routes it puts you on.</p>
+      <div class="card__meta">Triage</div>
+    </a>
+    <a class="card" href="safety.html">
+      <h3>Safety</h3>
+      <p>Working under a held load, the walk-off as the governing load case, and transport securement.</p>
+      <div class="card__meta">Read before a walk-off</div>
+    </a>
+    <a class="card card--fw" href="../firmware/index.html">
+      <h3>Controller firmware</h3>
+      <p>Current versions, release notes, and how a bundle reaches a leg that has no internet connection.</p>
+      <div class="card__meta">Fleet</div>
+    </a>
+  </div>
+
+  <h2 id="intervals">Service intervals at a glance</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Trigger</th><th>Accrues against</th><th>Route</th></tr></thead>
+      <tbody>
+        <tr><td>Motor-hours interval reached</td><td class="mono">MX &mdash; mechanical</td><td>Flag for ERS</td></tr>
+        <tr><td>Twelve months since last closed service</td><td class="mono">MX &mdash; mechanical</td><td>Flag for ERS</td></tr>
+        <tr><td>Drive current trending high</td><td class="mono">MX &mdash; mechanical</td><td>Flag for ERS</td></tr>
+        <tr><td>Firmware behind the fleet</td><td class="mono">EL &mdash; electronics</td><td>Automatic at next dock</td></tr>
+        <tr><td>Leg cannot finish its session</td><td class="mono">EL &mdash; electronics</td><td>Dispatch a replacement</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small muted">The split matters: a service interval that followed the electronics would reset
+  every time a ClearCore was swapped, and a leg could run indefinitely without ever reaching its
+  interval. See <a href="leg.html#identity">serials and identity</a>.</p>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="../dispatch.html">Request a replacement leg</a></li><li><a href="../maintenance.html">Flag a leg for ERS</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="../docs/operating.html">Operating procedures</a></li><li><a href="../docs/ers.html">The return line</a></li><li><a href="../docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="../firmware/index.html">Controller firmware</a></li><li><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

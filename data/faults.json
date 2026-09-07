@@ -1,0 +1,217 @@
+{
+  "$comment": "Fault code to service-route table. This is the spine of the portal. Because every leg returns to ERS anyway, most faults do not need a truck - they need a flag on the leg's record that diverts it at inspection. Only a leg that cannot finish its session earns a dispatch.",
+  "revision": "2026.09",
+  "routes": {
+    "self": {
+      "label": "Operator-serviceable",
+      "short": "Fix on the floor",
+      "action": "Follow the linked procedure. No ticket, no record change.",
+      "target": "docs"
+    },
+    "flag": {
+      "label": "Flag for ERS",
+      "short": "Diverts on return",
+      "action": "The leg finishes its session and is diverted at ERS inspection when it returns. No truck is sent.",
+      "target": "maintenance.html",
+      "identity": "mechanical"
+    },
+    "dispatch": {
+      "label": "Dispatch replacement",
+      "short": "Swap now",
+      "action": "The leg cannot finish its session. A healthy leg is sent from the pool and the failed leg returns to check-in.",
+      "target": "dispatch.html",
+      "identity": "electronics"
+    }
+  },
+  "subsystems": {
+    "PWR": "Power — 56 V motor bus and 24 V logic",
+    "DRV": "Drive axis — ClearPath-SC servo and driven caster",
+    "LFT": "Lift axis — ClearPath-SC servo and lift column",
+    "CTL": "ClearCore controller",
+    "NET": "XBee radio and session network",
+    "DCK": "Rail bracket and dock",
+    "SES": "Session and module pairing"
+  },
+  "codes": [
+    {
+      "code": "PWR-12",
+      "severity": "warning",
+      "title": "Pack charge below session reserve",
+      "meaning": "Remaining charge will not cover the declared session plus the return transit.",
+      "route": "self",
+      "doc": "docs/operating.html#reserve",
+      "remedy": "Swap the pack at the facility bank before claiming the leg. Charge state is never a field repair — legs do not charge on the belt."
+    },
+    {
+      "code": "PWR-30",
+      "severity": "critical",
+      "title": "56 V bus fault",
+      "meaning": "Motor bus out of tolerance. The ClearCore inhibits both axes.",
+      "route": "dispatch",
+      "doc": "docs/leg.html#power",
+      "remedy": "Do not bypass the pack interlock. The leg cannot take load and cannot walk itself to transport."
+    },
+    {
+      "code": "PWR-34",
+      "severity": "critical",
+      "title": "24 V logic rail unstable",
+      "meaning": "Logic supply is browning out under motor load.",
+      "route": "dispatch",
+      "doc": "docs/leg.html#power",
+      "remedy": "The leg may appear healthy at rest and drop mid-lift. Take it out of the session now."
+    },
+    {
+      "code": "DRV-08",
+      "severity": "warning",
+      "title": "Driven caster slip",
+      "meaning": "Commanded and measured travel disagree on the driven caster.",
+      "route": "self",
+      "doc": "docs/operating.html#converge",
+      "remedy": "Usually debris or a wet floor on the approach lane. Clear the lane and re-run convergence."
+    },
+    {
+      "code": "DRV-21",
+      "severity": "warning",
+      "title": "Drive servo current trending high",
+      "meaning": "ClearPath-SC drawing above its envelope for the commanded travel over the last 20 sessions.",
+      "route": "flag",
+      "doc": "docs/ers.html#inspection",
+      "remedy": "Early gearbox wear. The leg is safe to finish its session; wear accrues against the mechanical serial."
+    },
+    {
+      "code": "DRV-40",
+      "severity": "critical",
+      "title": "Drive axis stalled",
+      "meaning": "The driven caster will not turn under command.",
+      "route": "dispatch",
+      "doc": "docs/leg.html#drive",
+      "remedy": "The leg cannot converge, cannot self-load, and cannot walk off. It must be carried out."
+    },
+    {
+      "code": "LFT-15",
+      "severity": "warning",
+      "title": "Lift height disagreement",
+      "meaning": "One leg in the module reports 4-10 mm off the module's commanded height.",
+      "route": "self",
+      "doc": "docs/operating.html#levelling",
+      "remedy": "Re-run module levelling. If it returns within ten cycles, raise it to a flag."
+    },
+    {
+      "code": "LFT-22",
+      "severity": "warning",
+      "title": "Lift holding drift",
+      "meaning": "The column lost more than 6 mm over a 30-minute static hold.",
+      "route": "flag",
+      "doc": "docs/ers.html#inspection",
+      "remedy": "Safe below 80% rated module load. Do not assign this leg to a walk-off until it has been through the line."
+    },
+    {
+      "code": "LFT-45",
+      "severity": "critical",
+      "title": "Lift axis will not hold",
+      "meaning": "The column drops under load or will not reach commanded height.",
+      "route": "dispatch",
+      "doc": "docs/safety.html#load",
+      "remedy": "Set the structure down on its own supports before releasing anyone into the work area."
+    },
+    {
+      "code": "LFT-50",
+      "severity": "critical",
+      "title": "Over-travel on lift column",
+      "meaning": "The column exceeded its mechanical stroke limit.",
+      "route": "dispatch",
+      "doc": "docs/leg.html#lift",
+      "remedy": "Assume column and end-stop damage. The leg is exchanged, never adjusted on site."
+    },
+    {
+      "code": "CTL-05",
+      "severity": "warning",
+      "title": "Firmware behind fleet",
+      "meaning": "This leg is running a version older than the fleet's stable channel.",
+      "route": "self",
+      "doc": "firmware/index.html",
+      "remedy": "The session controller pushes the bundle on the next dock. No action unless it persists across two returns."
+    },
+    {
+      "code": "CTL-31",
+      "severity": "critical",
+      "title": "ClearCore fault",
+      "meaning": "The controller failed self-test and will not command either axis.",
+      "route": "dispatch",
+      "doc": "docs/leg.html#controller",
+      "remedy": "Not field-repairable. Note the electronics serial — the replacement carries a different one and the fleet record rolls over."
+    },
+    {
+      "code": "NET-11",
+      "severity": "warning",
+      "title": "XBee link marginal",
+      "meaning": "Packet loss to the session controller above threshold, still inside recovery.",
+      "route": "self",
+      "doc": "docs/operating.html#radio",
+      "remedy": "Check the 300 m budget and line of sight. Move the session controller before touching the leg."
+    },
+    {
+      "code": "NET-20",
+      "severity": "critical",
+      "title": "Leg lost from session",
+      "meaning": "The session controller stopped hearing a claimed leg entirely.",
+      "route": "dispatch",
+      "doc": "docs/operating.html#radio",
+      "remedy": "Motion inhibits across the whole module by design. Never attempt a manual override on a leg that is out of session."
+    },
+    {
+      "code": "NET-25",
+      "severity": "info",
+      "title": "Uplink unavailable",
+      "meaning": "The session controller cannot reach this portal. Local operation is unaffected.",
+      "route": "self",
+      "doc": "firmware/index.html#uplink",
+      "remedy": "Sessions run offline. Firmware and fleet sync resume automatically when the uplink returns."
+    },
+    {
+      "code": "DCK-09",
+      "severity": "warning",
+      "title": "Bracket torque out of spec",
+      "meaning": "A bracket fastener reported below the seating window at dock.",
+      "route": "self",
+      "doc": "docs/operating.html#dock",
+      "remedy": "Re-seat and re-torque to spec. Attachment is a lookup, not a measurement — never shim the bracket to close a gap."
+    },
+    {
+      "code": "DCK-18",
+      "severity": "critical",
+      "title": "Bracket will not seat",
+      "meaning": "The leg cannot achieve a valid attachment at its assigned rail point.",
+      "route": "dispatch",
+      "doc": "docs/operating.html#dock",
+      "remedy": "Check the rail point for damage before blaming the leg. If the rail is sound, the bracket face is out and the leg is exchanged."
+    },
+    {
+      "code": "SES-07",
+      "severity": "warning",
+      "title": "Module pairing refused",
+      "meaning": "Two legs would not pair — usually a variant or firmware mismatch.",
+      "route": "self",
+      "doc": "docs/operating.html#pairing",
+      "remedy": "Pairing is arbitrary. Release both and claim a different pair rather than forcing this one."
+    },
+    {
+      "code": "SES-30",
+      "severity": "info",
+      "title": "Service interval reached",
+      "meaning": "Motor-hours against the mechanical serial crossed the interval, or twelve months elapsed since the last closed service record.",
+      "route": "flag",
+      "doc": "docs/ers.html#intervals",
+      "remedy": "Flag it. The code clears when ERS closes the service record against the mechanical serial."
+    },
+    {
+      "code": "SES-41",
+      "severity": "critical",
+      "title": "Leg reported lost across facilities",
+      "meaning": "The central registry holds no recent check-in for a leg another facility believes it has.",
+      "route": "dispatch",
+      "doc": "docs/ers.html#registry",
+      "remedy": "Do not claim the leg into a session. Report it — the registry exists to stop exactly this becoming a false loss."
+    }
+  ]
+}

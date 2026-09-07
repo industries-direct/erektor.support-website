@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The return line — EREKTOR Support</title>
+<meta name="description" content="How the Erektor Return System reconditions a leg: check-in, inspection, cleaning, battery swap, diagnostics, and back to the pool.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script src="../assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
+        <a href="../maintenance.html" class="">Maintenance</a>
+        <a href="../docs/" class="">Documentation</a>
+        <a href="../docs/faults.html" class="">Fault codes</a>
+        <a href="../firmware/index.html" class="">Firmware</a>
+      <button class="themebtn" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<p class="crumbs"><a href="../index.html">Support</a><span>/</span><a href="../docs/">Documentation</a><span>/</span>The return line</p>
+<section class="wrap">
+  <span class="eyebrow">ERS</span>
+  <h1>The return line</h1>
+  <p class="lede">ERS is both a reconditioning conveyor and the software that tracks every leg across the
+  fleet. Because every leg comes home, the line is also where almost all maintenance actually happens.</p>
+</section>
+
+<section class="wrap">
+  
+<figure>
+  <div class="diagram">
+    <svg viewBox="0 0 760 330" role="img" aria-labelledby="dersT dersD">
+      <title id="dersT">The ERS reconditioning line</title>
+      <desc id="dersD">Six stages in sequence: check-in, inspection, cleaning, battery swap, diagnostics, and back to the available pool. Inspection can divert a leg out of the line. Charging happens on a separate bank in parallel, so the leg only spends the swap time on the belt.</desc>
+
+      <g class="d-fill" stroke-width="2">
+        <rect x="24" y="96" width="104" height="56" rx="4"/>
+        <rect x="152" y="96" width="104" height="56" rx="4"/>
+        <rect x="280" y="96" width="104" height="56" rx="4"/>
+        <rect x="408" y="96" width="104" height="56" rx="4"/>
+        <rect x="536" y="96" width="104" height="56" rx="4"/>
+      </g>
+      <rect x="664" y="96" width="72" height="56" rx="4" class="d-fill" stroke-width="2"/>
+
+      <g class="d-label" text-anchor="middle">
+        <text x="76" y="122">Check-in</text>
+        <text x="204" y="122">Inspection</text>
+        <text x="332" y="122">Cleaning</text>
+        <text x="460" y="122">Battery swap</text>
+        <text x="588" y="122">Diagnostics</text>
+        <text x="700" y="122">Pool</text>
+      </g>
+      <g class="d-note" text-anchor="middle">
+        <text x="76" y="140">returned</text>
+        <text x="204" y="140">divert on fail</text>
+        <text x="332" y="140">lifespan</text>
+        <text x="460" y="140">~1 hr dwell</text>
+        <text x="588" y="140">health check</text>
+        <text x="700" y="140">available</text>
+      </g>
+
+      <!-- flow arrows -->
+      <g class="d-accent" stroke-width="2">
+        <line x1="128" y1="124" x2="146" y2="124"/>
+        <line x1="256" y1="124" x2="274" y2="124"/>
+        <line x1="384" y1="124" x2="402" y2="124"/>
+        <line x1="512" y1="124" x2="530" y2="124"/>
+        <line x1="640" y1="124" x2="658" y2="124"/>
+      </g>
+      <g class="d-accent-f">
+        <path d="M152 124 l-9 -5 v10 z"/><path d="M280 124 l-9 -5 v10 z"/>
+        <path d="M408 124 l-9 -5 v10 z"/><path d="M536 124 l-9 -5 v10 z"/>
+        <path d="M664 124 l-9 -5 v10 z"/>
+      </g>
+
+      <!-- return to line start -->
+      <path d="M700 152 v46 H76 v-46" class="d-thin" stroke-dasharray="6 5"/>
+      <path d="M76 156 l-5 9 h10 z" class="d-thin" fill="currentColor"/>
+      <text x="388" y="216" text-anchor="middle" class="d-note">BACK TO LINE START — EVERY LEG COMES HOME</text>
+
+      <!-- divert -->
+      <line x1="204" y1="96" x2="204" y2="62" class="d-accent" stroke-width="2" stroke-dasharray="5 4"/>
+      <text x="216" y="56" class="d-note">DIVERT — FLAGGED OR FAILED LEGS LEAVE HERE</text>
+
+      <!-- charging bank, parallel -->
+      <rect x="392" y="246" width="136" height="48" rx="4" class="d-fill" stroke-width="2" stroke-dasharray="5 4"/>
+      <text x="460" y="268" text-anchor="middle" class="d-label">Charge bank</text>
+      <text x="460" y="285" text-anchor="middle" class="d-note">~3 hr, off-belt</text>
+      <line x1="440" y1="152" x2="440" y2="246" class="d-thin"/>
+      <line x1="480" y1="246" x2="480" y2="152" class="d-thin"/>
+      <text x="548" y="272" class="d-note">PACKS CHARGE IN PARALLEL, NOT ON THE LEG</text>
+    </svg>
+  </div>
+  <figcaption>Charging is the long step, so it happens off the belt on its own bank. A leg's time in the line is the swap — about an hour — not the three-hour charge. That is what keeps reconditioning off the critical path and lets the line hold one station per hour, provided the charged-pack shelf never starves.</figcaption>
+</figure>
+
+</section>
+
+<section class="wrap prose">
+  <h2 id="checkin">Check-in</h2>
+  <p>A returning leg is read into the line against its electronics serial and reconciled with the central
+  registry. This is the moment a leg stops being part of a session and becomes an asset in transit again.</p>
+
+  <h2 id="inspection">Inspection</h2>
+  <p>Inspection is where flags are read and acted on. A leg carrying a
+  <a href="../maintenance.html">maintenance flag</a> is diverted out of the line here rather than
+  continuing to cleaning; so is a leg that fails inspection on its own merits.</p>
+  <p>This is the reason the flag route exists at all. The leg was already coming back, so diverting it at
+  inspection costs no transport and no site time. Sending a technician to a standing station to look at a
+  leg that will be on this belt within the week is waste.</p>
+  <div class="note note--info">
+    <p class="note__title">Flags are read against the frame</p>
+    <p>Inspection matches on the mechanical serial. A flag filed against the electronics serial will not
+    be found if the ClearCore was swapped in the meantime &mdash; see
+    <a href="leg.html#identity">serials and identity</a>.</p>
+  </div>
+
+  <h2 id="cleaning">Cleaning</h2>
+  <p>Cleaning is a lifespan measure rather than a cosmetic one. Contamination in the caster assemblies and
+  around the bracket face is what turns a wear trend into a stall.</p>
+
+  <h2 id="swap">Battery swap, not charging</h2>
+  <p>Depleted packs come off at the swap station and charged packs go straight in. Charging happens
+  off-belt, in parallel, on its own bank.</p>
+  <div class="note note--ok">
+    <p class="note__title">Why this is the important decision on the line</p>
+    <p>A leg&rsquo;s time in reconditioning is the swap &mdash; about an hour &mdash; not the three-hour charge. That
+    single choice takes reconditioning off the critical path: the line sustains one station per hour for
+    as long as the charged-pack shelf never starves, which is an inventory problem rather than a hard
+    throughput constraint.</p>
+  </div>
+
+  <h2 id="diagnostics">Diagnostics</h2>
+  <p>The health check before a leg is returned to the pool. Wear trends are updated against the mechanical
+  serial here, and firmware is brought to the fleet&rsquo;s stable channel if the leg is behind
+  (<code>CTL-05</code>). A leg that is due a beta build is held for an
+  <a href="../firmware/index.html">ERS-only application</a>, because that update re-runs axis calibration
+  on first boot and must not do so at a site.</p>
+
+  <h2 id="intervals">Service intervals</h2>
+  <p>Intervals accrue against the mechanical serial: motor-hours, or twelve months since the last closed
+  service record, whichever comes first. Reaching one raises <code>SES-30</code>, which routes to a
+  <a href="../maintenance.html">flag</a> rather than a dispatch &mdash; a leg at its interval is not a leg in
+  trouble.</p>
+  <p>The code clears when ERS closes the service record against the frame. It does not clear on a
+  controller swap, which is exactly the point.</p>
+
+  <h2 id="registry">The central registry</h2>
+  <p>ERS keeps an always-online registry of every leg across every facility. Its main job is preventing a
+  false loss: without it, a leg that moved between facilities looks missing to the facility that thinks it
+  still holds it.</p>
+  <p>If the registry holds no recent check-in for a leg another facility believes it has
+  (<code>SES-41</code>), do not claim it into a session. Report it. The registry exists so that this
+  resolves as a bookkeeping question rather than a search.</p>
+  <p>Above the registry sits hard company isolation for multi-tenant fleets, and a manufacturer-level
+  reporting tier used for lease administration and warranty &mdash; both of which read the mechanical serial,
+  because that is the number a lease is written against.</p>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="../dispatch.html">Request a replacement leg</a></li><li><a href="../maintenance.html">Flag a leg for ERS</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="../docs/operating.html">Operating procedures</a></li><li><a href="../docs/ers.html">The return line</a></li><li><a href="../docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="../firmware/index.html">Controller firmware</a></li><li><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
