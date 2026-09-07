@@ -16,16 +16,16 @@ checking for cpuid.h... yes
 creating Makefile
 
 current directory: /home/runner/work/support.erektor-return.systems-website/support.erektor-return.systems-website/vendor/bundle/ruby/3.2.0/gems/json-2.21.2/ext/json/ext/parser
-make DESTDIR\= sitearchdir\=./.gem.20260907-3808-j9dneu sitelibdir\=./.gem.20260907-3808-j9dneu clean
+make DESTDIR\= sitearchdir\=./.gem.20260907-4764-l6y3t0 sitelibdir\=./.gem.20260907-4764-l6y3t0 clean
 
 current directory: /home/runner/work/support.erektor-return.systems-website/support.erektor-return.systems-website/vendor/bundle/ruby/3.2.0/gems/json-2.21.2/ext/json/ext/parser
-make DESTDIR\= sitearchdir\=./.gem.20260907-3808-j9dneu sitelibdir\=./.gem.20260907-3808-j9dneu
+make DESTDIR\= sitearchdir\=./.gem.20260907-4764-l6y3t0 sitelibdir\=./.gem.20260907-4764-l6y3t0
 compiling parser.c
 linking shared-object json/ext/parser.so
 
 current directory: /home/runner/work/support.erektor-return.systems-website/support.erektor-return.systems-website/vendor/bundle/ruby/3.2.0/gems/json-2.21.2/ext/json/ext/parser
-make DESTDIR\= sitearchdir\=./.gem.20260907-3808-j9dneu sitelibdir\=./.gem.20260907-3808-j9dneu install
-/usr/bin/install -c -m 0755 parser.so ./.gem.20260907-3808-j9dneu/json/ext
+make DESTDIR\= sitearchdir\=./.gem.20260907-4764-l6y3t0 sitelibdir\=./.gem.20260907-4764-l6y3t0 install
+/usr/bin/install -c -m 0755 parser.so ./.gem.20260907-4764-l6y3t0/json/ext
 
 current directory: /home/runner/work/support.erektor-return.systems-website/support.erektor-return.systems-website/vendor/bundle/ruby/3.2.0/gems/json-2.21.2/ext/json/ext/parser
-make DESTDIR\= sitearchdir\=./.gem.20260907-3808-j9dneu sitelibdir\=./.gem.20260907-3808-j9dneu clean
+make DESTDIR\= sitearchdir\=./.gem.20260907-4764-l6y3t0 sitelibdir\=./.gem.20260907-4764-l6y3t0 clean

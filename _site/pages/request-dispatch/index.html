@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Request Immediate Dispatch | ERS Support Portal</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Request Immediate Dispatch" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Erektor Return Systems Support Website - Schedule Maintenance, Request Dispatch, and Access How-To Guides" />
+<meta name="twitter:description" property="og:description" content="Erektor Return Systems Support Website - Schedule Maintenance, Request Dispatch, and Access How-To Guides" />
+<link rel="canonical" href="https://erektor.support/pages/request-dispatch/" />
+<meta property="og:url" content="https://erektor.support/pages/request-dispatch/" />
+<meta property="og:site_name" content="ERS Support Portal" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Request Immediate Dispatch" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Erektor Return Systems Support Website - Schedule Maintenance, Request Dispatch, and Access How-To Guides","headline":"Request Immediate Dispatch","url":"https://erektor.support/pages/request-dispatch/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+        <h1><a href="https://erektor.support/">ERS Support Portal</a></h1>
+      
+
+      <h1 id="request-immediate-dispatch">Request Immediate Dispatch</h1>
+
+<p>Need urgent assistance in the field? Submit a dispatch request for immediate leg replacement or critical equipment repair. Our team responds quickly to minimize equipment downtime.</p>
+
+<h2 id="emergency-dispatch-request-form">Emergency Dispatch Request Form</h2>
+
+<form action="https://formspree.io/f/xyzabc456" method="POST" class="dispatch-form">
+  
+  <div class="urgency-alert">
+    <strong>⚠️ Emergency Response:</strong> For critical situations requiring immediate assistance, also call our emergency hotline: <strong>1-800-ERS-HELP (1-800-377-4357)</strong>
+  </div>
+
+  <fieldset>
+    <legend>Equipment Information</legend>
+    
+    <div class="form-group">
+      <label for="equipment-id">Equipment ID/Serial Number *</label>
+      <input type="text" id="equipment-id" name="equipment_id" required="" placeholder="e.g., ERS-2024-001" />
+    </div>
+
+    <div class="form-group">
+      <label for="equipment-model">Equipment Model *</label>
+      <select id="equipment-model" name="equipment_model" required="">
+        <option value="">-- Select a Model --</option>
+        <option value="erektor-x1">Erektor X1</option>
+        <option value="erektor-x2">Erektor X2</option>
+        <option value="erektor-pro">Erektor Pro</option>
+        <option value="erektor-industrial">Erektor Industrial</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="location">Current Location *</label>
+      <input type="text" id="location" name="location" required="" placeholder="Street address, City, State, ZIP" />
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Incident Details</legend>
+
+    <div class="form-group">
+      <label for="issue-type">Type of Issue *</label>
+      <select id="issue-type" name="issue_type" required="">
+        <option value="">-- Select Issue Type --</option>
+        <option value="leg-failure">Leg Failure</option>
+        <option value="leg-replacement">Leg Replacement</option>
+        <option value="controller-malfunction">Controller Malfunction</option>
+        <option value="critical-failure">Critical System Failure</option>
+        <option value="other">Other Emergency</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="affected-legs">Affected Legs/Components *</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="affected_legs" value="leg1" /> Leg 1</label>
+        <label><input type="checkbox" name="affected_legs" value="leg2" /> Leg 2</label>
+        <label><input type="checkbox" name="affected_legs" value="leg3" /> Leg 3</label>
+        <label><input type="checkbox" name="affected_legs" value="leg4" /> Leg 4</label>
+        <label><input type="checkbox" name="affected_legs" value="controller" /> Controller</label>
+        <label><input type="checkbox" name="affected_legs" value="other" /> Other Component</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="severity">Severity Level *</label>
+      <select id="severity" name="severity" required="">
+        <option value="">-- Select Severity --</option>
+        <option value="critical">Critical - Equipment Non-Operational</option>
+        <option value="high">High - Major Functionality Loss</option>
+        <option value="medium">Medium - Partial Loss of Function</option>
+        <option value="low">Low - Minor Issue</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Detailed Problem Description *</label>
+      <textarea id="description" name="description" rows="6" required="" placeholder="Describe the problem in detail. Include any error messages, unusual sounds, or behaviors you've noticed..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="operations-impact">Business Impact/Operations Status *</label>
+      <select id="operations-impact" name="operations_impact" required="">
+        <option value="">-- Select Impact --</option>
+        <option value="production-halted">Production Halted</option>
+        <option value="severely-limited">Operations Severely Limited</option>
+        <option value="moderately-limited">Operations Moderately Limited</option>
+        <option value="minor-impact">Minor Impact</option>
+      </select>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Dispatch Preferences</legend>
+
+    <div class="form-group">
+      <label for="earliest-availability">Earliest Time You Can Receive Dispatch *</label>
+      <input type="datetime-local" id="earliest-availability" name="earliest_availability" required="" />
+    </div>
+
+    <div class="form-group">
+      <label for="site-access">Site Access Instructions</label>
+      <textarea id="site-access" name="site_access" rows="4" placeholder="Provide any special instructions for site access, security gates, contact persons on-site, etc."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="hazards">Safety Hazards/Considerations</label>
+      <textarea id="hazards" name="hazards" rows="3" placeholder="Inform us of any safety hazards, electrical concerns, or special equipment needed..."></textarea>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Contact Information</legend>
+
+    <div class="form-group">
+      <label for="contact-name">Your Name *</label>
+      <input type="text" id="contact-name" name="contact_name" required="" placeholder="Your full name" />
+    </div>
+
+    <div class="form-group">
+      <label for="contact-email">Email Address *</label>
+      <input type="email" id="contact-email" name="contact_email" required="" placeholder="your.email@example.com" />
+    </div>
+
+    <div class="form-group">
+      <label for="contact-phone">Phone Number (Mobile Preferred) *</label>
+      <input type="tel" id="contact-phone" name="contact_phone" required="" placeholder="(123) 456-7890" />
+    </div>
+
+    <div class="form-group">
+      <label for="alternate-contact">Alternate Contact Number</label>
+      <input type="tel" id="alternate-contact" name="alternate_contact" placeholder="(123) 456-7891" />
+    </div>
+
+    <div class="form-group">
+      <label for="contact-company">Company/Organization</label>
+      <input type="text" id="contact-company" name="contact_company" placeholder="Your company name" />
+    </div>
+
+    <div class="form-group">
+      <label for="supervisor-name">On-Site Supervisor/Manager Name</label>
+      <input type="text" id="supervisor-name" name="supervisor_name" placeholder="Name of person coordinating the dispatch" />
+    </div>
+  </fieldset>
+
+  <div class="form-group form-actions">
+    <button type="submit" class="btn btn-urgent">Submit Urgent Dispatch Request</button>
+    <button type="reset" class="btn btn-secondary">Clear Form</button>
+  </div>
+
+  <p class="form-note">* Required fields</p>
+  <p class="form-note">A dispatch coordinator will contact you immediately upon form submission to confirm arrival time and coordinate logistics.</p>
+
+</form>
+
+<h2 id="dispatch-response-times">Dispatch Response Times</h2>
+
+<p>Our team responds to dispatch requests based on severity level and location:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Severity</th>
+      <th>Target Response</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Critical</td>
+      <td>30 minutes</td>
+      <td>Immediate dispatch, all available resources</td>
+    </tr>
+    <tr>
+      <td>High</td>
+      <td>1-2 hours</td>
+      <td>Priority dispatch, nearby technician</td>
+    </tr>
+    <tr>
+      <td>Medium</td>
+      <td>2-4 hours</td>
+      <td>Standard dispatch, scheduled arrival</td>
+    </tr>
+    <tr>
+      <td>Low</td>
+      <td>Next business day</td>
+      <td>Routine scheduling available</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><em>Response times are estimates and may vary based on location and technician availability.</em></p>
+
+<h2 id="what-happens-next">What Happens Next</h2>
+
+<ol>
+  <li><strong>Immediate Acknowledgment</strong>: You’ll receive email/phone confirmation that your request was received</li>
+  <li><strong>Coordinator Contact</strong>: A dispatch coordinator will call you within the target response time</li>
+  <li><strong>Logistics Planning</strong>: We’ll confirm arrival time, crew size, and any special equipment needed</li>
+  <li><strong>Dispatch Arrival</strong>: Our team will arrive with necessary parts and tools</li>
+  <li><strong>Field Repair</strong>: Professional field repair or leg replacement performed</li>
+  <li><strong>Follow-up</strong>: You’ll receive documentation of work performed and maintenance recommendations</li>
+</ol>
+
+<h2 id="field-replacement-procedure">Field Replacement Procedure</h2>
+
+<p>Our technicians are equipped to perform complete leg replacement in the field. The process typically takes:</p>
+
+<ul>
+  <li><strong>Single Leg Replacement</strong>: 45 minutes to 2 hours</li>
+  <li><strong>Multiple Leg Replacement</strong>: 2-4 hours</li>
+  <li><strong>Additional Diagnostics</strong>: May add 30-60 minutes</li>
+</ul>
+
+<p>We carry standard leg assemblies and components for most models. Specialized or custom components may require advance notice.</p>
+
+<hr />
+
+<p><strong>For non-emergency maintenance:</strong> <a href="./schedule-maintenance.html">Schedule a maintenance appointment →</a></p>
+
+<p><strong>Emergency Hotline</strong>: 1-800-ERS-HELP (1-800-377-4357)</p>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZc6TTisaO3ilNffqa8M5/+6cFvstIp3aPOKZAo2UEs=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>

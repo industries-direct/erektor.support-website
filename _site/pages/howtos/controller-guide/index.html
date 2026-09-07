@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Controller Operations &amp; Setup Guide | ERS Support Portal</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Controller Operations &amp; Setup Guide" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Erektor Return Systems Support Website - Schedule Maintenance, Request Dispatch, and Access How-To Guides" />
+<meta name="twitter:description" property="og:description" content="Erektor Return Systems Support Website - Schedule Maintenance, Request Dispatch, and Access How-To Guides" />
+<link rel="canonical" href="https://erektor.support/pages/howtos/controller-guide/" />
+<meta property="og:url" content="https://erektor.support/pages/howtos/controller-guide/" />
+<meta property="og:site_name" content="ERS Support Portal" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Controller Operations &amp; Setup Guide" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Erektor Return Systems Support Website - Schedule Maintenance, Request Dispatch, and Access How-To Guides","headline":"Controller Operations &amp; Setup Guide","url":"https://erektor.support/pages/howtos/controller-guide/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+        <h1><a href="https://erektor.support/">ERS Support Portal</a></h1>
+      
+
+      <h1 id="controller-operations--setup-guide">Controller Operations &amp; Setup Guide</h1>
+
+<p>This comprehensive guide covers the setup, operation, and troubleshooting of your Erektor controller system. Follow these step-by-step instructions to ensure optimal performance.</p>
+
+<h2 id="table-of-contents">Table of Contents</h2>
+
+<ol>
+  <li><a href="#initial-setup">Initial Setup</a></li>
+  <li><a href="#power-on-procedure">Power-On Procedure</a></li>
+  <li><a href="#basic-operations">Basic Operations</a></li>
+  <li><a href="#advanced-features">Advanced Features</a></li>
+  <li><a href="#troubleshooting">Troubleshooting</a></li>
+  <li><a href="#maintenance">Maintenance</a></li>
+</ol>
+
+<hr />
+
+<h2 id="initial-setup">Initial Setup</h2>
+
+<h3 id="unboxing-and-inspection">Unboxing and Inspection</h3>
+
+<ol>
+  <li><strong>Carefully remove the controller</strong> from its protective packaging</li>
+  <li><strong>Inspect for shipping damage</strong> - Check for cracks, bent connectors, or loose components</li>
+  <li><strong>Verify all components</strong> are included:
+    <ul>
+      <li>Controller unit</li>
+      <li>Power cable and adapter</li>
+      <li>Communication cable (USB or network)</li>
+      <li>Quick start guide</li>
+      <li>Calibration certificate</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="physical-installation">Physical Installation</h3>
+
+<ol>
+  <li><strong>Select a mounting location</strong> that is:
+    <ul>
+      <li>Level and stable</li>
+      <li>Protected from moisture and dust</li>
+      <li>Easily accessible for operation</li>
+      <li>Away from direct sunlight</li>
+      <li>At least 2 feet away from the equipment</li>
+    </ul>
+  </li>
+  <li><strong>Mount the controller</strong> using the included bracket and fasteners</li>
+  <li><strong>Connect the communication cable</strong> to the equipment’s main control port</li>
+  <li><strong>Connect the power adapter</strong> to a grounded electrical outlet</li>
+  <li><strong>Ensure all connections are secure</strong> - Gently tug each cable to verify</li>
+</ol>
+
+<h3 id="initial-power-up">Initial Power-Up</h3>
+
+<ol>
+  <li><strong>Connect the power cable</strong> but do NOT switch on yet</li>
+  <li><strong>Press and hold the reset button</strong> for 3 seconds (located on the back panel)</li>
+  <li><strong>Watch the status lights</strong> - You should see:
+    <ul>
+      <li>Power LED (green) illuminates</li>
+      <li>Status LED (yellow) blinks slowly</li>
+    </ul>
+  </li>
+  <li><strong>Wait 30 seconds</strong> for the controller to fully boot</li>
+  <li><strong>Status LED should turn green</strong> when ready</li>
+</ol>
+
+<hr />
+
+<h2 id="power-on-procedure">Power-On Procedure</h2>
+
+<h3 id="daily-startup-sequence">Daily Startup Sequence</h3>
+
+<ol>
+  <li><strong>Power on the main equipment</strong> first</li>
+  <li><strong>Wait 10 seconds</strong> for the equipment to initialize</li>
+  <li><strong>Power on the controller</strong></li>
+  <li><strong>Wait for the “Ready” indicator</strong> (green light + beep sound)</li>
+  <li><strong>Verify all system lights</strong> are functioning normally</li>
+</ol>
+
+<h3 id="system-status-indicators">System Status Indicators</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Light Color</th>
+      <th>Pattern</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Green</td>
+      <td>Solid</td>
+      <td>Normal Operation</td>
+    </tr>
+    <tr>
+      <td>Green</td>
+      <td>Blinking</td>
+      <td>Initializing</td>
+    </tr>
+    <tr>
+      <td>Yellow</td>
+      <td>Solid</td>
+      <td>Warning - Non-Critical Issue</td>
+    </tr>
+    <tr>
+      <td>Yellow</td>
+      <td>Blinking</td>
+      <td>Performing Diagnostic</td>
+    </tr>
+    <tr>
+      <td>Red</td>
+      <td>Solid</td>
+      <td>Error - Critical Issue</td>
+    </tr>
+    <tr>
+      <td>Red</td>
+      <td>Blinking</td>
+      <td>Shutdown in Progress</td>
+    </tr>
+    <tr>
+      <td>Off</td>
+      <td>—</td>
+      <td>No Power</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="startup-checklist">Startup Checklist</h3>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Main equipment powered and initialized</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Controller powered on</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Status light is green</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />No error sounds or alarms</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Display screen is responsive</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />All legs report “Ready” status</li>
+</ul>
+
+<hr />
+
+<h2 id="basic-operations">Basic Operations</h2>
+
+<h3 id="display-navigation">Display Navigation</h3>
+
+<p>The controller features a 7-inch touchscreen display with intuitive navigation:</p>
+
+<ol>
+  <li><strong>Home Screen</strong>: Shows real-time status of all legs and systems</li>
+  <li><strong>Status Panel</strong>: Displays current operation mode and diagnostics</li>
+  <li><strong>Controls</strong>: Access basic movement and positioning commands</li>
+  <li><strong>Settings</strong>: Adjust preferences and configurations</li>
+</ol>
+
+<h3 id="moving-the-equipment">Moving the Equipment</h3>
+
+<h4 id="manual-movement">Manual Movement</h4>
+
+<ol>
+  <li><strong>Access Controls</strong> from the home screen</li>
+  <li><strong>Select Movement Type</strong>:
+    <ul>
+      <li>Up/Down</li>
+      <li>Forward/Backward</li>
+      <li>Left/Right</li>
+      <li>Rotate</li>
+    </ul>
+  </li>
+  <li><strong>Press and hold the directional button</strong> to move</li>
+  <li><strong>Release the button</strong> to stop movement</li>
+  <li><strong>Monitor the leg status</strong> during movement for any anomalies</li>
+</ol>
+
+<h4 id="preset-positions">Preset Positions</h4>
+
+<p>The controller includes preset positions for common configurations:</p>
+
+<ol>
+  <li><strong>Raise to Working Height</strong>: Optimal height for standard operations</li>
+  <li><strong>Lower to Transport</strong>: Compact position for moving equipment</li>
+  <li><strong>Level Ground</strong>: Automatically adjusts for uneven terrain</li>
+  <li><strong>Stow Position</strong>: Safety configuration for storage</li>
+</ol>
+
+<p>To activate a preset:</p>
+<ol>
+  <li><strong>Tap “Presets”</strong> on the home screen</li>
+  <li><strong>Select desired position</strong></li>
+  <li><strong>Confirm the action</strong> - Equipment will move automatically</li>
+  <li><strong>Wait for completion</strong> - Status will update when finished</li>
+</ol>
+
+<h3 id="reading-status-information">Reading Status Information</h3>
+
+<p>The status panel displays:</p>
+
+<ul>
+  <li><strong>Leg Health</strong>: Status of each of the four legs</li>
+  <li><strong>System Temperature</strong>: Operating temperature of hydraulics/electronics</li>
+  <li><strong>Pressure Level</strong>: Current hydraulic pressure</li>
+  <li><strong>Tilt Angle</strong>: Current pitch and roll angles</li>
+  <li><strong>Power Status</strong>: Battery or main power status</li>
+  <li><strong>Network Connection</strong>: Communication status with equipment</li>
+</ul>
+
+<hr />
+
+<h2 id="advanced-features">Advanced Features</h2>
+
+<h3 id="calibration">Calibration</h3>
+
+<p>Calibration ensures accurate positioning and leg synchronization.</p>
+
+<p><strong>When to calibrate:</strong></p>
+<ul>
+  <li>After initial setup</li>
+  <li>After replacing a leg</li>
+  <li>If positioning becomes inaccurate</li>
+  <li>Annually as preventive maintenance</li>
+</ul>
+
+<p><strong>Calibration procedure:</strong></p>
+<ol>
+  <li><strong>Navigate to Settings</strong> → <strong>Maintenance</strong> → <strong>Calibration</strong></li>
+  <li><strong>Place equipment on level ground</strong></li>
+  <li><strong>Start the calibration wizard</strong></li>
+  <li><strong>Follow on-screen instructions</strong> - Equipment will move through preset positions</li>
+  <li><strong>Process takes approximately 5-10 minutes</strong></li>
+  <li><strong>Confirmation message</strong> indicates successful calibration</li>
+</ol>
+
+<h3 id="remote-operation">Remote Operation</h3>
+
+<p>The controller supports wireless operation when network connectivity is available:</p>
+
+<ol>
+  <li><strong>Access Remote Settings</strong> → <strong>Network</strong> → <strong>Remote Operation</strong></li>
+  <li><strong>Enable wireless mode</strong> and note the device ID</li>
+  <li><strong>Connect a remote device</strong> (tablet/phone) to the controller</li>
+  <li><strong>Use the mobile app</strong> for remote movement control</li>
+  <li><strong>Operation range</strong>: Up to 500 feet with clear line of sight</li>
+</ol>
+
+<p><strong>Safety Note</strong>: Always maintain visual line of sight when operating remotely.</p>
+
+<h3 id="logging-and-diagnostics">Logging and Diagnostics</h3>
+
+<p>The controller maintains detailed operational logs:</p>
+
+<ol>
+  <li><strong>Navigate to Diagnostics</strong></li>
+  <li><strong>View Activity Log</strong> - Last 100 operations with timestamps</li>
+  <li><strong>Export Data</strong> - Save logs to USB for analysis</li>
+  <li><strong>Run Self-Test</strong> - Automatic system diagnostics</li>
+  <li><strong>Review Error History</strong> - All errors with timestamps and codes</li>
+</ol>
+
+<hr />
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<h3 id="common-issues-and-solutions">Common Issues and Solutions</h3>
+
+<h4 id="issue-display-wont-turn-on">Issue: Display Won’t Turn On</h4>
+
+<p><strong>Diagnosis:</strong></p>
+<ul>
+  <li>Check power connection and LED indicator</li>
+  <li>Verify power outlet is functioning</li>
+</ul>
+
+<p><strong>Solutions:</strong></p>
+<ol>
+  <li>Unplug power cable</li>
+  <li>Wait 10 seconds</li>
+  <li>Reconnect and wait 30 seconds for boot</li>
+  <li>If still unresponsive, press reset button on back panel</li>
+  <li>If problem persists, contact support</li>
+</ol>
+
+<h4 id="issue-leg-not-responding">Issue: Leg Not Responding</h4>
+
+<p><strong>Diagnosis:</strong></p>
+<ul>
+  <li>Check leg status in Status Panel</li>
+  <li>Verify communication cable is secure</li>
+</ul>
+
+<p><strong>Solutions:</strong></p>
+<ol>
+  <li>Restart the controller (power cycle)</li>
+  <li>Verify leg connection at equipment</li>
+  <li>Run system diagnostics</li>
+  <li>Check for error codes in error log</li>
+  <li>If specific leg fails, may require field replacement</li>
+</ol>
+
+<h4 id="issue-slow-or-unresponsive-touch-screen">Issue: Slow or Unresponsive Touch Screen</h4>
+
+<p><strong>Diagnosis:</strong></p>
+<ul>
+  <li>Display may need calibration</li>
+  <li>Software may need update</li>
+</ul>
+
+<p><strong>Solutions:</strong></p>
+<ol>
+  <li>Calibrate the touchscreen: Settings → Display → Calibrate Touch</li>
+  <li>Restart the controller</li>
+  <li>Check for firmware updates: Settings → System → Firmware Update</li>
+  <li>If slowness persists, perform factory reset (back up data first)</li>
+</ol>
+
+<h4 id="issue-error-messages-or-warning-lights">Issue: Error Messages or Warning Lights</h4>
+
+<p>See the error code reference below, or contact support with the specific error code.</p>
+
+<h3 id="error-code-reference">Error Code Reference</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Message</th>
+      <th>Severity</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>E001</td>
+      <td>Leg Communication Lost</td>
+      <td>Critical</td>
+      <td>Check cable connections; restart controller</td>
+    </tr>
+    <tr>
+      <td>E002</td>
+      <td>Pressure Sensor Failure</td>
+      <td>High</td>
+      <td>Schedule immediate maintenance dispatch</td>
+    </tr>
+    <tr>
+      <td>E003</td>
+      <td>Temperature Overheat</td>
+      <td>Medium</td>
+      <td>Allow equipment to cool; check ventilation</td>
+    </tr>
+    <tr>
+      <td>E004</td>
+      <td>Power Supply Fault</td>
+      <td>Critical</td>
+      <td>Check power connections and outlet</td>
+    </tr>
+    <tr>
+      <td>W001</td>
+      <td>Calibration Drift Detected</td>
+      <td>Low</td>
+      <td>Recalibrate system</td>
+    </tr>
+    <tr>
+      <td>W002</td>
+      <td>Firmware Update Available</td>
+      <td>Low</td>
+      <td>Download and install update when convenient</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="maintenance">Maintenance</h2>
+
+<h3 id="daily-maintenance">Daily Maintenance</h3>
+
+<ul>
+  <li><strong>Inspect cable connections</strong> for loose or damaged plugs</li>
+  <li><strong>Clean the display</strong> with a soft, dry cloth</li>
+  <li><strong>Check status indicators</strong> are functioning normally</li>
+  <li><strong>Review operation log</strong> for any anomalies</li>
+</ul>
+
+<h3 id="weekly-maintenance">Weekly Maintenance</h3>
+
+<ul>
+  <li><strong>Perform system self-test</strong> via Diagnostics menu</li>
+  <li><strong>Check for firmware updates</strong></li>
+  <li><strong>Inspect controller housing</strong> for debris or damage</li>
+  <li><strong>Verify all buttons and controls</strong> are responsive</li>
+</ul>
+
+<h3 id="monthly-maintenance">Monthly Maintenance</h3>
+
+<ul>
+  <li><strong>Calibrate the system</strong> for accuracy</li>
+  <li><strong>Export and review operation logs</strong> for trends</li>
+  <li><strong>Clean all ports and connectors</strong> with compressed air</li>
+  <li><strong>Test backup power</strong> (if applicable)</li>
+</ul>
+
+<h3 id="annual-maintenance">Annual Maintenance</h3>
+
+<ul>
+  <li><strong>Professional inspection</strong> by certified technician</li>
+  <li><strong>Complete system diagnostics</strong></li>
+  <li><strong>Calibration recalibration</strong></li>
+  <li><strong>Firmware and software updates</strong></li>
+</ul>
+
+<hr />
+
+<h2 id="getting-help">Getting Help</h2>
+
+<p><strong>For questions or issues:</strong></p>
+<ul>
+  <li>Consult this guide first</li>
+  <li>Check the error code reference</li>
+  <li>Review the troubleshooting section</li>
+  <li><a href="../schedule-maintenance.html">Schedule maintenance</a> for non-urgent issues</li>
+  <li><a href="../request-dispatch.html">Request immediate dispatch</a> for critical problems</li>
+  <li>Call emergency support: 1-800-ERS-HELP</li>
+</ul>
+
+<hr />
+
+<table>
+  <tbody>
+    <tr>
+      <td><strong>Last Updated</strong>: 2026</td>
+      <td><strong>Version</strong>: 2.1</td>
+      <td><a href="../howtos/">Back to How-To Guides →</a></td>
+    </tr>
+  </tbody>
+</table>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZc6TTisaO3ilNffqa8M5/+6cFvstIp3aPOKZAo2UEs=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>

@@ -300,7 +300,7 @@ conftest.c:17:15: warning: implicit declaration of function ‘RAND_egd’; did 
    17 | int t(void) { RAND_egd(); return 0; }
       |               ^~~~~~~~
       |               RAND_add
-/usr/bin/ld: /tmp/ccQuRssa.o: in function `t':
+/usr/bin/ld: /tmp/ccprAUTx.o: in function `t':
 /home/runner/work/support.erektor-return.systems-website/support.erektor-return.systems-website/vendor/bundle/ruby/3.2.0/gems/openssl-4.0.2/ext/openssl/conftest.c:17:(.text+0xb): undefined reference to `RAND_egd'
 collect2: error: ld returned 1 exit status
 checked program was:
@@ -646,7 +646,7 @@ conftest.c:17:15: warning: implicit declaration of function ‘SSL_get0_group_na
    17 | int t(void) { SSL_get0_group_name(NULL); return 0; }
       |               ^~~~~~~~~~~~~~~~~~~
       |               SSL_get0_peername
-/usr/bin/ld: /tmp/ccEEPloo.o: in function `t':
+/usr/bin/ld: /tmp/ccE1ZlE2.o: in function `t':
 /home/runner/work/support.erektor-return.systems-website/support.erektor-return.systems-website/vendor/bundle/ruby/3.2.0/gems/openssl-4.0.2/ext/openssl/conftest.c:17:(.text+0xd): undefined reference to `SSL_get0_group_name'
 collect2: error: ld returned 1 exit status
 checked program was:
@@ -680,7 +680,7 @@ conftest.c:17:15: warning: implicit declaration of function ‘TS_VERIFY_CTX_set
    17 | int t(void) { TS_VERIFY_CTX_set0_certs(NULL, NULL); return 0; }
       |               ^~~~~~~~~~~~~~~~~~~~~~~~
       |               TS_VERIFY_CTX_set_certs
-/usr/bin/ld: /tmp/cc0oKT9l.o: in function `t':
+/usr/bin/ld: /tmp/ccMeCyb8.o: in function `t':
 /home/runner/work/support.erektor-return.systems-website/support.erektor-return.systems-website/vendor/bundle/ruby/3.2.0/gems/openssl-4.0.2/ext/openssl/conftest.c:17:(.text+0xf): undefined reference to `TS_VERIFY_CTX_set0_certs'
 collect2: error: ld returned 1 exit status
 checked program was:
@@ -714,7 +714,7 @@ conftest.c:17:15: warning: implicit declaration of function ‘SSL_get0_peer_sig
    17 | int t(void) { SSL_get0_peer_signature_name(NULL, NULL); return 0; }
       |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
       |               SSL_get_peer_signature_nid
-/usr/bin/ld: /tmp/ccBxL102.o: in function `t':
+/usr/bin/ld: /tmp/cc7U8aKC.o: in function `t':
 /home/runner/work/support.erektor-return.systems-website/support.erektor-return.systems-website/vendor/bundle/ruby/3.2.0/gems/openssl-4.0.2/ext/openssl/conftest.c:17:(.text+0xf): undefined reference to `SSL_get0_peer_signature_name'
 collect2: error: ld returned 1 exit status
 checked program was:
@@ -748,7 +748,7 @@ conftest.c:17:15: warning: implicit declaration of function ‘ASN1_BIT_STRING_s
    17 | int t(void) { ASN1_BIT_STRING_set1(NULL, NULL, 0, 0); return 0; }
       |               ^~~~~~~~~~~~~~~~~~~~
       |               ASN1_BIT_STRING_set
-/usr/bin/ld: /tmp/ccZxesTk.o: in function `t':
+/usr/bin/ld: /tmp/cc4jRTD8.o: in function `t':
 /home/runner/work/support.erektor-return.systems-website/support.erektor-return.systems-website/vendor/bundle/ruby/3.2.0/gems/openssl-4.0.2/ext/openssl/conftest.c:17:(.text+0x13): undefined reference to `ASN1_BIT_STRING_set1'
 collect2: error: ld returned 1 exit status
 checked program was:
