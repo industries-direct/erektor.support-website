@@ -1,5 +1,5 @@
-title: ERS Support
-description: Erektor Return Systems Support Website
+title: ERS Support Portal
+description: Erektor Return Systems Support Website - Schedule Maintenance, Request Dispatch, and Access How-To Guides
 theme: jekyll-theme-minimal
 remote_theme: pages-themes/minimal@v0.2.0
 
@@ -13,3 +13,27 @@ markdown: kramdown
 plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
+  - jekyll-include-cache
+
+# Permalink structure
+permalink: /:path/
+
+# Collections and defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+
+# Exclude files from build
+exclude:
+  - node_modules/
+  - vendor/
+  - .bundle/
+  - Gemfile
+  - Gemfile.lock
+
+# Include files in build
+include:
+  - _redirects
