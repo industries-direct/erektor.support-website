@@ -44,7 +44,7 @@
 
 @media (prefers-color-scheme: light) {
   :root {
-    --ground: #f8f8f8; --surface: #ffffff; --surface-2: #f1f3f5;
+    --ground: #f1f3f5; --surface: #ffffff; --surface-2: #f1f3f5;
     --line: #dfdfdf; --line-strong: #afafaf;
     --ink: #232323; --ink-muted: #676767; --ink-faint: #8f8f8f;
     --accent: #c70000; --accent-deep: #810000; --accent-glow: rgba(199,0,0,0.10);
@@ -55,7 +55,7 @@
   }
 }
 :root[data-theme="light"] {
-  --ground: #f8f8f8; --surface: #ffffff; --surface-2: #f1f3f5;
+  --ground: #f1f3f5; --surface: #ffffff; --surface-2: #f1f3f5;
   --line: #dfdfdf; --line-strong: #afafaf;
   --ink: #232323; --ink-muted: #676767; --ink-faint: #8f8f8f;
   --accent: #c70000; --accent-deep: #810000; --accent-glow: rgba(199,0,0,0.10);
