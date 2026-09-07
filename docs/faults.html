@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fault codes — EREKTOR Support</title>
+<meta name="description" content="Every Erektor fault code, what it means, and which of the three service routes it puts you on.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script src="../assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
+        <a href="../maintenance.html" class="">Maintenance</a>
+        <a href="../docs/" class="">Documentation</a>
+        <a href="../docs/faults.html" aria-current="page" class="">Fault codes</a>
+        <a href="../firmware/index.html" class="">Firmware</a>
+      <button class="themebtn" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<p class="crumbs"><a href="../index.html">Support</a><span>/</span><a href="../docs/">Documentation</a><span>/</span>Fault codes</p>
+<section class="wrap" data-triage>
+  <span class="eyebrow">Triage</span>
+  <h1>Fault codes</h1>
+  <p class="lede">Each code resolves to one of three routes: fix it on the floor, flag the leg so ERS
+  diverts it on return, or dispatch a replacement because the leg cannot finish its session.</p>
+
+  <div class="field limit-input mt-2" >
+    <label for="triage">Look up a code</label>
+    <input type="search" id="triage" class="mono" data-triage-input placeholder="LFT-45" autocomplete="off">
+    <p class="field__hint">Or pick one from the index below.</p>
+  </div>
+  <div data-triage-out hidden class="mt-1 limit"></div>
+
+  <h2>Index</h2>
+  <div data-triage-list>
+    <p class="muted">Loading the fault table&hellip;</p>
+  </div>
+
+  <noscript>
+    <p class="note note--warn">The code index is rendered from
+    <code>/data/faults.json</code> and needs JavaScript. The raw table is readable directly at
+    <a href="../data/faults.json">/data/faults.json</a>, and both service routes work without it:
+    <a href="../dispatch.html">dispatch</a> and <a href="../maintenance.html">maintenance</a>.</p>
+  </noscript>
+
+  <h2>Reading a code</h2>
+  <p>Codes are <code>SUB-nn</code>, where the prefix names the subsystem:</p>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Prefix</th><th>Subsystem</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">PWR</td><td>Power &mdash; 56&nbsp;V motor bus and 24&nbsp;V logic</td></tr>
+        <tr><td class="mono">DRV</td><td>Drive axis &mdash; ClearPath-SC servo and driven caster</td></tr>
+        <tr><td class="mono">LFT</td><td>Lift axis &mdash; ClearPath-SC servo and lift column</td></tr>
+        <tr><td class="mono">CTL</td><td>ClearCore controller</td></tr>
+        <tr><td class="mono">NET</td><td>XBee radio and session network</td></tr>
+        <tr><td class="mono">DCK</td><td>Rail bracket and dock</td></tr>
+        <tr><td class="mono">SES</td><td>Session and module pairing</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note note--info">
+    <p class="note__title">No code is not a blocker</p>
+    <p>If a leg cannot finish its session, <a href="../dispatch.html">request a replacement</a> without
+    waiting for a code. Describe what it does and what it will not do.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="../dispatch.html">Request a replacement leg</a></li><li><a href="../maintenance.html">Flag a leg for ERS</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="../docs/operating.html">Operating procedures</a></li><li><a href="../docs/ers.html">The return line</a></li><li><a href="../docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="../firmware/index.html">Controller firmware</a></li><li><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

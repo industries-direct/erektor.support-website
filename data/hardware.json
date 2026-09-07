@@ -1,0 +1,98 @@
+{
+  "$comment": "Leg and controller catalog. Single source of truth for identifiers used by the service request forms, the parts reference, and the firmware manifest. A leg is the durable asset; there is no persistent machine above it.",
+  "revision": "2026.09",
+  "cadRevision": "V3",
+  "legVariants": [
+    {
+      "id": "LEG-S",
+      "name": "Standard Leg",
+      "status": "current",
+      "controller": "CC-1",
+      "servo": "ClearPath-SC",
+      "motors": 2,
+      "casters": 3,
+      "drivenCasters": 1,
+      "railBracket": "BRK-U2",
+      "notes": "Baseline leg. Stands unsupported on its three-caster tripod. Shares no wiring, bus, or rigidity with any other leg."
+    },
+    {
+      "id": "LEG-SH",
+      "name": "Standard Leg, High-Stroke",
+      "status": "current",
+      "controller": "CC-1",
+      "servo": "ClearPath-SC",
+      "motors": 2,
+      "casters": 3,
+      "drivenCasters": 1,
+      "railBracket": "BRK-U2",
+      "notes": "Extended lift travel for tall station variants. Interchangeable with LEG-S in any module pairing."
+    },
+    {
+      "id": "LEG-E",
+      "name": "Early Leg (Pilot)",
+      "status": "legacy",
+      "controller": "CC-0",
+      "servo": "ClearPath-SC",
+      "motors": 2,
+      "casters": 3,
+      "drivenCasters": 1,
+      "railBracket": "BRK-U1",
+      "adapterKit": "KIT-U1U2",
+      "notes": "Pilot-fleet leg. BRK-U1 does not fit current rail without KIT-U1U2. CC-0 accepts no remote firmware; updates are applied at ERS by cable."
+    }
+  ],
+  "controllers": [
+    {
+      "id": "CC-0",
+      "name": "ClearCore (Pilot Build)",
+      "status": "legacy",
+      "logicVolts": 24,
+      "motorVolts": 56,
+      "radio": "XBee",
+      "remoteUpdate": false,
+      "notes": "No signed-update support. Reflashed by cable during an ERS visit."
+    },
+    {
+      "id": "CC-1",
+      "name": "ClearCore (Production)",
+      "status": "current",
+      "logicVolts": 24,
+      "motorVolts": 56,
+      "radio": "XBee",
+      "radioRangeM": 300,
+      "remoteUpdate": true,
+      "notes": "Accepts signed bundles relayed from a session controller over XBee. The leg itself has no internet path."
+    }
+  ],
+  "sessionControllers": [
+    {
+      "id": "SC-1",
+      "name": "Session Controller",
+      "status": "current",
+      "radio": "XBee",
+      "uplink": "cellular or facility network",
+      "notes": "Pairs legs into modules, holds the session, and is the only device on the network that reaches this portal. Firmware for legs arrives here first, then fans out over XBee."
+    }
+  ],
+  "moduleRange": {
+    "min": 3,
+    "max": 6,
+    "description": "A module is a left plus right leg paired in software only. Longer stations claim more modules. Pairing is arbitrary and is re-formed every session."
+  },
+  "serialFormats": {
+    "electronics": {
+      "pattern": "^EL-[0-9]{2}-[0-9]{6}$",
+      "example": "EL-25-014873",
+      "label": "Electronics serial",
+      "description": "The leg's operational identity. Read from the ClearCore About screen or the session controller roster. Swapping the electronics rolls this over — firmware and pairing follow it.",
+      "governs": ["firmware", "pairing", "session assignment", "uplink identity"]
+    },
+    "mechanical": {
+      "pattern": "^MX-[0-9]{2}-[0-9]{5}$",
+      "example": "MX-24-08192",
+      "label": "Mechanical serial",
+      "description": "Stamped into the frame above the bracket face. Permanent for the life of the leg. Motor-hours and gearbox wear accrue against this number, not the electronics.",
+      "governs": ["service interval", "wear history", "warranty", "lease record"]
+    }
+  }
+}

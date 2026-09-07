@@ -1,17 +1,29 @@
 /**
  * POST /api/requests — service request intake.
  *
- * Cloudflare Pages Function. Both request channels (planned maintenance and
- * immediate dispatch) submit the same envelope here; urgency is a field, not a
- * separate pipeline, so one queue and one reference series covers both.
+ * Cloudflare Pages Function. Both service routes submit the same envelope:
+ * they differ in urgency and in which half of the leg's identity they are
+ * filed against.
+ *
+ *   flag     -> filed against the MECHANICAL serial. Wear and service history
+ *               live on the frame, so the flag must survive an electronics
+ *               swap. No truck; ERS diverts the leg at inspection.
+ *   dispatch -> filed against the ELECTRONICS serial, because that is what
+ *               the session controller knows the leg by and what has to come
+ *               out of the roster tonight.
  *
  * Bindings (all optional — the endpoint degrades rather than failing):
- *   REQUESTS  KV namespace   durable store for submitted requests
- *   INTAKE_WEBHOOK  secret   URL forwarded to for ticketing/paging
+ *   REQUESTS        KV namespace   durable store for submitted requests
+ *   INTAKE_WEBHOOK  secret         URL forwarded to for ticketing and paging
  */
 
-const KINDS = new Set(['maintenance', 'dispatch']);
+const KINDS = new Set(['flag', 'dispatch']);
 const MAX_BODY = 32 * 1024;
+
+const SERIAL = {
+  electronics: /^EL-\d{2}-\d{6}$/,
+  mechanical: /^MX-\d{2}-\d{5}$/
+};
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -27,7 +39,7 @@ function reference(kind) {
     .map((b) => b.toString(36).toUpperCase().padStart(2, '0'))
     .join('')
     .slice(0, 4);
-  return `${kind === 'dispatch' ? 'DSP' : 'MNT'}-${stamp}-${rand}`;
+  return `${kind === 'dispatch' ? 'DSP' : 'FLG'}-${stamp}-${rand}`;
 }
 
 /** Field-level validation. Returns an array of human-readable problems. */
@@ -40,8 +52,8 @@ function validate(body) {
   };
 
   if (!KINDS.has(body._kind)) problems.push('Unknown request kind.');
-  req('unit_serial', 'Unit serial');
   req('contact_name', 'Contact name');
+  req('facility', 'Facility');
 
   const email = (body.contact_email ?? '').trim();
   const phone = (body.contact_phone ?? '').trim();
@@ -49,16 +61,24 @@ function validate(body) {
   if (email && !/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(email)) problems.push('Email address looks malformed.');
 
   if (body._kind === 'dispatch') {
+    const serial = req('electronics_serial', 'Electronics serial').toUpperCase();
+    if (serial && !SERIAL.electronics.test(serial)) {
+      problems.push('Electronics serial should look like EL-25-014873.');
+    }
     req('site_address', 'Site address');
-    req('fault_description', 'Fault description');
+    req('symptom', 'What the leg is doing');
   } else {
-    req('preferred_date', 'Preferred date');
+    const serial = req('mechanical_serial', 'Mechanical serial').toUpperCase();
+    if (serial && !SERIAL.mechanical.test(serial)) {
+      problems.push('Mechanical serial should look like MX-24-08192. Service history follows the frame, not the electronics.');
+    }
+    req('reason', 'Reason for the flag');
   }
   return problems;
 }
 
 export async function onRequestPost({ request, env }) {
-  if ((request.headers.get('content-type') || '').indexOf('application/json') === -1) {
+  if (!(request.headers.get('content-type') || '').includes('application/json')) {
     return json({ error: 'Expected application/json.' }, 415);
   }
 
@@ -75,19 +95,26 @@ export async function onRequestPost({ request, env }) {
   const problems = validate(body);
   if (problems.length) return json({ error: 'Validation failed.', problems }, 422);
 
+  const fields = Object.fromEntries(
+    Object.entries(body).filter(([k]) => !k.startsWith('_'))
+  );
+
   const record = {
     reference: reference(body._kind),
     kind: body._kind,
     status: 'received',
     receivedAt: new Date().toISOString(),
+    // Which serial this request is filed against, so downstream systems know
+    // whether it follows the frame or the electronics.
+    subject: body._kind === 'dispatch'
+      ? { identity: 'electronics', serial: (fields.electronics_serial || '').toUpperCase() }
+      : { identity: 'mechanical', serial: (fields.mechanical_serial || '').toUpperCase() },
     source: {
       ip: request.headers.get('cf-connecting-ip') || null,
       country: request.cf?.country || null,
       userAgent: request.headers.get('user-agent') || null
     },
-    fields: Object.fromEntries(
-      Object.entries(body).filter(([k]) => !k.startsWith('_'))
-    )
+    fields
   };
 
   // Durable store, when bound. A storage failure must not lose the request:
@@ -95,7 +122,7 @@ export async function onRequestPost({ request, env }) {
   if (env.REQUESTS) {
     try {
       await env.REQUESTS.put(`request:${record.reference}`, JSON.stringify(record), {
-        metadata: { kind: record.kind, unit: record.fields.unit_serial ?? null }
+        metadata: { kind: record.kind, serial: record.subject.serial }
       });
     } catch (err) {
       console.error('KV put failed', err);
@@ -105,7 +132,7 @@ export async function onRequestPost({ request, env }) {
     record.status = 'received-unstored';
   }
 
-  // Forward to whatever actually pages a technician.
+  // Forward to whatever actually pages a technician or books the pool leg.
   if (env.INTAKE_WEBHOOK) {
     try {
       await fetch(env.INTAKE_WEBHOOK, {
@@ -122,6 +149,7 @@ export async function onRequestPost({ request, env }) {
     reference: record.reference,
     status: record.status,
     kind: record.kind,
+    subject: record.subject,
     receivedAt: record.receivedAt
   }, 201);
 }

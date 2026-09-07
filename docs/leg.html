@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leg anatomy — EREKTOR Support</title>
+<meta name="description" content="Product diagrams and component reference for an Erektor leg: lift and drive axes, power, ClearCore controller, XBee radio, and the dual serial identity.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script src="../assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
+        <a href="../maintenance.html" class="">Maintenance</a>
+        <a href="../docs/" class="">Documentation</a>
+        <a href="../docs/faults.html" class="">Fault codes</a>
+        <a href="../firmware/index.html" class="">Firmware</a>
+      <button class="themebtn" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<p class="crumbs"><a href="../index.html">Support</a><span>/</span><a href="../docs/">Documentation</a><span>/</span>Leg anatomy</p>
+<section class="wrap">
+  <span class="eyebrow">Diagrams</span>
+  <h1>Leg anatomy</h1>
+  <p class="lede">There is no persistent machine above the leg. A leg is the durable asset, and it is
+  built to be one: it carries its own power, its own control, its own radio, and it stands up by itself.</p>
+</section>
+
+<section class="wrap">
+  
+<figure>
+  <div class="diagram">
+    <svg viewBox="0 0 760 470" role="img" aria-labelledby="dlegT dlegD">
+      <title id="dlegT">Leg elevation</title>
+      <desc id="dlegD">One leg seen from the side. The bracket face meets the station rail at the top. Below it the lift column carries a ClearPath-SC lift servo. The controller enclosure and battery sit on the spine. The base spreads to three casters, of which the right-hand one is driven.</desc>
+
+      <!-- station rail -->
+      <rect x="150" y="46" width="440" height="18" rx="2" class="d-fill"/>
+      <line x1="150" y1="55" x2="590" y2="55" class="d-thin" stroke-dasharray="5 5"/>
+      <text x="370" y="34" text-anchor="middle" class="d-note">STATION RAIL — BRACKET SEATS AT ANY MOUNTING POINT</text>
+
+      <!-- bracket face -->
+      <rect x="330" y="64" width="80" height="28" rx="2" class="d-fill" stroke-width="2"/>
+      <line x1="348" y1="64" x2="348" y2="92" class="d-thin"/>
+      <line x1="392" y1="64" x2="392" y2="92" class="d-thin"/>
+
+      <!-- lift column -->
+      <rect x="352" y="92" width="36" height="158" rx="2" class="d-fill"/>
+      <rect x="360" y="150" width="20" height="100" class="d-fill"/>
+
+      <!-- lift servo -->
+      <rect x="326" y="104" width="88" height="44" rx="3" class="d-fill" stroke-width="2"/>
+      <text x="370" y="131" text-anchor="middle" class="d-key">LIFT SERVO</text>
+
+      <!-- lift travel arrow -->
+      <line x1="306" y1="106" x2="306" y2="246" class="d-accent" stroke-width="1.5"/>
+      <path d="M306 102 l-5 9 h10 z" class="d-accent-f"/>
+      <path d="M306 250 l-5 -9 h10 z" class="d-accent-f"/>
+
+      <!-- battery -->
+      <rect x="176" y="176" width="104" height="58" rx="3" class="d-fill" stroke-width="2"/>
+      <text x="228" y="200" text-anchor="middle" class="d-key">PACK</text>
+      <text x="228" y="216" text-anchor="middle" class="d-note">56 V / 24 V</text>
+      <line x1="280" y1="205" x2="360" y2="205" class="d-thin"/>
+
+      <!-- controller enclosure -->
+      <rect x="460" y="176" width="118" height="58" rx="3" class="d-fill" stroke-width="2"/>
+      <text x="519" y="200" text-anchor="middle" class="d-key">CLEARCORE</text>
+      <text x="519" y="216" text-anchor="middle" class="d-note">+ XBee radio</text>
+      <line x1="388" y1="205" x2="460" y2="205" class="d-thin"/>
+
+      <!-- base spine -->
+      <rect x="264" y="250" width="212" height="20" rx="2" class="d-fill" stroke-width="2"/>
+
+      <!-- caster stems -->
+      <line x1="286" y1="270" x2="212" y2="316" class="d-stroke" stroke-width="2"/>
+      <line x1="370" y1="270" x2="370" y2="316" class="d-stroke" stroke-width="2"/>
+      <line x1="454" y1="270" x2="528" y2="316" class="d-accent" stroke-width="2"/>
+
+      <!-- casters -->
+      <circle cx="212" cy="334" r="18" class="d-fill" stroke-width="2"/>
+      <circle cx="370" cy="334" r="18" class="d-fill" stroke-width="2"/>
+      <circle cx="528" cy="334" r="18" class="d-accent" stroke-width="2.5" fill="none"/>
+      <circle cx="528" cy="334" r="5" class="d-accent-f"/>
+
+      <!-- drive servo on the driven caster -->
+      <rect x="556" y="292" width="70" height="34" rx="3" class="d-fill" stroke-width="2"/>
+      <text x="591" y="313" text-anchor="middle" class="d-key">DRIVE</text>
+      <line x1="556" y1="309" x2="536" y2="322" class="d-thin"/>
+
+      <!-- floor -->
+      <line x1="130" y1="356" x2="640" y2="356" class="d-stroke" stroke-width="2"/>
+      <g class="d-thin">
+        <line x1="140" y1="356" x2="128" y2="368"/><line x1="176" y1="356" x2="164" y2="368"/>
+        <line x1="212" y1="356" x2="200" y2="368"/><line x1="248" y1="356" x2="236" y2="368"/>
+        <line x1="284" y1="356" x2="272" y2="368"/><line x1="320" y1="356" x2="308" y2="368"/>
+        <line x1="356" y1="356" x2="344" y2="368"/><line x1="392" y1="356" x2="380" y2="368"/>
+        <line x1="428" y1="356" x2="416" y2="368"/><line x1="464" y1="356" x2="452" y2="368"/>
+        <line x1="500" y1="356" x2="488" y2="368"/><line x1="536" y1="356" x2="524" y2="368"/>
+        <line x1="572" y1="356" x2="560" y2="368"/><line x1="608" y1="356" x2="596" y2="368"/>
+      </g>
+
+      <!-- callouts -->
+      <g class="d-label">
+        <text x="640" y="82">Bracket face</text>
+        <text x="640" y="212">Controller</text>
+        <text x="640" y="340">Driven caster</text>
+        <text x="120" y="212" text-anchor="end">Battery</text>
+        <text x="120" y="180" text-anchor="end">Lift travel</text>
+        <text x="120" y="340" text-anchor="end">Free casters</text>
+      </g>
+      <g class="d-thin">
+        <polyline points="636,78 412,78"/>
+        <polyline points="636,208 582,208"/>
+        <polyline points="636,336 552,336"/>
+        <polyline points="124,208 172,208"/>
+        <polyline points="124,176 306,176"/>
+        <polyline points="124,336 194,336"/>
+        <polyline points="194,336 352,336"/>
+      </g>
+
+      <!-- serial stamp callout -->
+      <text x="370" y="400" text-anchor="middle" class="d-note">MECHANICAL SERIAL (MX) STAMPED ON THE FRAME ABOVE THE BRACKET FACE</text>
+      <text x="370" y="418" text-anchor="middle" class="d-note">ELECTRONICS SERIAL (EL) READS FROM THE CLEARCORE — IT CHANGES WHEN THE CONTROLLER DOES</text>
+      <line x1="370" y1="382" x2="370" y2="96" class="d-thin" stroke-dasharray="3 4"/>
+    </svg>
+  </div>
+  <figcaption>A leg is self-contained: its own 56&nbsp;V motor bus and 24&nbsp;V logic, its own ClearCore and XBee radio, two ClearPath-SC servos on the lift and drive axes, and three casters of which one is driven. Nothing crosses to a neighbouring leg — no wiring, no bus, no shared rigidity.</figcaption>
+</figure>
+
+
+  <ul class="spec-list limit" >
+    <li><span>Motors per leg</span><span>2 &mdash; drive axis + lift axis</span></li>
+    <li><span>Servo</span><span>Teknic ClearPath-SC</span></li>
+    <li><span>Casters per leg</span><span>3 &mdash; 1 driven, 2 free</span></li>
+    <li><span>Control</span><span>ClearCore &middot; 24 V logic</span></li>
+    <li><span>Motor bus</span><span>56 V direct</span></li>
+    <li><span>Comms</span><span>XBee radio node &middot; 300 m+ to controller</span></li>
+    <li><span>Shared with other legs</span><span>nothing</span></li>
+  </ul>
+</section>
+
+<section class="wrap">
+  
+<figure>
+  <div class="diagram">
+    <svg viewBox="0 0 480 380" role="img" aria-labelledby="dplanT dplanD">
+      <title id="dplanT">Leg plan view</title>
+      <desc id="dplanD">The leg seen from above. Three casters sit at the corners of a triangle around the central lift column. One caster is driven; the other two swivel freely.</desc>
+
+      <!-- tripod outline -->
+      <polygon points="240,88 388,300 92,300" class="d-fill" stroke-width="2"/>
+
+      <!-- centre column -->
+      <circle cx="240" cy="230" r="30" class="d-fill" stroke-width="2"/>
+      <circle cx="240" cy="230" r="12" class="d-thin"/>
+      <text x="240" y="234" text-anchor="middle" class="d-key">COLUMN</text>
+
+      <!-- casters -->
+      <circle cx="240" cy="88" r="22" class="d-accent" stroke-width="2.5" fill="none"/>
+      <circle cx="240" cy="88" r="6" class="d-accent-f"/>
+      <circle cx="388" cy="300" r="22" class="d-fill" stroke-width="2"/>
+      <circle cx="92" cy="300" r="22" class="d-fill" stroke-width="2"/>
+
+      <!-- swivel indication on free casters -->
+      <path d="M368 284 a26 26 0 0 1 34 30" class="d-thin"/>
+      <path d="M112 284 a26 26 0 0 0 -34 30" class="d-thin"/>
+
+      <!-- drive direction -->
+      <line x1="240" y1="58" x2="240" y2="24" class="d-accent" stroke-width="1.5"/>
+      <path d="M240 18 l-6 11 h12 z" class="d-accent-f"/>
+
+      <g class="d-label">
+        <text x="240" y="12" text-anchor="middle">Drive</text>
+        <text x="420" y="340" text-anchor="end">Free swivel</text>
+        <text x="60" y="340">Free swivel</text>
+      </g>
+      <text x="240" y="356" text-anchor="middle" class="d-note">A LEG STANDS UNSUPPORTED ON THIS TRIPOD — NO PROP, NO NEIGHBOUR</text>
+    </svg>
+  </div>
+  <figcaption>One driven caster and two free swivels. The tripod is why a leg is stable on its own on the floor, in transit, and on the ERS belt — and why a single leg can be handled as an independent asset rather than half of a fixed machine.</figcaption>
+</figure>
+
+</section>
+
+<section class="wrap prose">
+  <h2 id="power">Power</h2>
+  <p>Each leg carries a 56&nbsp;V motor bus and a 24&nbsp;V logic supply from its own pack. Nothing is drawn
+  from a neighbouring leg or from the station, which is what allows an arbitrary number of legs to be
+  claimed into a build without any power planning.</p>
+  <p>Two consequences for service:</p>
+  <ul>
+    <li><b>Charge is not a field repair.</b> Legs do not charge on the belt or on site &mdash; packs are swapped
+    at the facility bank. A leg that is short of charge for its declared session
+    (<code>PWR-12</code>) is refused at claim, not rescued later.</li>
+    <li><b>A 24&nbsp;V rail that browns out under motor load</b> (<code>PWR-34</code>) presents as a healthy
+    leg at rest that drops mid-lift. Treat it as a dispatch even though it passes a standing check.</li>
+  </ul>
+  <div class="note note--crit">
+    <p class="note__title">Never bypass the pack interlock</p>
+    <p>A <code>PWR-30</code> bus fault inhibits both axes deliberately. A leg that cannot hold cannot be
+    trusted to walk itself to transport either &mdash; it is carried out.</p>
+  </div>
+
+  <h2 id="lift">Lift axis</h2>
+  <p>A ClearPath-SC servo drives the lift column. Under a module, lift is commanded collectively: the
+  session controller holds the target height and each leg closes its own loop against it, which is how
+  the structure levels on uneven ground without any leg knowing about the others.</p>
+  <p>Disagreement between commanded and reported height is graded. Four to ten millimetres on one leg is
+  a levelling problem (<code>LFT-15</code>) &mdash; re-run levelling. Drift under a static hold
+  (<code>LFT-22</code>) is a wear problem and belongs on the frame&rsquo;s record. A column that will not hold
+  under load (<code>LFT-45</code>) is a safety event, not a fault report.</p>
+
+  <h2 id="drive">Drive axis</h2>
+  <p>One caster is driven by the second ClearPath-SC; the other two swivel freely. That is enough to
+  converge a leg on its assigned mounting point, and enough for the unified structure to drive onto and
+  off a trailer.</p>
+  <p>Drive current is the fleet&rsquo;s best early-wear signal. A leg whose current climbs above its envelope
+  for the same commanded travel (<code>DRV-21</code>) is showing gearbox wear long before it stalls. That
+  trend accrues against the mechanical serial, so it survives a controller swap.</p>
+
+  <h2 id="controller">ClearCore and radio</h2>
+  <p>The ClearCore runs the leg and holds its operational identity. The XBee node gives it 300&nbsp;m or more
+  to the session controller. The leg has no internet path of its own &mdash; everything it learns about the
+  fleet, including firmware, arrives through a paired session controller.</p>
+  <p>When the session controller stops hearing a claimed leg (<code>NET-20</code>), motion inhibits across
+  the entire module by design. This is the behaviour you want: a leg that cannot be commanded must not be
+  holding a load that other legs think is shared.</p>
+  <div class="note note--crit">
+    <p class="note__title">Never manually override a leg that is out of session</p>
+    <p>The inhibit is not a nuisance lock. A module that has lost a leg does not know what that leg is
+    doing with its share of the load.</p>
+  </div>
+
+  <h2 id="identity">Serials and identity</h2>
+  <p>A leg carries two serial numbers and they are not interchangeable. This is the single most common
+  source of misfiled service requests, so it is worth being precise about.</p>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>&nbsp;</th><th>Electronics serial</th><th>Mechanical serial</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Format</th><td class="mono">EL-25-014873</td><td class="mono">MX-24-08192</td></tr>
+        <tr><th scope="row">Where</th><td>ClearCore About screen, session controller roster</td><td>Stamped on the frame above the bracket face</td></tr>
+        <tr><th scope="row">Lifetime</th><td>Rolls over when the controller is replaced</td><td>Permanent for the life of the leg</td></tr>
+        <tr><th scope="row">Governs</th><td>Firmware, pairing, session assignment, uplink identity</td><td>Motor-hours, gearbox wear, service interval, warranty, lease record</td></tr>
+        <tr><th scope="row">File against it</th><td><a href="../dispatch.html">Dispatch requests</a></td><td><a href="../maintenance.html">Maintenance flags</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The split is deliberate. Swap the electronics and the operational asset rolls over &mdash; new identity,
+  new firmware target, clean pairing history. But motor-hours and gearbox wear stay with the frame that
+  actually did the work, so maintenance stays usage-accurate instead of resetting every time a controller
+  is replaced.</p>
+
+  <div class="note note--warn">
+    <p class="note__title">What this means when you file</p>
+    <p>A maintenance flag filed against an electronics serial is lost the next time that ClearCore is
+    swapped. Wear belongs on the frame. Conversely, a dispatch filed against a mechanical serial cannot be
+    matched to tonight&rsquo;s roster, because the session controller does not know legs by their frame
+    numbers.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="../dispatch.html">Request a replacement leg</a></li><li><a href="../maintenance.html">Flag a leg for ERS</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="../docs/operating.html">Operating procedures</a></li><li><a href="../docs/ers.html">The return line</a></li><li><a href="../docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="../firmware/index.html">Controller firmware</a></li><li><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

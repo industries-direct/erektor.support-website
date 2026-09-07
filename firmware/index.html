@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controller firmware — EREKTOR Support</title>
+<meta name="description" content="Current Erektor controller firmware versions, release notes, and how a signed bundle reaches a leg that has no internet path of its own.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script src="../assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
+        <a href="../maintenance.html" class="">Maintenance</a>
+        <a href="../docs/" class="">Documentation</a>
+        <a href="../docs/faults.html" class="">Fault codes</a>
+        <a href="../firmware/index.html" aria-current="page" class="">Firmware</a>
+      <button class="themebtn" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<p class="crumbs"><a href="../index.html">Support</a><span>/</span>Firmware</p>
+<section class="wrap">
+  <span class="eyebrow">Fleet</span>
+  <h1>Controller firmware</h1>
+  <p class="lede">What each target should be running, what changed, and the path a bundle takes to get
+  there. Legs are not on the internet; every update reaches them through a session controller.</p>
+</section>
+
+<section class="wrap">
+  
+<figure>
+  <div class="diagram">
+    <svg viewBox="0 0 760 260" role="img" aria-labelledby="dfwT dfwD">
+      <title id="dfwT">How a firmware bundle reaches a leg</title>
+      <desc id="dfwD">A signed bundle leaves this portal over the internet to a session controller, which is the only device with an uplink. The session controller then fans the bundle out to leg ClearCores over XBee at the next dock. Legs have no internet path of their own.</desc>
+
+      <rect x="24" y="86" width="150" height="66" rx="5" class="d-fill" stroke-width="2"/>
+      <text x="99" y="114" text-anchor="middle" class="d-label">This portal</text>
+      <text x="99" y="132" text-anchor="middle" class="d-note">signed bundle</text>
+
+      <rect x="272" y="86" width="176" height="66" rx="5" class="d-fill" stroke-width="2"/>
+      <text x="360" y="114" text-anchor="middle" class="d-label">Session controller</text>
+      <text x="360" y="132" text-anchor="middle" class="d-note">SC-1 · has the uplink</text>
+
+      <g class="d-fill" stroke-width="2">
+        <rect x="562" y="34" width="128" height="48" rx="5"/>
+        <rect x="562" y="98" width="128" height="48" rx="5"/>
+        <rect x="562" y="162" width="128" height="48" rx="5"/>
+      </g>
+      <g class="d-label" text-anchor="middle">
+        <text x="626" y="63">Leg ClearCore</text>
+        <text x="626" y="127">Leg ClearCore</text>
+        <text x="626" y="191">Leg ClearCore</text>
+      </g>
+
+      <!-- portal to controller -->
+      <line x1="174" y1="119" x2="264" y2="119" class="d-accent" stroke-width="2"/>
+      <path d="M272 119 l-9 -5 v10 z" class="d-accent-f"/>
+      <text x="219" y="104" text-anchor="middle" class="d-note">HTTPS</text>
+
+      <!-- controller to legs -->
+      <g class="d-accent" stroke-width="2" stroke-dasharray="6 4">
+        <path d="M448 112 C 500 112, 505 58, 554 58"/>
+        <path d="M448 119 H 554"/>
+        <path d="M448 126 C 500 126, 505 186, 554 186"/>
+      </g>
+      <g class="d-accent-f">
+        <path d="M562 58 l-9 -5 v10 z"/><path d="M562 119 l-9 -5 v10 z"/><path d="M562 186 l-9 -5 v10 z"/>
+      </g>
+      <text x="505" y="232" text-anchor="middle" class="d-note">XBEE · 300 m</text>
+
+      <text x="380" y="26" text-anchor="middle" class="d-key">A LEG HAS NO INTERNET PATH OF ITS OWN</text>
+      <text x="380" y="252" text-anchor="middle" class="d-note">NOTHING IS WRITTEN MID-SESSION — BUNDLES STAGE ON THE CONTROLLER AND APPLY AT THE NEXT DOCK</text>
+    </svg>
+  </div>
+  <figcaption>The session controller is the only device on the network that reaches this portal. Bundles stage there and fan out over XBee when a leg docks — stationary, unloaded, and verified against the signature before it writes anything.</figcaption>
+</figure>
+
+</section>
+
+<section class="wrap">
+  <h2>Current releases</h2>
+  <div data-firmware>
+    <p class="muted">Loading the manifest&hellip;</p>
+  </div>
+  <noscript>
+    <p class="note note--warn">This table is rendered from the manifest at
+    <a href="../data/firmware.json">/data/firmware.json</a>, which is readable directly.</p>
+  </noscript>
+</section>
+
+<section class="wrap prose">
+  <h2 id="uplink">How a bundle actually lands</h2>
+  <ol class="steps">
+    <li><b>The session controller pulls it.</b> SC-1 is the only device on the network with an uplink to
+    this portal. If the uplink is down (<code>NET-25</code>), sessions carry on normally offline and
+    firmware simply waits.</li>
+    <li><b>It stages, it does not apply.</b> The bundle sits on the session controller until a leg docks.
+    Nothing is ever written to a leg mid-session.</li>
+    <li><b>It fans out over XBee at the next dock,</b> when the leg is stationary and unloaded.</li>
+    <li><b>The leg verifies the signature before it writes.</b> A bundle that does not verify is discarded
+    and reported, not retried.</li>
+  </ol>
+
+  <h2>Channels</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Channel</th><th>Who gets it</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill pill--ok">Stable</span></td>
+            <td>Every fielded leg by default. Promoted after 30 days on beta with no field regressions.</td></tr>
+        <tr><td><span class="pill pill--warn">Beta</span></td>
+            <td>Opt-in per facility, against a signed consent record. Beta legs are excluded from
+            walk-off sessions.</td></tr>
+        <tr><td><span class="pill pill--flat">Hold</span></td>
+            <td>No bundles delivered. Set by EREKTOR engineering while a regression is under
+            investigation.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Where an update is allowed to apply</h2>
+  <ul>
+    <li><b>At the next dock</b> &mdash; the normal case. Stationary, unloaded, a few minutes.</li>
+    <li><b>When idle</b> &mdash; session controllers, between sessions.</li>
+    <li><b>At ERS only</b> &mdash; any build that re-runs axis calibration on first boot. Calibration must not
+    happen at a site, so these are held for the <a href="../docs/ers.html#diagnostics">diagnostics
+    stage</a> of the return line.</li>
+  </ul>
+
+  <div class="note note--warn">
+    <p class="note__title">Pilot-fleet controllers have no remote path</p>
+    <p>CC-0 accepts no signed bundles. Its final maintenance release is applied by cable during an ERS
+    visit, which means a pilot leg only ever updates when it comes home.</p>
+  </div>
+
+  <h2>A leg behind the fleet</h2>
+  <p>A leg running an older version than the stable channel reports <code>CTL-05</code>. No action is
+  needed &mdash; the session controller pushes the bundle at the next dock. If it persists across two returns,
+  <a href="../maintenance.html">flag the leg</a>; something is refusing the write.</p>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="../dispatch.html">Request a replacement leg</a></li><li><a href="../maintenance.html">Flag a leg for ERS</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="../docs/operating.html">Operating procedures</a></li><li><a href="../docs/ers.html">The return line</a></li><li><a href="../docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="../firmware/index.html">Controller firmware</a></li><li><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

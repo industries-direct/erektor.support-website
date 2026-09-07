@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a replacement leg — EREKTOR Support</title>
+<meta name="description" content="Request immediate dispatch of a replacement Erektor leg to a site when a leg cannot finish its session.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+<script src="assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="dispatch.html" aria-current="page" class="nav--urgent">Dispatch</a>
+        <a href="maintenance.html" class="">Maintenance</a>
+        <a href="docs/" class="">Documentation</a>
+        <a href="docs/faults.html" class="">Fault codes</a>
+        <a href="firmware/index.html" class="">Firmware</a>
+      <button class="themebtn" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="wrap wrap--narrow">
+  <p class="crumbs"><a href="index.html">Support</a><span>/</span>Dispatch</p>
+  <span class="eyebrow">Emergency &middot; staffed 24/7</span>
+  <h1>Request a replacement leg</h1>
+  <p class="lede">Use this when a leg cannot finish its session. We send a healthy leg from the pool; the
+  failed leg rides back to check-in with the same driver. Nothing is repaired on site.</p>
+
+  <div class="note note--crit">
+    <p class="note__title">Before you file</p>
+    <p>Get the structure to a safe state first. If the fault is on a lift axis under load, set the station
+    down on its own supports and clear the work area before doing anything else &mdash; see
+    <a href="docs/safety.html#load">holding a load</a>.</p>
+  </div>
+
+  <div class="note note--info">
+    <p class="note__title">If the leg can finish the job</p>
+    <p>You do not need a truck. <a href="maintenance.html">Flag it for ERS</a> instead and it will be
+    diverted at inspection when it comes home.</p>
+  </div>
+
+  <form class="form" data-kind="dispatch" data-result="result" class="mt-3">
+    <fieldset>
+      <legend>The failed leg</legend>
+      <div class="field">
+        <label for="el" class="required">Electronics serial</label>
+        <input type="text" id="el" name="electronics_serial" class="mono" data-serial="electronics" required autocomplete="off">
+        <p class="field__hint">From the ClearCore About screen, or the session controller roster. A dispatch
+        is filed against the electronics serial because that is what has to come out of tonight&rsquo;s roster.</p>
+        <p class="field__err" data-serial-err hidden></p>
+      </div>
+      <div class="field">
+        <label for="mx">Mechanical serial <span class="muted">(if you can reach it)</span></label>
+        <input type="text" id="mx" name="mechanical_serial" class="mono" data-serial="mechanical" autocomplete="off">
+        <p class="field__hint">Stamped on the frame above the bracket face. Helps us close the wear record,
+        but do not climb for it.</p>
+        <p class="field__err" data-serial-err hidden></p>
+      </div>
+      <div class="field">
+        <label for="variant">Leg variant</label>
+        <select id="variant" name="leg_variant" data-leg-variant>
+          <option value="">Not sure</option>
+        </select>
+        <p class="field__hint">Controller: <span class="mono" data-controller-out>&mdash;</span></p>
+      </div>
+      <div class="field">
+        <label for="code">Fault code</label>
+        <input type="text" id="code" name="fault_code" class="mono" placeholder="DRV-40" autocomplete="off">
+        <p class="field__hint">If the controller gave one. Leave blank if it did not &mdash; do not wait for a
+        code to file this.</p>
+      </div>
+      <div class="field">
+        <label for="symptom" class="required">What the leg is doing</label>
+        <textarea id="symptom" name="symptom" required placeholder="Will not turn under drive command. Lift holds fine. Module levelled before the fault."></textarea>
+        <p class="field__hint">What it does, what it will not do, and what you had it doing when it stopped.</p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Where to send the replacement</legend>
+      <div class="field">
+        <label for="facility" class="required">Facility or operator</label>
+        <input type="text" id="facility" name="facility" required autocomplete="organization">
+      </div>
+      <div class="field">
+        <label for="site" class="required">Site address</label>
+        <textarea id="site" name="site_address" required placeholder="Street, city, and how a flatbed gets in."></textarea>
+        <p class="field__hint">Include access notes. A replacement leg arrives on a truck and walks itself off.</p>
+      </div>
+      <div class="field">
+        <label for="access">Site access window</label>
+        <input type="text" id="access" name="access_window" placeholder="Gate open 06:00–20:00, contact on arrival">
+      </div>
+      <div class="field">
+        <label for="stage">Where the session is</label>
+        <select id="stage" name="session_stage">
+          <option value="">Select…</option>
+          <option>On the factory floor — pre-load</option>
+          <option>Loaded on the trailer</option>
+          <option>At destination — before walk-off</option>
+          <option>Walked off, station not yet placed</option>
+          <option>Station placed, legs releasing</option>
+        </select>
+        <p class="field__hint">This sets the priority. A module part-way through a walk-off outranks
+        everything else in the queue.</p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Who we call back</legend>
+      <div class="field">
+        <label for="cname" class="required">Name</label>
+        <input type="text" id="cname" name="contact_name" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="cphone">Phone</label>
+        <input type="tel" id="cphone" name="contact_phone" autocomplete="tel">
+      </div>
+      <div class="field">
+        <label for="cemail">Email</label>
+        <input type="email" id="cemail" name="contact_email" autocomplete="email">
+        <p class="field__hint">Give at least one of phone or email. For an active site, give the phone.</p>
+      </div>
+    </fieldset>
+
+    <div class="btn-row">
+      <button type="submit" class="btn btn--primary">Request dispatch</button>
+      <a class="btn" href="maintenance.html">This can wait &mdash; flag it instead</a>
+    </div>
+  </form>
+
+  <div id="result" hidden class="mt-2"></div>
+
+  <h2>What happens next</h2>
+  <ol class="steps">
+    <li><b>We confirm by your contact method.</b> Reference number first, then an ETA once a pool leg is
+    assigned.</li>
+    <li><b>Take the failed leg out of session.</b> Release it on the session controller so the module
+    re-forms without it. Do not leave it claimed.</li>
+    <li><b>Leave it standing.</b> A leg is stable on its own tripod. Do not lay it down and do not strap it
+    to the station.</li>
+    <li><b>The replacement walks itself off the truck</b> and is claimed into the session under its own
+    electronics serial. The pairing re-forms in software; nothing is re-measured.</li>
+    <li><b>The failed leg goes back with the driver</b> and enters ERS at check-in, where inspection
+    diverts it.</li>
+  </ol>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="dispatch.html">Request a replacement leg</a></li><li><a href="maintenance.html">Flag a leg for ERS</a></li><li><a href="docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="docs/operating.html">Operating procedures</a></li><li><a href="docs/ers.html">The return line</a></li><li><a href="docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="firmware/index.html">Controller firmware</a></li><li><a href="docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

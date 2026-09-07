@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operating procedures — EREKTOR Support</title>
+<meta name="description" content="How to run an Erektor session: claim, converge, dock, pair, level, self-load, walk off, place and release.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script src="../assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
+        <a href="../maintenance.html" class="">Maintenance</a>
+        <a href="../docs/" class="">Documentation</a>
+        <a href="../docs/faults.html" class="">Fault codes</a>
+        <a href="../firmware/index.html" class="">Firmware</a>
+      <button class="themebtn" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<p class="crumbs"><a href="../index.html">Support</a><span>/</span><a href="../docs/">Documentation</a><span>/</span>Operating procedures</p>
+<section class="wrap">
+  <span class="eyebrow">How-to</span>
+  <h1>Operating procedures</h1>
+  <p class="lede">The cycle in the order you do it. Each stage assumes the one before it closed cleanly;
+  where a stage can fail, the fault code and its route are named.</p>
+</section>
+
+<section class="wrap">
+  
+<figure>
+  <div class="diagram">
+    <svg viewBox="0 0 760 340" role="img" aria-labelledby="dmodT dmodD">
+      <title id="dmodT">Module pairing along the station rail</title>
+      <desc id="dmodD">A station seen from above. Legs bolt to mounting points along both sides of the rail. Each left leg is paired with a right leg in software to form a module. Between three and six modules are claimed per build.</desc>
+
+      <!-- station body -->
+      <rect x="90" y="128" width="580" height="84" rx="4" class="d-fill"/>
+      <text x="380" y="176" text-anchor="middle" class="d-note">CHARGING STATION — ALUMINIUM RAIL RUNS THE FULL LENGTH</text>
+
+      <!-- rail lines -->
+      <line x1="90" y1="128" x2="670" y2="128" class="d-accent" stroke-width="2.5"/>
+      <line x1="90" y1="212" x2="670" y2="212" class="d-accent" stroke-width="2.5"/>
+
+      <!-- mounting ticks -->
+      <g class="d-thin">
+        <line x1="160" y1="120" x2="160" y2="136"/><line x1="260" y1="120" x2="260" y2="136"/>
+        <line x1="360" y1="120" x2="360" y2="136"/><line x1="460" y1="120" x2="460" y2="136"/>
+        <line x1="560" y1="120" x2="560" y2="136"/>
+        <line x1="160" y1="204" x2="160" y2="220"/><line x1="260" y1="204" x2="260" y2="220"/>
+        <line x1="360" y1="204" x2="360" y2="220"/><line x1="460" y1="204" x2="460" y2="220"/>
+        <line x1="560" y1="204" x2="560" y2="220"/>
+      </g>
+
+      <!-- legs, left row (top) -->
+      <g>
+        <circle cx="160" cy="86" r="20" class="d-fill" stroke-width="2"/><text x="160" y="91" text-anchor="middle" class="d-key">L1</text>
+        <circle cx="310" cy="86" r="20" class="d-fill" stroke-width="2"/><text x="310" y="91" text-anchor="middle" class="d-key">L2</text>
+        <circle cx="460" cy="86" r="20" class="d-fill" stroke-width="2"/><text x="460" y="91" text-anchor="middle" class="d-key">L3</text>
+        <circle cx="610" cy="86" r="20" class="d-fill" stroke-width="2"/><text x="610" y="91" text-anchor="middle" class="d-key">L4</text>
+      </g>
+      <!-- legs, right row (bottom) -->
+      <g>
+        <circle cx="160" cy="254" r="20" class="d-fill" stroke-width="2"/><text x="160" y="259" text-anchor="middle" class="d-key">R1</text>
+        <circle cx="310" cy="254" r="20" class="d-fill" stroke-width="2"/><text x="310" y="259" text-anchor="middle" class="d-key">R2</text>
+        <circle cx="460" cy="254" r="20" class="d-fill" stroke-width="2"/><text x="460" y="259" text-anchor="middle" class="d-key">R3</text>
+        <circle cx="610" cy="254" r="20" class="d-fill" stroke-width="2"/><text x="610" y="259" text-anchor="middle" class="d-key">R4</text>
+      </g>
+
+      <!-- bolted attachment (solid) -->
+      <g class="d-stroke" stroke-width="2">
+        <line x1="160" y1="106" x2="160" y2="128"/><line x1="310" y1="106" x2="310" y2="128"/>
+        <line x1="460" y1="106" x2="460" y2="128"/><line x1="610" y1="106" x2="610" y2="128"/>
+        <line x1="160" y1="212" x2="160" y2="234"/><line x1="310" y1="212" x2="310" y2="234"/>
+        <line x1="460" y1="212" x2="460" y2="234"/><line x1="610" y1="212" x2="610" y2="234"/>
+      </g>
+
+      <!-- software pairing (dashed, around the outside) -->
+      <g class="d-accent" stroke-width="1.6" stroke-dasharray="6 5">
+        <path d="M140 86 C 60 86, 60 254, 140 254"/>
+        <path d="M290 86 C 232 86, 232 254, 290 254"/>
+        <path d="M440 86 C 382 86, 382 254, 440 254"/>
+        <path d="M590 86 C 532 86, 532 254, 590 254"/>
+      </g>
+
+      <g class="d-label">
+        <text x="380" y="34" text-anchor="middle">Bolted attachment — mechanical</text>
+        <text x="380" y="322" text-anchor="middle">Module pairing — software only, re-formed every session</text>
+      </g>
+      <line x1="380" y1="42" x2="380" y2="66" class="d-thin"/>
+      <line x1="380" y1="300" x2="380" y2="286" class="d-thin"/>
+    </svg>
+  </div>
+  <figcaption>The rail becomes the chassis. Legs bolt to fixed mounting points — attachment is a lookup, not a measurement, so no docking sensors are needed — while the left-to-right module pairing exists only in the session controller. Longer stations claim more modules, three to six, and the pairing is arbitrary each time.</figcaption>
+</figure>
+
+</section>
+
+<section class="wrap prose">
+  <h2 id="reserve">1. Claim legs and check reserve</h2>
+  <ol class="steps">
+    <li><b>Declare the build on the session controller.</b> Station length sets how many modules you need
+    &mdash; three to six. The controller claims legs from the available pool.</li>
+    <li><b>Check the reserve figure, not the charge figure.</b> The controller reports whether remaining
+    charge covers the declared session <em>plus</em> the return transit. A leg that fails this refuses the
+    claim with <code>PWR-12</code>.</li>
+    <li><b>Swap the pack at the bank if reserve is short.</b> Do not claim it anyway and plan to top up
+    later &mdash; legs do not charge on the belt or on site.</li>
+    <li><b>Confirm the roster.</b> Both serials show per leg. Note any leg carrying a restriction from a
+    maintenance flag; restricted legs are excluded from walk-off sessions automatically, but check.</li>
+  </ol>
+
+  <h2 id="converge">2. Converge</h2>
+  <p>Claimed legs drive themselves to their assigned mounting points. Each leg navigates on its own driven
+  caster; there is no convoy and no leader.</p>
+  <ol class="steps">
+    <li><b>Clear the approach lanes.</b> Debris and standing water cause driven-caster slip
+    (<code>DRV-08</code>), which is an operator fix, not a fault to report.</li>
+    <li><b>Let convergence complete before touching anything.</b> A leg mid-approach is under its own
+    command and is not expecting a person in its lane.</li>
+    <li><b>If a leg will not converge at all</b> &mdash; drive stalled, <code>DRV-40</code> &mdash; it cannot walk
+    itself out either. That is a <a href="../dispatch.html">dispatch</a>, and the leg has to be carried.</li>
+  </ol>
+
+  <h2 id="dock">3. Dock to the rail</h2>
+  <p>Legs bolt to fixed mounting points on the station&rsquo;s aluminium rail. The rail bears full lift load
+  along its entire length, which is why one bracket geometry serves every station variant and why no
+  design change is needed per product.</p>
+  <div class="note note--info">
+    <p class="note__title">Attachment is a lookup, not a measurement</p>
+    <p>Mounting points are known geometry. Nothing is sensed, aligned or calibrated at dock &mdash; which is
+    why there are no docking sensors to fail, and why a bracket that will not seat means damage rather
+    than misalignment.</p>
+  </div>
+  <ol class="steps">
+    <li><b>Seat and torque each bracket to spec.</b> A fastener below the seating window reports
+    <code>DCK-09</code>. Re-seat and re-torque.</li>
+    <li><b>Never shim a bracket to close a gap.</b> If the face will not meet the rail, something is bent.</li>
+    <li><b>If a bracket will not seat at all</b> (<code>DCK-18</code>), inspect the rail mounting point
+    first. If the rail is sound, the bracket face is out and the leg is exchanged.</li>
+    <li><b>Legacy legs need the adapter.</b> Pilot-fleet legs carry BRK-U1, which does not fit the current
+    rail without <code>KIT-U1U2</code>.</li>
+  </ol>
+
+  <h2 id="pairing">4. Pair into modules</h2>
+  <p>A module is one left leg and one right leg, paired in software only. Nothing physical joins them &mdash;
+  the pairing is a fact the session controller holds, and it is re-formed from scratch every session.</p>
+  <ol class="steps">
+    <li><b>Confirm the pairing on the roster.</b> Which leg pairs with which is arbitrary; do not try to
+    keep historical pairs together.</li>
+    <li><b>If two legs refuse to pair</b> (<code>SES-07</code>), it is usually a variant or firmware
+    mismatch. Release both and claim a different pair rather than forcing it.</li>
+    <li><b>Do not claim a leg the registry has not seen recently.</b> A leg another facility believes it
+    holds (<code>SES-41</code>) is reported, not used &mdash; see <a href="ers.html#registry">the registry</a>.</li>
+  </ol>
+
+  <h2 id="levelling">5. Level the structure</h2>
+  <p>Once every claimed leg has attached, the station&rsquo;s rail is the robot&rsquo;s chassis and the whole
+  assembly behaves as one rigid body. Levelling establishes the shared height reference.</p>
+  <ol class="steps">
+    <li><b>Run module levelling from the session controller.</b> Each leg closes its own loop against the
+    commanded height.</li>
+    <li><b>A 4&ndash;10&nbsp;mm disagreement on one leg</b> (<code>LFT-15</code>) means re-run levelling. If it
+    returns within ten cycles, <a href="../maintenance.html">flag the leg</a>.</li>
+    <li><b>Drift under a static hold</b> (<code>LFT-22</code>) is wear. The leg is safe below 80% rated
+    module load, but must not be assigned to a walk-off until it has been through the line.</li>
+  </ol>
+
+  <h2 id="outfit">6. Outfit</h2>
+  <p>Internal and charging-specification components are installed while the unified structure continues
+  down the line. From a service point of view nothing changes here: the legs are holding a load and the
+  work area rules in <a href="safety.html#load">holding a load</a> apply throughout.</p>
+
+  <h2 id="selfload">7. Self-load onto the trailer</h2>
+  <ol class="steps">
+    <li><b>Confirm every leg is still in session</b> before commanding drive. A module that has silently
+    lost a leg (<code>NET-20</code>) will inhibit part-way up the ramp, which is the worst place for it.</li>
+    <li><b>Drive the full structure and payload onto the flatbed</b> under collective command.</li>
+    <li><b>Self-secure to FMCSA cargo standards</b> (&sect;393.100&ndash;136). Securement is checked before the
+    session controller will release the drive lock.</li>
+  </ol>
+
+  <h2 id="walkoff">8. Walk off the edge</h2>
+  <div class="note note--crit">
+    <p class="note__title">This is the governing load case</p>
+    <p>Walking off the trailer lip under full payload is the highest-risk stability event in the cycle,
+    and the case the whole frame is engineered against. Read
+    <a href="safety.html#walkoff">the walk-off</a> in full before commanding it. Legs carrying an
+    <code>LFT-22</code> drift flag or a beta firmware build are excluded from walk-off sessions.</p>
+  </div>
+
+  <h2 id="place">9. Place the station</h2>
+  <ol class="steps">
+    <li><b>Position over the marked location</b> under collective drive.</li>
+    <li><b>Lower under compliant force control.</b> The structure sets itself down gently rather than to a
+    commanded height &mdash; the ground decides where it stops.</li>
+    <li><b>Confirm the station is bearing on its own supports</b> before any leg releases. Nothing is
+    released off a load.</li>
+  </ol>
+
+  <h2 id="release">10. Release and return</h2>
+  <ol class="steps">
+    <li><b>Release brackets</b> once the station is bearing independently.</li>
+    <li><b>Legs disperse under their own drive</b> and the module pairings dissolve. They are individual
+    assets again the moment the session closes.</li>
+    <li><b>Return to the facility</b> and enter <a href="ers.html">ERS at check-in</a>. Any leg carrying a
+    maintenance flag is diverted at inspection.</li>
+  </ol>
+
+  <h2 id="radio">Radio and the session network</h2>
+  <p>XBee gives 300&nbsp;m or more between a leg and its session controller. Marginal links show as
+  <code>NET-11</code> before they fail outright.</p>
+  <ul>
+    <li><b>Move the session controller, not the leg.</b> Line of sight and the range budget are almost
+    always the issue.</li>
+    <li><b>A lost leg inhibits its whole module</b> (<code>NET-20</code>). Re-establish the link; never
+    override.</li>
+    <li><b>The uplink is separate from the radio.</b> Losing the uplink (<code>NET-25</code>) means no
+    portal, no firmware and no fleet sync &mdash; but sessions run offline normally and reconcile when it
+    returns.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="../dispatch.html">Request a replacement leg</a></li><li><a href="../maintenance.html">Flag a leg for ERS</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="../docs/operating.html">Operating procedures</a></li><li><a href="../docs/ers.html">The return line</a></li><li><a href="../docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="../firmware/index.html">Controller firmware</a></li><li><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
