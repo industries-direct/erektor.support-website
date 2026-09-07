@@ -112,6 +112,14 @@ Consequences worth knowing:
   integration carries its own credentials.
 - The `erektor.support` zone must exist in the account — `custom_domain` routes bind an
   existing zone, they do not register a domain.
+- The integration is keyed to a specific repo, not a name. When this repo moved from
+  `mellonbot/support.erektor-return.systems-website` to `industries-direct/erektor.support-website`,
+  GitHub's own redirect kept the old URL browsable, and Cloudflare kept building for a while
+  off the same forwarded webhook — but that stopped silently at some point, and every push
+  after PR #12 landed on `main` without a build. There is no dashboard warning for this: the
+  Worker just quietly stops updating while `git log` keeps moving. If a push to `main` isn't
+  showing up under Deployments within a minute or two, check Settings → Builds → Git
+  repository points at the *current* owner/name before debugging anything else.
 
 ### How routing works
 
