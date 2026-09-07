@@ -55,6 +55,14 @@ def rel(depth):
 
 def shell(depth, title, description, body, page=None, head_extra=""):
     b = rel(depth)
+    # Only the root-absolute page (404) carries this: it is the one document
+    # whose URL is not the one it was authored at, so the constraint has to be
+    # stated where someone would otherwise "tidy" the links back to relative.
+    root_note = (
+        "\n<!-- Root-relative throughout: this page is served in place of any missing\n"
+        "     path, at any depth, so relative URLs would break. -->"
+        if depth == "/" else ""
+    )
     nav = "\n".join(
         '        <a href="{b}{href}"{cur} class="{cls}">{label}</a>'.format(
             b=b,
@@ -84,7 +92,7 @@ def shell(depth, title, description, body, page=None, head_extra=""):
 <meta name="description" content="{description}">{head_extra}
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">{root_note}
 <link rel="stylesheet" href="{b}assets/css/site.css">
 <script src="{b}assets/js/app.js" defer></script>
 </head>
