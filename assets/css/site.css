@@ -1,8 +1,9 @@
 /* ==========================================================================
    EREKTOR Support — design system
 
-   Carries the EREKTOR brand tokens (ground, red accent, Roboto, tight
-   tracking) so the portal reads as one family with erektor.systems, tuned
+   Carries the EREKTOR brand tokens (ground, red accent, local system sans,
+   tight tracking) so the portal reads as one family with erektor.systems,
+   tuned
    for the job it actually does: technicians on tablets, in daylight, in
    gloves, reading serials back over a radio.
    ========================================================================== */
@@ -37,7 +38,7 @@
   --gap: 1rem;
   --measure: 68ch;
 
-  --sans: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --sans: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
 }
 
@@ -374,8 +375,13 @@ figure { margin: 1.9rem 0; }
   background: var(--surface); border: 1px solid var(--line);
   border-radius: var(--radius-lg); padding: 1.2rem; overflow-x: auto;
 }
-.diagram svg { display: block; width: 100%; height: auto; min-width: 460px; }
+.diagram svg { display: block; width: 100%; height: auto; min-width: 0; }
 figcaption { font-size: .88rem; color: var(--ink-muted); padding-top: .7rem; max-width: var(--measure); }
+
+@media (max-width: 560px) {
+  .diagram { padding: .75rem; overflow-x: hidden; }
+  .diagram svg { width: 100%; min-width: 0; }
+}
 
 /* Diagram ink follows the theme */
 .d-stroke { stroke: var(--ink); fill: none; }
