@@ -1,0 +1,73 @@
+{
+  "$comment": "Controller firmware release manifest. This is the seed of the OTA channel: fielded controllers poll /api/firmware/check with their model and current version, and the server answers from this file. Human-readable view lives at /firmware/.",
+  "manifestVersion": 1,
+  "revision": "2026.09.07",
+  "channels": {
+    "stable": "Default for all fielded units. Promoted after 30 days on beta with no field regressions.",
+    "beta": "Opt-in. Requires a signed consent record against the unit serial.",
+    "hold": "No updates delivered. Set by ERS engineering when a regression is under investigation."
+  },
+  "releases": [
+    {
+      "controller": "EC-7R",
+      "version": "4.2.1",
+      "channel": "stable",
+      "released": "2026-08-19",
+      "minVersion": "3.8.0",
+      "sizeBytes": 18944512,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "requiresOnSite": false,
+      "estimatedMinutes": 12,
+      "notes": [
+        "Corrects a levelling overshoot on ER-6 centre-pair legs at low fluid temperature.",
+        "Adds LEG-A3 transducer self-identification on hot-swap.",
+        "Raises leg bus CRC error threshold reporting into W-405 instead of silent retry."
+      ]
+    },
+    {
+      "controller": "EC-7",
+      "version": "4.2.1",
+      "channel": "stable",
+      "released": "2026-08-19",
+      "minVersion": "3.8.0",
+      "sizeBytes": 17301504,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "requiresOnSite": false,
+      "estimatedMinutes": 12,
+      "notes": [
+        "Corrects a levelling overshoot at low fluid temperature.",
+        "Raises leg bus CRC error threshold reporting into W-405 instead of silent retry."
+      ]
+    },
+    {
+      "controller": "EC-7R",
+      "version": "4.3.0-beta.2",
+      "channel": "beta",
+      "released": "2026-09-02",
+      "minVersion": "4.2.0",
+      "sizeBytes": 19398656,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "requiresOnSite": true,
+      "estimatedMinutes": 25,
+      "notes": [
+        "Predictive seal-wear estimate exposed as W-205 lead time.",
+        "On-site attendance required: the update re-runs leg calibration on first boot."
+      ]
+    },
+    {
+      "controller": "EC-5",
+      "version": "2.9.4",
+      "channel": "stable",
+      "released": "2024-03-11",
+      "minVersion": "2.9.0",
+      "sizeBytes": 2097152,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "requiresOnSite": true,
+      "deliverable": "usb",
+      "estimatedMinutes": 40,
+      "notes": [
+        "EC-5 has no remote update path. Final maintenance release; applied by USB during a scheduled service visit."
+      ]
+    }
+  ]
+}

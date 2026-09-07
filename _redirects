@@ -1,0 +1,12 @@
+# Legacy Jekyll paths from the previous site generation.
+/pages/schedule-maintenance      /schedule.html            301
+/pages/request-dispatch          /dispatch.html            301
+/pages/howtos                    /docs/                    301
+/pages/howtos/controller-guide   /docs/controller.html     301
+/pages/howtos/leg-replacement    /docs/leg-replacement.html 301
+/pages/*                         /                         301
+
+# Stable short links safe to print on equipment labels and QR codes.
+/dispatch                        /dispatch.html            301
+/schedule                        /schedule.html            301
+/help                            /docs/                    301

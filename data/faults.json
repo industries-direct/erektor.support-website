@@ -1,0 +1,146 @@
+{
+  "$comment": "Fault code -> triage routing table. This is the connective tissue of the portal: a code decides whether the operator self-services, schedules planned work, or triggers an immediate dispatch.",
+  "revision": "2026.09",
+  "routes": {
+    "self": { "label": "Operator-serviceable", "action": "Follow the linked procedure. No ticket required.", "channel": "docs" },
+    "schedule": { "label": "Schedule maintenance", "action": "Equipment may stay in service under the stated limits. Book planned work.", "channel": "schedule.html" },
+    "dispatch": { "label": "Immediate dispatch", "action": "Take the unit out of service now and request a field technician.", "channel": "dispatch.html" }
+  },
+  "codes": [
+    {
+      "code": "W-110",
+      "severity": "warning",
+      "title": "Supply voltage low",
+      "meaning": "Input voltage has dropped below 21.5 V for more than 60 s.",
+      "route": "self",
+      "doc": "docs/controller.html#power",
+      "remedy": "Check the supply connection and battery state. Re-seat the power connector at the controller."
+    },
+    {
+      "code": "E-120",
+      "severity": "critical",
+      "title": "Controller power fault",
+      "meaning": "Internal rail out of tolerance. The controller will not command leg motion.",
+      "route": "dispatch",
+      "doc": "docs/controller.html#power",
+      "remedy": "Do not bypass. The controller is not field-repairable."
+    },
+    {
+      "code": "W-205",
+      "severity": "warning",
+      "title": "Hydraulic pressure drift",
+      "meaning": "Holding pressure fell more than 8% over a 30-minute hold on one or more legs.",
+      "route": "schedule",
+      "doc": "docs/leg-anatomy.html#hydraulics",
+      "remedy": "Usually a seal nearing end of life. Safe to operate below 80% rated load until serviced."
+    },
+    {
+      "code": "E-210",
+      "severity": "critical",
+      "title": "Hydraulic pressure loss",
+      "meaning": "A leg lost more than 25% of holding pressure, or pressure could not be established on extend.",
+      "route": "dispatch",
+      "doc": "docs/safety.html#pressure-relief",
+      "remedy": "Lower the platform to transport height if it can be done safely, then clear the area."
+    },
+    {
+      "code": "E-215",
+      "severity": "critical",
+      "title": "Visible hydraulic leak",
+      "meaning": "Operator-reported. Not machine-detected.",
+      "route": "dispatch",
+      "doc": "docs/leg-replacement.html#when-to-replace",
+      "remedy": "Any weeping at the rod seal under load is a replacement trigger, not a top-up."
+    },
+    {
+      "code": "W-301",
+      "severity": "warning",
+      "title": "Leg position disagreement",
+      "meaning": "Commanded and reported positions differ by 4-10 mm on one leg.",
+      "route": "self",
+      "doc": "docs/controller.html#calibration",
+      "remedy": "Run a levelling calibration. If the code returns within 10 cycles, escalate to scheduled maintenance."
+    },
+    {
+      "code": "E-305",
+      "severity": "critical",
+      "title": "Position transducer failure",
+      "meaning": "No valid signal from a leg position sensor. The controller inhibits motion on all legs.",
+      "route": "dispatch",
+      "doc": "docs/leg-anatomy.html#sensor",
+      "remedy": "Sensor is replaceable in the field on LEG-A3 only. On LEG-A2/A2H the whole assembly is exchanged."
+    },
+    {
+      "code": "E-310",
+      "severity": "critical",
+      "title": "Leg over-travel",
+      "meaning": "A leg exceeded its mechanical stroke limit.",
+      "route": "dispatch",
+      "doc": "docs/leg-replacement.html#when-to-replace",
+      "remedy": "Assume cylinder and end-cap damage. The assembly is replaced, not adjusted."
+    },
+    {
+      "code": "E-320",
+      "severity": "critical",
+      "title": "Structural fault on leg",
+      "meaning": "Operator-reported crack, bend, or joint play.",
+      "route": "dispatch",
+      "doc": "docs/leg-replacement.html",
+      "remedy": "Do not load the platform. Request dispatch with a replacement assembly."
+    },
+    {
+      "code": "W-405",
+      "severity": "warning",
+      "title": "Leg bus intermittent",
+      "meaning": "CRC errors on the leg communication bus above threshold.",
+      "route": "schedule",
+      "doc": "docs/diagnostics.html#bus",
+      "remedy": "Usually connector corrosion. Inspect and re-seat leg connectors; book service if it persists."
+    },
+    {
+      "code": "E-410",
+      "severity": "critical",
+      "title": "Leg bus loss",
+      "meaning": "A leg node stopped responding entirely.",
+      "route": "dispatch",
+      "doc": "docs/diagnostics.html#bus",
+      "remedy": "Motion is inhibited by design. Do not attempt manual override."
+    },
+    {
+      "code": "W-420",
+      "severity": "warning",
+      "title": "Uplink unavailable",
+      "meaning": "The controller cannot reach the update service. Local operation is unaffected.",
+      "route": "self",
+      "doc": "firmware/index.html#connectivity",
+      "remedy": "Check network or cellular coverage. Updates resume automatically."
+    },
+    {
+      "code": "W-510",
+      "severity": "warning",
+      "title": "Hydraulic fluid temperature high",
+      "meaning": "Fluid above 78 degC. Cycle rate is automatically reduced.",
+      "route": "self",
+      "doc": "docs/diagnostics.html#thermal",
+      "remedy": "Pause cycling and allow cooling. Check for a restricted return line if it recurs in mild ambient."
+    },
+    {
+      "code": "E-520",
+      "severity": "critical",
+      "title": "Thermal shutdown",
+      "meaning": "Fluid above 92 degC. The controller has stopped all motion.",
+      "route": "dispatch",
+      "doc": "docs/diagnostics.html#thermal",
+      "remedy": "Repeated thermal shutdown indicates a pump or relief-valve fault, not an ambient problem."
+    },
+    {
+      "code": "M-900",
+      "severity": "info",
+      "title": "Service interval due",
+      "meaning": "500 operating hours or 12 months since the last recorded service.",
+      "route": "schedule",
+      "doc": "docs/index.html#intervals",
+      "remedy": "Book planned maintenance. The code clears when a technician closes the service record."
+    }
+  ]
+}
