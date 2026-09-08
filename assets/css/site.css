@@ -304,6 +304,18 @@ pre code { background: none; border: 0; padding: 0; }
 .panel--wide { grid-column: 1 / -1; }
 @media (max-width: 980px) { .panels { grid-template-columns: 1fr; } }
 
+/* Panel bodies fill from data/*.json after first paint, so without a reserve
+   the whole row grows ~180px when the fetch lands and everything below it
+   jumps. These are layout reserves sized to the multi-column layout, not
+   product facts: if the fault table or the manifest grows a row the panel
+   simply grows too, which is the shift we have today, not a regression.
+   Below 980px the panels are stacked and their heights vary too much with
+   wrapping for a single reserve to be worth the dead space. */
+@media (min-width: 981px) {
+  .panel__body { min-height: 17rem; }
+  .panel--wide .panel__body { min-height: 26.5rem; }
+}
+
 .panel {
   display: flex; flex-direction: column;
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
@@ -318,6 +330,8 @@ pre code { background: none; border: 0; padding: 0; }
 }
 .panel__meta { font-size: .72rem; color: var(--ink-muted); white-space: nowrap; }
 .panel__body { padding: .95rem 1.05rem; flex: 1; }
+.panel__body[data-filled] { animation: panel-in .16s ease-out; }
+@keyframes panel-in { from { opacity: 0; } to { opacity: 1; } }
 .panel__body > :last-child { margin-bottom: 0; }
 .panel__foot {
   display: flex; flex-wrap: wrap; gap: .4rem 1.1rem;
@@ -646,7 +660,8 @@ details[open] summary { border-bottom: 1px solid var(--line); }
 @media print {
   .topbar, .foot, .btn, .skip, .themebtn { display: none !important; }
   body { background: #fff; color: #000; }
-  .card, .note, .diagram, .steps > li { break-inside: avoid; }
+  .card, .note, .diagram, .steps > li, .panel { break-inside: avoid; }
+  .panel__body, .panel--wide .panel__body { min-height: 0; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .8em; }
 }
 @media (prefers-reduced-motion: reduce) {

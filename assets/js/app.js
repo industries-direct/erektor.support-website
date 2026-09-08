@@ -311,7 +311,11 @@
     }
     function fill(sel, html) {
       var el = root.querySelector(sel);
-      if (el) el.innerHTML = html;
+      if (!el) return;
+      el.innerHTML = html;
+      // Marks the swap so the panel fades in rather than snapping. The space
+      // it lands in is already reserved, so nothing below it moves.
+      el.setAttribute('data-filled', '');
     }
     function rows(items) { return '<div class="drows">' + items.join('') + '</div>'; }
     function row(k, v, sub, bar) {
