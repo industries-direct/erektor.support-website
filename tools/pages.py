@@ -13,26 +13,48 @@ import diagrams as D  # noqa: E402
 # ===========================================================================
 # Home — the hub, and the explanation of how the three routes relate
 # ===========================================================================
-page("index.html", 0, "Support", 
-     "Service portal for Erektor legs: schedule maintenance, request a replacement leg on site, "
-     "read the diagrams and procedures, and track controller firmware.",
+page("index.html", 0, "Service console",
+     "Service console for Erektor legs: route a fault code, flag a leg for ERS, dispatch a replacement "
+     "to a site, and read the current fault table, firmware manifest and fleet catalog.",
      """
-<section class="wrap pt-1" >
-  <span class="eyebrow">Erektor Return System</span>
-  <h1>Every leg comes home. This is where you tell us what to do with it.</h1>
-  <p class="lede">The support portal is the operator-facing edge of ERS. Everything here is a write against
-  one leg&rsquo;s record: flag it for the reconditioning line, pull a replacement from the pool, or read
-  the procedure that tells you which of those you actually need.</p>
+<section class="wrap dash-head">
+  <div class="dash-head__id">
+    <span class="eyebrow">Erektor Return System</span>
+    <h1>Service console</h1>
+    <p class="lede">Every leg comes home. One question routes it &mdash; can it finish this session? Fix it on
+    the floor, flag it for ERS, or dispatch a replacement.</p>
+  </div>
+  <dl class="statbar" aria-label="Portal status">
+    <div>
+      <dt>Dispatch line</dt>
+      <dd><span class="dot dot--ok" aria-hidden="true"></span>Staffed 24/7</dd>
+    </div>
+    <div>
+      <dt>Fault table</dt>
+      <dd class="mono" data-dash-rev="faults">rev &mdash;</dd>
+    </div>
+    <div>
+      <dt>Firmware manifest</dt>
+      <dd class="mono" data-dash-rev="firmware">rev &mdash;</dd>
+    </div>
+    <div>
+      <dt>Local time</dt>
+      <dd class="mono" data-dash-clock>&mdash;</dd>
+    </div>
+  </dl>
 </section>
 
-<section class="wrap mt-2"  data-triage>
-  <span class="eyebrow eyebrow--plain">Start here</span>
-  <div class="field limit-input" >
-    <label for="triage">Fault code or symptom</label>
-    <input type="search" id="triage" class="mono" data-triage-input placeholder="LFT-45" autocomplete="off">
-    <p class="field__hint">Codes read <code>SUB-nn</code> &mdash; for example <code>DRV-40</code> or <code>NET-20</code>.
-    The table below picks your route and carries the code into the right form.</p>
+<section class="wrap console" data-triage aria-labelledby="console-title">
+  <h2 id="console-title" class="console__title">Route a fault code</h2>
+  <div class="console__bar">
+    <label for="triage" class="visually-hidden">Fault code or symptom</label>
+    <span class="console__prompt mono" aria-hidden="true">&gt;</span>
+    <input type="search" id="triage" class="mono console__input" data-triage-input
+           placeholder="LFT-45 — or type a symptom" autocomplete="off">
   </div>
+  <p class="console__hint">Codes read <code>SUB-nn</code>, for example <code>DRV-40</code> or <code>NET-20</code>.
+  The lookup picks the route and carries the code into the right form.
+  <a href="docs/faults.html">Full fault code index &rarr;</a></p>
   <div data-triage-out hidden class="mt-1 limit"></div>
   <noscript>
     <p class="note note--info">The lookup needs JavaScript. The full
@@ -40,59 +62,102 @@ page("index.html", 0, "Support",
   </noscript>
 </section>
 
-<section class="wrap mt-2 decision-rail" aria-labelledby="decision-title">
-  <div class="decision-rail__intro">
-    <h2 id="decision-title">One question decides the route.</h2>
-    <p>Can the leg finish this session?</p>
+<section class="wrap mt-2" aria-labelledby="routes-title">
+  <div class="dash-secline">
+    <h2 id="routes-title">Three routes</h2>
+    <p>Sending a technician is the exception. Counts are live from the fault table.</p>
   </div>
-  <div class="decision-rail__steps">
-    <div class="decision-rail__step">
-      <span class="decision-rail__answer">Yes</span>
-      <p>Keep it working, then <a href="maintenance.html">flag it for ERS</a>.</p>
-    </div>
-    <div class="decision-rail__step">
-      <span class="decision-rail__answer">No</span>
-      <p><a href="dispatch.html">Request a replacement</a> for the site.</p>
-    </div>
-    <div class="decision-rail__step">
-      <span class="decision-rail__answer">Fix on the floor</span>
-      <p><a href="docs/faults.html">Check the fault code</a> for the procedure.</p>
-    </div>
-  </div>
-</section>
-
-<section class="wrap mt-2">
-  <div class="grid grid--3">
-    <a class="card card--urgent" href="dispatch.html">
-      <h3>Request a replacement leg</h3>
-      <p>A leg cannot finish its session. We send a healthy one from the pool and the failed one rides
-      back to check-in with the driver.</p>
-      <div class="card__meta">Emergency &middot; 24/7</div>
+  <div class="routes">
+    <a class="routetile routetile--self" href="docs/faults.html">
+      <span class="routetile__top">
+        <span class="routetile__k">Leg keeps working</span>
+        <span class="routetile__n mono"><b data-dash-count="self">&mdash;</b><small>codes</small></span>
+      </span>
+      <h3>Fix on the floor</h3>
+      <p>Operator-serviceable. Follow the procedure on the code &mdash; no ticket, no record change.</p>
+      <span class="routetile__cta">Open the procedures &rarr;</span>
     </a>
-    <a class="card card--plan" href="maintenance.html">
+    <a class="routetile routetile--flag" href="maintenance.html">
+      <span class="routetile__top">
+        <span class="routetile__k">Finishes the session</span>
+        <span class="routetile__n mono"><b data-dash-count="flag">&mdash;</b><small>codes</small></span>
+      </span>
       <h3>Flag a leg for ERS</h3>
-      <p>Something is wrong but the leg can finish the job. No truck &mdash; the flag rides on its record
-      and ERS diverts it at inspection when it returns.</p>
-      <div class="card__meta">Planned &middot; no site visit</div>
+      <p>No truck. The flag rides on the leg&rsquo;s record and ERS diverts it at inspection when it comes home.</p>
+      <span class="routetile__cta">Flag a leg &rarr;</span>
     </a>
-    <a class="card card--docs" href="docs/">
-      <h3>Diagrams and procedures</h3>
-      <p>Leg anatomy, dock and convergence, module pairing, the return line, and the safety cases &mdash;
-      including the walk-off.</p>
-      <div class="card__meta">Reference</div>
+    <a class="routetile routetile--dispatch" href="dispatch.html">
+      <span class="routetile__top">
+        <span class="routetile__k">Cannot finish the session</span>
+        <span class="routetile__n mono"><b data-dash-count="dispatch">&mdash;</b><small>codes</small></span>
+      </span>
+      <h3>Dispatch a replacement</h3>
+      <p>A healthy leg goes out from the pool; the failed one rides back to check-in with the driver.</p>
+      <span class="routetile__cta">Request a replacement &rarr;</span>
     </a>
   </div>
-  <p class="mt-1"><a href="docs/faults.html">Browse the full fault code index &rarr;</a></p>
 </section>
 
-<div class="specstrip band-gap" >
-  <div class="wrap specstrip-in">
-    <div class="spec"><div class="n">3<small>&nbsp;routes</small></div><div class="k">Fix &middot; flag &middot; dispatch</div></div>
-    <div class="spec"><div class="n">2<small>&nbsp;serials</small></div><div class="k">Electronics and mechanical</div></div>
-    <div class="spec"><div class="n">24/7</div><div class="k">Emergency dispatch</div></div>
-    <div class="spec"><div class="n">0<small>&nbsp;field repairs</small></div><div class="k">Legs are swapped, not fixed</div></div>
-  </div>
-</div>
+<section class="wrap mt-3 panels" aria-label="Fleet reference">
+
+  <section class="panel panel--wide" aria-labelledby="p-load">
+    <header class="panel__head">
+      <h2 id="p-load">Fault table by subsystem</h2>
+      <span class="panel__meta mono" data-dash-meta="faults">&mdash;</span>
+    </header>
+    <div class="panel__body" data-dash-subsystems>
+      <p class="muted small">Every code in the table belongs to one subsystem and resolves to one route.
+      <a href="docs/faults.html">Open the index</a> to read them.</p>
+    </div>
+    <footer class="panel__foot">
+      <span class="legend"><i class="swatch swatch--self"></i>Fix on the floor</span>
+      <span class="legend"><i class="swatch swatch--flag"></i>Flag for ERS</span>
+      <span class="legend"><i class="swatch swatch--dispatch"></i>Dispatch</span>
+    </footer>
+  </section>
+
+  <section class="panel" aria-labelledby="p-fw">
+    <header class="panel__head">
+      <h2 id="p-fw">Controller firmware</h2>
+      <span class="panel__meta mono" data-dash-meta="firmware">&mdash;</span>
+    </header>
+    <div class="panel__body" data-dash-firmware>
+      <p class="muted small">Current versions per target, and how a signed bundle reaches a leg that has no
+      internet path of its own.</p>
+    </div>
+    <footer class="panel__foot">
+      <a href="firmware/index.html">Manifest and release notes &rarr;</a>
+    </footer>
+  </section>
+
+  <section class="panel" aria-labelledby="p-fleet">
+    <header class="panel__head">
+      <h2 id="p-fleet">Fleet</h2>
+      <span class="panel__meta mono" data-dash-meta="hardware">&mdash;</span>
+    </header>
+    <div class="panel__body" data-dash-fleet>
+      <p class="muted small">Leg variants in the pool, the controller each one carries, and which are legacy.</p>
+    </div>
+    <footer class="panel__foot">
+      <a href="docs/leg.html">Leg anatomy and diagrams &rarr;</a>
+    </footer>
+  </section>
+
+  <section class="panel" aria-labelledby="p-id">
+    <header class="panel__head">
+      <h2 id="p-id">Serials and identity</h2>
+      <span class="panel__meta mono">2 per leg</span>
+    </header>
+    <div class="panel__body" data-dash-identity>
+      <p class="muted small">A leg carries two serial numbers. Firmware and pairing follow the electronics
+      serial; wear, intervals and warranty follow the stamped mechanical serial.</p>
+    </div>
+    <footer class="panel__foot">
+      <a href="docs/leg.html#identity">Read this before filing anything &rarr;</a>
+    </footer>
+  </section>
+
+</section>
 
 <section class="wrap mt-5" >
   <div class="sec-head">
@@ -104,27 +169,6 @@ page("index.html", 0, "Support",
     <em>can this leg finish its session</em>.</p>
   </div>
   """ + D.TRIAGE_ROUTES + """
-</section>
-
-<section class="wrap mt-5" >
-  <div class="sec-head">
-    <span class="eyebrow">Also here</span>
-    <h2>Fleet and firmware.</h2>
-  </div>
-  <div class="grid grid--2">
-    <a class="card card--fw" href="firmware/index.html">
-      <h3>Controller firmware</h3>
-      <p>Current versions per target, what changed, and how a signed bundle actually reaches a leg that
-      has no internet connection of its own.</p>
-      <div class="card__meta">Manifest &middot; release notes</div>
-    </a>
-    <a class="card" href="docs/leg.html#identity">
-      <h3>Serials and identity</h3>
-      <p>Why a leg carries two serial numbers, which one your request is filed against, and what happens
-      to the wear history when a controller is swapped.</p>
-      <div class="card__meta">Read this before filing anything</div>
-    </a>
-  </div>
 </section>
 """)
 

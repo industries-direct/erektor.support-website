@@ -294,6 +294,136 @@
     });
   };
 
+  /* ------------------------------------------------------- home console */
+  // The landing page reads as a console: the numbers on it are counted from
+  // the same data/*.json the deeper pages render, never typed into markup.
+  // Everything degrades to the sentence already in the panel, so the page
+  // still says something true with no JavaScript and no network.
+  ERS.initDashboard = function (root) {
+    root = root || document;
+    if (!root.querySelector('[data-dash-clock], [data-dash-count], [data-dash-subsystems]')) return;
+
+    var ROUTES = ['dispatch', 'flag', 'self'];
+    var ROUTE_WORD = { dispatch: 'dispatch', flag: 'flag', self: 'fix on the floor' };
+
+    function put(sel, text) {
+      root.querySelectorAll(sel).forEach(function (el) { el.textContent = text; });
+    }
+    function fill(sel, html) {
+      var el = root.querySelector(sel);
+      if (el) el.innerHTML = html;
+    }
+    function rows(items) { return '<div class="drows">' + items.join('') + '</div>'; }
+    function row(k, v, sub, bar) {
+      return '<div class="drow"><span class="drow__k">' + k + '</span>' +
+        '<span class="drow__v">' + v + '</span>' +
+        (sub ? '<span class="drow__sub">' + sub + '</span>' : '') +
+        (bar || '') + '</div>';
+    }
+    function tag(id) { return '<b class="mono muted">' + ERS.esc(id) + '</b>'; }
+
+    /* clock — a console says when it is looking */
+    var clock = root.querySelector('[data-dash-clock]');
+    if (clock) {
+      var tick = function () {
+        var d = new Date();
+        clock.textContent =
+          d.toLocaleDateString([], { day: '2-digit', month: 'short' }) + ' · ' +
+          d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      };
+      tick();
+      setInterval(tick, 30000);
+    }
+
+    /* fault table — route counts, and the load each subsystem carries */
+    ERS.data('faults').then(function (f) {
+      if (!f) return;
+      var codes = f.codes;
+      put('[data-dash-rev="faults"]', 'rev ' + f.revision);
+      put('[data-dash-meta="faults"]', codes.length + ' codes · ' +
+        Object.keys(f.subsystems).length + ' subsystems');
+
+      ROUTES.forEach(function (r) {
+        put('[data-dash-count="' + r + '"]', String(codes.filter(function (c) {
+          return c.route === r;
+        }).length));
+      });
+
+      var by = {};
+      codes.forEach(function (c) {
+        var sub = c.code.split('-')[0];
+        var g = by[sub] || (by[sub] = { total: 0, dispatch: 0, flag: 0, self: 0 });
+        g.total++;
+        g[c.route]++;
+      });
+      var order = Object.keys(by).sort(function (a, b) {
+        return by[b].total - by[a].total || a.localeCompare(b);
+      });
+
+      var busiest = by[order[0]].total;
+      fill('[data-dash-subsystems]', '<div class="chart">' + order.map(function (sub) {
+        var g = by[sub];
+        var name = String(f.subsystems[sub] || sub).split('—')[0].trim();
+        var mix = ROUTES.filter(function (r) { return g[r]; }).map(function (r) {
+          return '<span class="m-' + r + '" style="width:' + (g[r] / g.total * 100) + '%"></span>';
+        }).join('');
+        var breakdown = ROUTES.filter(function (r) { return g[r]; }).map(function (r) {
+          return g[r] + ' ' + ROUTE_WORD[r];
+        }).join(' · ');
+        return '<div class="chartrow">' +
+          '<span class="chartrow__k">' + tag(sub) + ' ' + ERS.esc(name) + '</span>' +
+          '<span class="chartrow__sub">' + breakdown + '</span>' +
+          '<span class="chartrow__track"><span class="mixbar" aria-hidden="true" ' +
+            'style="width:' + (g.total / busiest * 100) + '%">' + mix + '</span></span>' +
+          '<span class="chartrow__v">' + g.total + (g.total === 1 ? ' code' : ' codes') + '</span>' +
+        '</div>';
+      }).join('') + '</div>');
+    });
+
+    /* firmware — what a controller should be running, and when it lands */
+    ERS.data('firmware').then(function (fw) {
+      if (!fw) return;
+      var applies = { dock: 'at next dock', idle: 'when idle', ers: 'at ERS only' };
+      put('[data-dash-rev="firmware"]', 'rev ' + fw.revision);
+      put('[data-dash-meta="firmware"]', fw.releases.length + ' targets');
+      fill('[data-dash-firmware]', rows(fw.releases.map(function (r) {
+        var chan = r.channel === 'stable' ? 'ok' : (r.channel === 'beta' ? 'warn' : 'flat');
+        var where = applies[r.appliesAt] || r.appliesAt;
+        if (r.delivery === 'cable') where += ', by cable';
+        return row(
+          ERS.esc(r.targetLabel) + ' ' + tag(r.target),
+          ERS.esc(r.version),
+          '<span class="pill pill--' + chan + '">' + ERS.esc(fw.channels[r.channel].label) + '</span> ' +
+          ERS.esc(r.released) + ' · ' + ERS.esc(where)
+        );
+      })));
+    });
+
+    /* fleet and identity — both read the one hardware catalog */
+    ERS.data('hardware').then(function (hw) {
+      if (!hw) return;
+      put('[data-dash-meta="hardware"]', hw.legVariants.length + ' variants · ' +
+        hw.controllers.length + ' controllers');
+
+      fill('[data-dash-fleet]', rows(hw.legVariants.map(function (v) {
+        var legacy = v.status === 'legacy';
+        return row(
+          ERS.esc(v.name) + ' ' + tag(v.id),
+          ERS.esc(v.controller),
+          ERS.esc(v.railBracket) + ' bracket · ' +
+          '<span class="pill pill--' + (legacy ? 'warn' : 'ok') + '">' +
+          (legacy ? 'Legacy' : 'Current') + '</span>'
+        );
+      })));
+
+      fill('[data-dash-identity]', rows(['electronics', 'mechanical'].map(function (k) {
+        var s = hw.serialFormats[k];
+        if (!s) return '';
+        return row(ERS.esc(s.label), ERS.esc(s.example), ERS.esc(s.governs.join(' · ')));
+      })));
+    });
+  };
+
   /* ------------------------------------------------------ form intake */
   ERS.initForm = function (form) {
     if (!form) return;
@@ -400,6 +530,7 @@
     ERS.initSerialFields(document);
     ERS.initVariantFields(document);
     ERS.initTriage(document.querySelector('[data-triage]'));
+    ERS.initDashboard(document);
     ERS.initFirmware(document.querySelector('[data-firmware]'));
     document.querySelectorAll('form[data-kind]').forEach(ERS.initForm);
     var y = document.getElementById('year');
