@@ -40,7 +40,8 @@
 <section class="wrap pt-1" >
   <span class="eyebrow">Erektor Return System</span>
   <h1>Every leg comes home. Tell us what to do with it.</h1>
-  <p class="lede">Field crews need one decision, not a maze of options: fix it on the floor, flag it for ERS, or dispatch a replacement leg.</p>
+  <p class="lede">Field crews need one decision, not a maze of options: fix it on the floor, flag it for
+  ERS, or dispatch a replacement leg.</p>
 </section>
 
 <section class="wrap mt-2"  data-triage>
@@ -58,49 +59,33 @@
   </noscript>
 </section>
 
-<section class="wrap mt-2 decision-rail" aria-labelledby="decision-title">
-  <div class="decision-rail__intro">
-    <h2 id="decision-title">One question decides the route.</h2>
-    <p>Can the leg finish this session?</p>
+<section class="wrap mt-2" aria-labelledby="routes-title">
+  <div class="sec-head">
+    <span class="eyebrow eyebrow--plain">Or pick the route yourself</span>
+    <h2 id="routes-title">Can the leg finish this session?</h2>
   </div>
-  <div class="decision-rail__steps">
-    <div class="decision-rail__step">
-      <span class="decision-rail__answer">Yes</span>
-      <p>Keep it working, then <a href="maintenance.html">flag it for ERS</a>.</p>
-    </div>
-    <div class="decision-rail__step">
-      <span class="decision-rail__answer">No</span>
-      <p><a href="dispatch.html">Request a replacement</a> for the site.</p>
-    </div>
-    <div class="decision-rail__step">
-      <span class="decision-rail__answer">Fix on the floor</span>
-      <p><a href="docs/faults.html">Check the fault code</a> for the procedure.</p>
-    </div>
-  </div>
-</section>
-
-<section class="wrap mt-2">
   <div class="grid grid--3">
     <a class="card card--urgent" href="dispatch.html">
+      <span class="card__answer">No</span>
       <h3>Request a replacement leg</h3>
-      <p>A leg cannot finish its session. We send a healthy one from the pool and the failed one rides
-      back to check-in with the driver.</p>
+      <p>We send a healthy leg from the pool and the failed one rides back to check-in with the driver.</p>
       <div class="card__meta">Emergency &middot; 24/7</div>
     </a>
     <a class="card card--plan" href="maintenance.html">
+      <span class="card__answer">Yes, but it needs work</span>
       <h3>Flag a leg for ERS</h3>
-      <p>Something is wrong but the leg can finish the job. No truck &mdash; the flag rides on its record
-      and ERS diverts it at inspection when it returns.</p>
+      <p>No truck &mdash; the flag rides on the leg&rsquo;s record and ERS diverts it at inspection when it
+      returns.</p>
       <div class="card__meta">Planned &middot; no site visit</div>
     </a>
-    <a class="card card--docs" href="docs/">
-      <h3>Diagrams and procedures</h3>
-      <p>Leg anatomy, dock and convergence, module pairing, the return line, and the safety cases &mdash;
-      including the walk-off.</p>
-      <div class="card__meta">Reference</div>
+    <a class="card card--docs" href="docs/faults.html">
+      <span class="card__answer">Yes, and you can clear it</span>
+      <h3>Fix it on the floor</h3>
+      <p>Operator-serviceable faults carry their own procedure. No ticket, and nothing changes on the
+      leg&rsquo;s record.</p>
+      <div class="card__meta">Fault code index</div>
     </a>
   </div>
-  <p class="mt-1"><a href="docs/faults.html">Browse the full fault code index &rarr;</a></p>
 </section>
 
 <div class="specstrip band-gap" >
@@ -174,9 +159,15 @@
 <section class="wrap mt-5" >
   <div class="sec-head">
     <span class="eyebrow">Also here</span>
-    <h2>Fleet and firmware.</h2>
+    <h2>Reference and fleet.</h2>
   </div>
-  <div class="grid grid--2">
+  <div class="grid grid--3">
+    <a class="card card--docs" href="docs/">
+      <h3>Diagrams and procedures</h3>
+      <p>Leg anatomy, dock and convergence, module pairing, the return line, and the safety cases &mdash;
+      including the walk-off.</p>
+      <div class="card__meta">Documentation</div>
+    </a>
     <a class="card card--fw" href="firmware/index.html">
       <h3>Controller firmware</h3>
       <p>Current versions per target, what changed, and how a signed bundle actually reaches a leg that
