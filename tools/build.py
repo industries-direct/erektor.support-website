@@ -92,7 +92,11 @@ def shell(depth, title, description, body, page=None, head_extra=""):
 <meta name="description" content="{description}">{head_extra}
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">{root_note}
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">{root_note}
 <link rel="stylesheet" href="{b}assets/css/site.css">
 <script src="{b}assets/js/app.js" defer></script>
 </head>
