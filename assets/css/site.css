@@ -48,8 +48,8 @@
     --line: #dfdfdf; --line-strong: #afafaf;
     --ink: #232323; --ink-muted: #676767; --ink-faint: #8f8f8f;
     --accent: #c70000; --accent-deep: #810000; --accent-glow: rgba(199,0,0,0.10);
-    --amber: #b7791f; --amber-bg: #fdf3e0;
-    --green: #15803d; --green-bg: #e6f4ea;
+    --amber: #976013; --amber-bg: #fdf3e0;
+    --green: #137334; --green-bg: #e6f4ea;
     --info: #1f5f9e; --info-bg: #e6eef8;
     --shadow: 0 1px 0 rgba(255,255,255,0.6), 0 20px 40px -26px rgba(15,30,40,0.35);
   }
@@ -59,8 +59,8 @@
   --line: #dfdfdf; --line-strong: #afafaf;
   --ink: #232323; --ink-muted: #676767; --ink-faint: #8f8f8f;
   --accent: #c70000; --accent-deep: #810000; --accent-glow: rgba(199,0,0,0.10);
-  --amber: #b7791f; --amber-bg: #fdf3e0;
-  --green: #15803d; --green-bg: #e6f4ea;
+  --amber: #976013; --amber-bg: #fdf3e0;
+  --green: #137334; --green-bg: #e6f4ea;
   --info: #1f5f9e; --info-bg: #e6eef8;
   --shadow: 0 1px 0 rgba(255,255,255,0.6), 0 20px 40px -26px rgba(15,30,40,0.35);
 }
@@ -218,8 +218,8 @@ pre code { background: none; border: 0; padding: 0; }
 }
 .statbar > div { background: var(--surface); padding: .6rem .85rem; }
 .statbar dt {
-  font-size: .62rem; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--ink-faint); font-weight: 700;
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 700;
 }
 .statbar dd {
   margin: .2rem 0 0; font-size: .85rem; font-weight: 600;
@@ -230,15 +230,20 @@ pre code { background: none; border: 0; padding: 0; }
 
 .console { margin-top: 2rem; }
 .console__title {
-  margin: 0 0 .6rem; font-size: .72rem; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--ink-faint); font-weight: 700;
+  margin: 0 0 .6rem; font-size: .75rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-muted); font-weight: 700;
 }
 .console__bar {
   display: flex; align-items: center; gap: .65rem; max-width: 560px;
   padding-inline: .9rem; background: var(--surface-2);
   border: 1px solid var(--line-strong); border-radius: var(--radius);
 }
-.console__bar:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+/* The field's own outline is suppressed because the bar is the control, so
+   the bar has to carry the site's focus ring itself. */
+.console__bar:focus-within {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
 .console__prompt { color: var(--accent); font-weight: 700; flex: none; }
 /* Outsells the base input rule, which is element+attribute specific: inside
    the bar the field is the bar, and the bar carries the border and the ring. */
@@ -258,7 +263,7 @@ pre code { background: none; border: 0; padding: 0; }
   margin: 0; font-size: .82rem; letter-spacing: .1em;
   text-transform: uppercase; font-weight: 700;
 }
-.dash-secline p { margin: 0; font-size: .82rem; color: var(--ink-faint); }
+.dash-secline p { margin: 0; font-size: .82rem; color: var(--ink-muted); }
 
 /* ------------------------------------------------------------ route tiles */
 .routes { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
@@ -278,8 +283,8 @@ pre code { background: none; border: 0; padding: 0; }
   gap: 1rem; margin-bottom: .75rem;
 }
 .routetile__k {
-  font-size: .64rem; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--ink-faint); font-weight: 700; max-width: 15ch; line-height: 1.35;
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 700; max-width: 15ch; line-height: 1.35;
 }
 .routetile__n { display: flex; align-items: baseline; gap: .3rem; }
 .routetile__n b {
@@ -287,8 +292,8 @@ pre code { background: none; border: 0; padding: 0; }
   font-variant-numeric: tabular-nums; line-height: 1;
 }
 .routetile__n small {
-  font-size: .6rem; letter-spacing: .09em; text-transform: uppercase;
-  color: var(--ink-faint); font-weight: 700;
+  font-size: .66rem; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 700;
 }
 .routetile h3 { margin: 0 0 .4rem; font-size: 1.08rem; }
 .routetile p { margin: 0 0 1.1rem; color: var(--ink-muted); font-size: .92rem; }
@@ -311,14 +316,19 @@ pre code { background: none; border: 0; padding: 0; }
   margin: 0; font-size: .78rem; letter-spacing: .09em;
   text-transform: uppercase; font-weight: 700;
 }
-.panel__meta { font-size: .7rem; color: var(--ink-faint); white-space: nowrap; }
+.panel__meta { font-size: .72rem; color: var(--ink-muted); white-space: nowrap; }
 .panel__body { padding: .95rem 1.05rem; flex: 1; }
 .panel__body > :last-child { margin-bottom: 0; }
 .panel__foot {
   display: flex; flex-wrap: wrap; gap: .4rem 1.1rem;
   padding: .7rem 1.05rem; border-top: 1px solid var(--line); font-size: .75rem;
 }
-.panel__foot a { text-decoration: none; font-weight: 700; }
+/* Standalone links, not links inside a sentence: give them a target a gloved
+   finger can hit rather than the 20px a 13px line box would be. */
+.panel__foot a {
+  display: inline-flex; align-items: center; min-height: 32px;
+  text-decoration: none; font-weight: 700;
+}
 .panel__foot a:hover { text-decoration: underline; }
 
 /* Rows inside a panel: a label, a monospace value, and optional detail. */
@@ -336,8 +346,8 @@ pre code { background: none; border: 0; padding: 0; }
   font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap;
 }
 .drow__sub {
-  grid-column: 1 / -1; font-family: var(--mono); font-size: .71rem;
-  color: var(--ink-faint); line-height: 1.5;
+  grid-column: 1 / -1; font-family: var(--mono); font-size: .75rem;
+  color: var(--ink-muted); line-height: 1.5;
 }
 
 /* One subsystem per row: how many codes it carries, and how they split
@@ -355,7 +365,7 @@ pre code { background: none; border: 0; padding: 0; }
 .chartrow__k { grid-column: 1; grid-row: 1; font-size: .88rem; font-weight: 600; }
 .chartrow__sub {
   grid-column: 1; grid-row: 2;
-  font-family: var(--mono); font-size: .71rem; color: var(--ink-faint);
+  font-family: var(--mono); font-size: .75rem; color: var(--ink-muted);
 }
 .chartrow__track {
   grid-column: 2; grid-row: 1 / -1;
@@ -368,6 +378,9 @@ pre code { background: none; border: 0; padding: 0; }
 @media (max-width: 620px) {
   .chartrow { grid-template-columns: minmax(0, 1fr) auto; column-gap: .8rem; }
   .chartrow__v { grid-column: 2; grid-row: 1; }
+  /* The breakdown is the accessible copy of the bar, so give it the full
+     width rather than let it wrap in the label column. */
+  .chartrow__sub { grid-column: 1 / -1; }
   .chartrow__track { grid-column: 1 / -1; grid-row: 3; margin-top: .45rem; }
 }
 
@@ -381,8 +394,8 @@ pre code { background: none; border: 0; padding: 0; }
 .m-dispatch { background: var(--accent); }
 
 .legend {
-  display: inline-flex; align-items: center; font-size: .67rem; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint);
+  display: inline-flex; align-items: center; font-size: .7rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted);
 }
 .swatch { width: 9px; height: 9px; border-radius: 2px; margin-right: .45rem; display: inline-block; }
 .swatch--self     { background: var(--green); }
@@ -452,6 +465,9 @@ input[type=time], input[type=search], select, textarea {
   border: 1px solid var(--line-strong); border-radius: var(--radius);
 }
 textarea { min-height: 7rem; resize: vertical; }
+/* Placeholders here carry the example serial or fault code, so they are
+   instruction rather than decoration; the UA default grey is 3.1:1 in dark. */
+::placeholder { color: var(--ink-muted); opacity: 1; }
 input.mono, select.mono { font-family: var(--mono); letter-spacing: .02em; text-transform: uppercase; }
 input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--accent); }
 input:focus-visible, select:focus-visible, textarea:focus-visible,
