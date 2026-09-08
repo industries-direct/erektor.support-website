@@ -48,8 +48,8 @@
     --line: #dfdfdf; --line-strong: #afafaf;
     --ink: #232323; --ink-muted: #676767; --ink-faint: #8f8f8f;
     --accent: #c70000; --accent-deep: #810000; --accent-glow: rgba(199,0,0,0.10);
-    --amber: #b7791f; --amber-bg: #fdf3e0;
-    --green: #15803d; --green-bg: #e6f4ea;
+    --amber: #976013; --amber-bg: #fdf3e0;
+    --green: #137334; --green-bg: #e6f4ea;
     --info: #1f5f9e; --info-bg: #e6eef8;
     --shadow: 0 1px 0 rgba(255,255,255,0.6), 0 20px 40px -26px rgba(15,30,40,0.35);
   }
@@ -59,8 +59,8 @@
   --line: #dfdfdf; --line-strong: #afafaf;
   --ink: #232323; --ink-muted: #676767; --ink-faint: #8f8f8f;
   --accent: #c70000; --accent-deep: #810000; --accent-glow: rgba(199,0,0,0.10);
-  --amber: #b7791f; --amber-bg: #fdf3e0;
-  --green: #15803d; --green-bg: #e6f4ea;
+  --amber: #976013; --amber-bg: #fdf3e0;
+  --green: #137334; --green-bg: #e6f4ea;
   --info: #1f5f9e; --info-bg: #e6eef8;
   --shadow: 0 1px 0 rgba(255,255,255,0.6), 0 20px 40px -26px rgba(15,30,40,0.35);
 }
@@ -193,6 +193,229 @@ pre code { background: none; border: 0; padding: 0; }
 .sec-head { max-width: 62ch; margin-bottom: 2.4rem; }
 .sec-head p { color: var(--ink-muted); margin-top: .9rem; }
 
+/* --------------------------------------------------------------- console
+
+   The landing page is a console, not a brochure: a status bar, one input
+   that routes a fault code, three route tiles carrying live counts, and
+   panels that read the same data/*.json the deeper pages read. Nothing here
+   is a hand-typed number.
+   -------------------------------------------------------------------- */
+.dash-head {
+  display: grid; gap: 1.6rem; align-items: end;
+  padding: 1.5rem 0 1.6rem;
+  border-bottom: 1px solid var(--line);
+}
+.dash-head h1 { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.15rem); margin-bottom: .45rem; }
+.dash-head .lede { font-size: 1rem; margin: 0; }
+@media (min-width: 900px) {
+  .dash-head { grid-template-columns: minmax(0, 1fr) auto; }
+}
+
+.statbar {
+  display: grid; grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 1px; margin: 0; background: var(--line);
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+}
+.statbar > div { background: var(--surface); padding: .6rem .85rem; }
+.statbar dt {
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 700;
+}
+.statbar dd {
+  margin: .2rem 0 0; font-size: .85rem; font-weight: 600;
+  display: flex; align-items: center; gap: .45rem; white-space: nowrap;
+}
+.dot { width: 7px; height: 7px; border-radius: 2px; background: var(--ink-faint); flex: none; }
+.dot--ok { background: var(--green); box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 22%, transparent); }
+
+.console { margin-top: 2rem; }
+.console__title {
+  margin: 0 0 .6rem; font-size: .75rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-muted); font-weight: 700;
+}
+.console__bar {
+  display: flex; align-items: center; gap: .65rem; max-width: 560px;
+  padding-inline: .9rem; background: var(--surface-2);
+  border: 1px solid var(--line-strong); border-radius: var(--radius);
+}
+/* The field's own outline is suppressed because the bar is the control, so
+   the bar has to carry the site's focus ring itself. */
+.console__bar:focus-within {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.console__prompt { color: var(--accent); font-weight: 700; flex: none; }
+/* Outsells the base input rule, which is element+attribute specific: inside
+   the bar the field is the bar, and the bar carries the border and the ring. */
+.console__bar input.console__input {
+  min-height: 52px; padding-inline: 0; font-size: 1.02rem;
+  border: 0; background: transparent; border-radius: 0;
+}
+.console__bar input:focus-visible { outline: none; }
+.console__hint { margin: .55rem 0 0; font-size: .85rem; color: var(--ink-muted); max-width: var(--measure); }
+
+.dash-secline {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: .3rem 1.2rem; margin-bottom: 1rem;
+  padding-bottom: .6rem; border-bottom: 1px solid var(--line);
+}
+.dash-secline h2 {
+  margin: 0; font-size: .82rem; letter-spacing: .1em;
+  text-transform: uppercase; font-weight: 700;
+}
+.dash-secline p { margin: 0; font-size: .82rem; color: var(--ink-muted); }
+
+/* ------------------------------------------------------------ route tiles */
+.routes { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.routetile {
+  display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--line);
+  border-top: 3px solid var(--line-strong); border-radius: var(--radius-lg);
+  padding: 1.05rem 1.15rem 1rem; text-decoration: none; color: inherit;
+  transition: border-color .18s ease, transform .18s ease;
+}
+.routetile:hover { border-color: var(--line-strong); transform: translateY(-1px); color: inherit; }
+.routetile--self     { border-top-color: var(--green); }
+.routetile--flag     { border-top-color: var(--amber); }
+.routetile--dispatch { border-top-color: var(--accent); }
+.routetile__top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 1rem; margin-bottom: .75rem;
+}
+.routetile__k {
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 700; max-width: 15ch; line-height: 1.35;
+}
+.routetile__n { display: flex; align-items: baseline; gap: .3rem; }
+.routetile__n b {
+  font-size: 1.65rem; font-weight: 700; letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums; line-height: 1;
+}
+.routetile__n small {
+  font-size: .66rem; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 700;
+}
+.routetile h3 { margin: 0 0 .4rem; font-size: 1.08rem; }
+.routetile p { margin: 0 0 1.1rem; color: var(--ink-muted); font-size: .92rem; }
+.routetile__cta { margin-top: auto; font-size: .8rem; font-weight: 700; color: var(--accent); }
+
+/* ---------------------------------------------------------------- panels */
+.panels { display: grid; gap: var(--gap); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.panel--wide { grid-column: 1 / -1; }
+@media (max-width: 980px) { .panels { grid-template-columns: 1fr; } }
+
+/* Panel bodies fill from data/*.json after first paint, so without a reserve
+   the whole row grows ~180px when the fetch lands and everything below it
+   jumps. These are layout reserves sized to the multi-column layout, not
+   product facts: if the fault table or the manifest grows a row the panel
+   simply grows too, which is the shift we have today, not a regression.
+   Below 980px the panels are stacked and their heights vary too much with
+   wrapping for a single reserve to be worth the dead space. */
+@media (min-width: 981px) {
+  .panel__body { min-height: 17rem; }
+  .panel--wide .panel__body { min-height: 26.5rem; }
+}
+
+.panel {
+  display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
+}
+.panel__head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .8rem;
+  padding: .8rem 1.05rem; border-bottom: 1px solid var(--line);
+}
+.panel__head h2 {
+  margin: 0; font-size: .78rem; letter-spacing: .09em;
+  text-transform: uppercase; font-weight: 700;
+}
+.panel__meta { font-size: .72rem; color: var(--ink-muted); white-space: nowrap; }
+.panel__body { padding: .95rem 1.05rem; flex: 1; }
+.panel__body[data-filled] { animation: panel-in .16s ease-out; }
+@keyframes panel-in { from { opacity: 0; } to { opacity: 1; } }
+.panel__body > :last-child { margin-bottom: 0; }
+.panel__foot {
+  display: flex; flex-wrap: wrap; gap: .4rem 1.1rem;
+  padding: .7rem 1.05rem; border-top: 1px solid var(--line); font-size: .75rem;
+}
+/* Standalone links, not links inside a sentence: give them a target a gloved
+   finger can hit rather than the 20px a 13px line box would be. */
+.panel__foot a {
+  display: inline-flex; align-items: center; min-height: 32px;
+  text-decoration: none; font-weight: 700;
+}
+.panel__foot a:hover { text-decoration: underline; }
+
+/* Rows inside a panel: a label, a monospace value, and optional detail. */
+.drows { display: grid; }
+.drow {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: .1rem .8rem; align-items: baseline;
+  padding: .55rem 0; border-top: 1px dashed var(--line);
+}
+.drow:first-child { border-top: 0; padding-top: 0; }
+.drow:last-child { padding-bottom: 0; }
+.drow__k { font-size: .88rem; font-weight: 600; }
+.drow__v {
+  font-family: var(--mono); font-size: .78rem;
+  font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap;
+}
+.drow__sub {
+  grid-column: 1 / -1; font-family: var(--mono); font-size: .75rem;
+  color: var(--ink-muted); line-height: 1.5;
+}
+
+/* One subsystem per row: how many codes it carries, and how they split
+   across the three routes. Bar length is the load relative to the busiest
+   subsystem; the segments inside it are the route mix. */
+.chart { display: grid; }
+.chartrow {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(0, 2.2fr) 5rem;
+  align-items: center; column-gap: 1.4rem;
+  padding: .55rem 0; border-top: 1px dashed var(--line);
+}
+.chartrow:first-child { border-top: 0; padding-top: 0; }
+.chartrow:last-child { padding-bottom: 0; }
+.chartrow__k { grid-column: 1; grid-row: 1; font-size: .88rem; font-weight: 600; }
+.chartrow__sub {
+  grid-column: 1; grid-row: 2;
+  font-family: var(--mono); font-size: .75rem; color: var(--ink-muted);
+}
+.chartrow__track {
+  grid-column: 2; grid-row: 1 / -1;
+  height: 7px; border-radius: 4px; background: var(--surface-2);
+}
+.chartrow__v {
+  grid-column: 3; grid-row: 1 / -1; text-align: right;
+  font-family: var(--mono); font-size: .78rem; font-variant-numeric: tabular-nums;
+}
+@media (max-width: 620px) {
+  .chartrow { grid-template-columns: minmax(0, 1fr) auto; column-gap: .8rem; }
+  .chartrow__v { grid-column: 2; grid-row: 1; }
+  /* The breakdown is the accessible copy of the bar, so give it the full
+     width rather than let it wrap in the label column. */
+  .chartrow__sub { grid-column: 1 / -1; }
+  .chartrow__track { grid-column: 1 / -1; grid-row: 3; margin-top: .45rem; }
+}
+
+.mixbar {
+  display: flex; height: 100%;
+  border-radius: 4px; overflow: hidden; background: var(--surface-2);
+}
+.mixbar span { display: block; min-width: 2px; }
+.m-self     { background: var(--green); }
+.m-flag     { background: var(--amber); }
+.m-dispatch { background: var(--accent); }
+
+.legend {
+  display: inline-flex; align-items: center; font-size: .7rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted);
+}
+.swatch { width: 9px; height: 9px; border-radius: 2px; margin-right: .45rem; display: inline-block; }
+.swatch--self     { background: var(--green); }
+.swatch--flag     { background: var(--amber); }
+.swatch--dispatch { background: var(--accent); }
+
 /* ------------------------------------------------------------------- cards */
 .grid { display: grid; gap: var(--gap); }
 .grid--2 { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
@@ -206,17 +429,6 @@ pre code { background: none; border: 0; padding: 0; }
   transition: border-color .18s ease, transform .18s ease;
 }
 .card h3 { margin-top: 0; }
-.card__answer {
-  display: block;
-  margin-bottom: .5rem;
-  color: var(--ink-faint);
-  font-family: var(--mono);
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-.card--urgent .card__answer { color: var(--accent); }
 .card p { color: var(--ink-muted); font-size: .95rem; }
 .card p:last-child { margin-bottom: 0; }
 a.card { text-decoration: none; color: inherit; }
@@ -229,34 +441,6 @@ a.card:hover {
 .card__meta {
   margin-top: auto; padding-top: 1rem; font-size: .74rem;
   color: var(--ink-faint); letter-spacing: .08em; text-transform: uppercase; font-weight: 600;
-}
-
-/* ------------------------------------------------------------ spec numbers */
-.specstrip {
-  border-block: 1px solid var(--line); background: var(--surface);
-  margin: 2.5rem 0 3rem;
-}
-.specstrip-in {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0;
-}
-@media (max-width: 780px) { .specstrip-in { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px) { .specstrip-in { grid-template-columns: 1fr; } }
-.spec {
-  padding: 1.1rem 1rem;
-  border-left: 1px solid var(--line);
-  display: flex; flex-direction: column; gap: .35rem;
-}
-.spec:first-child { border-left: 0; }
-.spec .n {
-  font-family: var(--mono); font-size: clamp(1.35rem, 2vw, 1.8rem);
-  font-weight: 700; letter-spacing: -.04em; font-variant-numeric: tabular-nums; line-height: 1.1;
-  color: var(--ink);
-}
-.spec .n small { font-size: .8rem; color: var(--accent); font-weight: 700; }
-.spec .k {
-  font-size: .68rem; letter-spacing: .09em; text-transform: uppercase;
-  color: var(--ink-faint); font-weight: 600;
 }
 
 /* ----------------------------------------------------------------- buttons */
@@ -295,6 +479,9 @@ input[type=time], input[type=search], select, textarea {
   border: 1px solid var(--line-strong); border-radius: var(--radius);
 }
 textarea { min-height: 7rem; resize: vertical; }
+/* Placeholders here carry the example serial or fault code, so they are
+   instruction rather than decoration; the UA default grey is 3.1:1 in dark. */
+::placeholder { color: var(--ink-muted); opacity: 1; }
 input.mono, select.mono { font-family: var(--mono); letter-spacing: .02em; text-transform: uppercase; }
 input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--accent); }
 input:focus-visible, select:focus-visible, textarea:focus-visible,
@@ -473,7 +660,8 @@ details[open] summary { border-bottom: 1px solid var(--line); }
 @media print {
   .topbar, .foot, .btn, .skip, .themebtn { display: none !important; }
   body { background: #fff; color: #000; }
-  .card, .note, .diagram, .steps > li { break-inside: avoid; }
+  .card, .note, .diagram, .steps > li, .panel { break-inside: avoid; }
+  .panel__body, .panel--wide .panel__body { min-height: 0; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .8em; }
 }
 @media (prefers-reduced-motion: reduce) {

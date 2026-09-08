@@ -40,7 +40,8 @@ the index, and the form prefills all follow.
 ## Layout
 
 ```
-index.html              Hub: the three routes, plus fault lookup
+index.html              Service console: status bar, fault-code router, the three routes
+                        with live counts, and panels over data/*.json
 dispatch.html           Request a replacement leg (electronics serial)
 maintenance.html        Flag a leg for the ERS line (mechanical serial)
 docs/
