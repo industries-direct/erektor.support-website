@@ -100,8 +100,14 @@ secrets, the same pair the sibling `industries.direct` site uses:
 
 | Secret | Purpose |
 |---|---|
-| `CLOUDFLARE_API_TOKEN` | Authenticates the deploy. Needs *Workers Scripts: Edit* on the account. |
+| `CLOUDFLARE_API_TOKEN` | Authenticates the deploy. |
 | `CLOUDFLARE_ACCOUNT_ID` | The account the Worker lives in. |
+
+Scope the token with Cloudflare's **Edit Cloudflare Workers** template, granting it both this
+account *and* the `erektor.support` zone. Account → Workers Scripts: Edit alone is not
+enough: the `custom_domain` route in `wrangler.jsonc` also needs Zone → Workers Routes: Edit,
+and a token missing it fails *after* the script has already uploaded — the Worker updates,
+the route does not, and the deploy reports an error for a site that looks half-deployed.
 
 **Cloudflare's Git integration (Workers Builds) must be disconnected**, or this races it.
 Two pipelines both running `wrangler deploy` on the same push contend for the same Worker and
