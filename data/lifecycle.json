@@ -1,0 +1,133 @@
+{
+  "$comment": "Leg lifecycle: the states a leg moves through, the events that move it, and the intervals that fall due. This is to the internal registry what faults.json is to the public portal - the table the UI reads rather than hard-codes. The registry keys every leg on its MECHANICAL serial because that is the number permanent for the life of the frame; the electronics serial is a current binding, and swapping it is an event, not a new leg.",
+  "revision": "2026.09",
+  "identity": {
+    "key": "mechanical",
+    "binding": "electronics",
+    "note": "Wear, intervals, warranty and the lease record accrue against the frame. Firmware, pairing and session assignment follow the electronics. A registry keyed on the electronics serial would reset a leg's history every time a ClearCore was swapped."
+  },
+  "states": [
+    {
+      "id": "built",
+      "label": "Built",
+      "short": "Frame stamped, no electronics",
+      "kind": "flat",
+      "held": true,
+      "description": "The mechanical serial has been stamped and the frame exists. The leg has no operational identity yet and cannot be assigned.",
+      "to": ["commissioned", "quarantine", "retired"]
+    },
+    {
+      "id": "commissioned",
+      "label": "Commissioned",
+      "short": "Electronics bound, tested",
+      "kind": "info",
+      "held": true,
+      "description": "A ClearCore has been bound, firmware loaded and both axes tested. The leg has both identities but has not been released to the fleet.",
+      "to": ["pool", "service", "quarantine", "retired"]
+    },
+    {
+      "id": "pool",
+      "label": "In pool",
+      "short": "Available at ERS",
+      "kind": "ok",
+      "available": true,
+      "description": "Healthy, charged and available to be assigned to a session or sent out as a replacement.",
+      "to": ["deployed", "transit", "service", "quarantine", "retired"]
+    },
+    {
+      "id": "deployed",
+      "label": "Deployed",
+      "short": "At a facility",
+      "kind": "info",
+      "field": true,
+      "description": "Held by a facility. May or may not be claimed into a session right now; the session controller owns that, not the registry.",
+      "to": ["transit", "service", "quarantine"]
+    },
+    {
+      "id": "transit",
+      "label": "In transit",
+      "short": "On a truck",
+      "kind": "warn",
+      "field": true,
+      "description": "Moving between a facility and ERS, in either direction. A failed leg riding back with the driver who brought its replacement is in transit, not deployed.",
+      "to": ["deployed", "line", "pool", "quarantine"]
+    },
+    {
+      "id": "line",
+      "label": "On the line",
+      "short": "Reconditioning",
+      "kind": "info",
+      "description": "Checked in and moving through the ERS reconditioning line. The stage field carries which station it is at.",
+      "stages": ["check-in", "inspection", "cleaning", "battery swap", "diagnostics"],
+      "to": ["pool", "service", "quarantine", "retired"]
+    },
+    {
+      "id": "service",
+      "label": "In service",
+      "short": "Diverted at inspection",
+      "kind": "warn",
+      "held": true,
+      "description": "Diverted out of the line - either on a flag filed from the field or on failing inspection. Work is open against the frame.",
+      "to": ["line", "pool", "quarantine", "retired"]
+    },
+    {
+      "id": "quarantine",
+      "label": "Quarantined",
+      "short": "Do not issue",
+      "kind": "crit",
+      "held": true,
+      "description": "Held out of the fleet pending a decision. Nothing assigns a quarantined leg, and nothing clears it automatically.",
+      "to": ["service", "line", "pool", "retired"]
+    },
+    {
+      "id": "retired",
+      "label": "Retired",
+      "short": "Out of the fleet",
+      "kind": "flat",
+      "terminal": true,
+      "held": true,
+      "description": "Permanently withdrawn. The record stays - a retired frame still has a lease and warranty history written against its number.",
+      "to": []
+    }
+  ],
+  "events": [
+    { "id": "built",            "label": "Frame built",           "sets": "built" },
+    { "id": "commissioned",     "label": "Commissioned",          "sets": "commissioned", "binds": true },
+    { "id": "electronics-swap", "label": "Electronics swapped",   "binds": true, "note": "Rolls the operational identity over. History stays on the frame." },
+    { "id": "firmware",         "label": "Firmware applied" },
+    { "id": "released",         "label": "Released to pool",      "sets": "pool" },
+    { "id": "assigned",         "label": "Assigned out",          "sets": "transit" },
+    { "id": "delivered",        "label": "Delivered to site",     "sets": "deployed" },
+    { "id": "dispatch-request", "label": "Dispatch requested",    "note": "Filed from the field against the electronics serial. The leg cannot finish its session." },
+    { "id": "flag-raised",      "label": "Flagged for ERS",       "note": "Filed from the field against the mechanical serial. Read at inspection." },
+    { "id": "flag-cleared",     "label": "Flag cleared" },
+    { "id": "return-start",     "label": "Started return",        "sets": "transit" },
+    { "id": "check-in",         "label": "Checked in",            "sets": "line" },
+    { "id": "stage",            "label": "Moved on the line" },
+    { "id": "divert",           "label": "Diverted at inspection","sets": "service" },
+    { "id": "service-closed",   "label": "Service record closed", "resetsInterval": true, "note": "The only event that clears SES-30. A controller swap does not." },
+    { "id": "pack-swap",        "label": "Pack swapped" },
+    { "id": "hours",            "label": "Motor-hours logged" },
+    { "id": "quarantine",       "label": "Quarantined",           "sets": "quarantine" },
+    { "id": "retired",          "label": "Retired",               "sets": "retired" },
+    { "id": "moved",            "label": "Custody changed" },
+    { "id": "note",             "label": "Note" }
+  ],
+  "intervals": {
+    "motorHours": 1200,
+    "months": 12,
+    "warnAtFraction": 0.85,
+    "raises": "SES-30",
+    "note": "Whichever comes first, accrued against the mechanical serial and reset only by a closed service record. Reaching one is a flag, not a dispatch - a leg at its interval is not a leg in trouble."
+  },
+  "reconciliation": {
+    "staleDays": 45,
+    "raises": "SES-41",
+    "note": "A leg a facility believes it holds but which the registry has not heard from in this long is reported, not searched for. The registry exists so a moved leg resolves as bookkeeping rather than a loss."
+  },
+  "roles": {
+    "viewer": { "label": "Read only", "write": false, "note": "Can look a leg up and read its history." },
+    "operator": { "label": "Operator", "write": true, "note": "Can enter legs, record events and move state." },
+    "admin": { "label": "Administrator", "write": true, "admin": true, "note": "Operator, plus retire and delete." }
+  }
+}

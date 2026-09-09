@@ -53,7 +53,15 @@ def rel(depth):
     return "../" * depth
 
 
-def shell(depth, title, description, body, page=None, head_extra=""):
+def shell(depth, title, description, body, page=None, head_extra="", foot_extra=""):
+    """Wrap page body in the shared chrome.
+
+    `foot_extra` is a second script slot after the footer, for scripts that
+    must run *after* assets/js/app.js rather than alongside it. Deferred
+    scripts execute in document order, so a page-specific script that builds
+    on ERS (the registry console does) cannot be placed in `head_extra` — it
+    would run first and find nothing there.
+    """
     b = rel(depth)
     # Only the root-absolute page (404) carries this: it is the one document
     # whose URL is not the one it was authored at, so the constraint has to be
@@ -147,7 +155,7 @@ def shell(depth, title, description, body, page=None, head_extra=""):
       <div>&copy; <span id="year">2026</span> EREKTOR</div>
     </div>
   </div>
-</footer>
+</footer>{foot_extra}
 </body>
 </html>
 """
@@ -165,17 +173,18 @@ def crumbs(depth, trail):
 PAGES = {}
 
 
-def page(path, depth, title, description, body, head_extra=""):
-    PAGES[path] = (depth, title, description, body, head_extra)
+def page(path, depth, title, description, body, head_extra="", foot_extra=""):
+    PAGES[path] = (depth, title, description, body, head_extra, foot_extra)
 
 
 def write():
-    for path, (depth, title, description, body, head_extra) in PAGES.items():
+    for path, (depth, title, description, body, head_extra, foot_extra) in PAGES.items():
         full = os.path.join(ROOT, path)
         os.makedirs(os.path.dirname(full), exist_ok=True)
         # docs/index.html is reached through the "docs/" nav entry
         nav_key = "docs/" if path == "docs/index.html" else path
-        html = shell(depth, title, description, body, page=nav_key, head_extra=head_extra)
+        html = shell(depth, title, description, body, page=nav_key,
+                     head_extra=head_extra, foot_extra=foot_extra)
         with open(full, "w", encoding="utf-8") as fh:
             fh.write(html)
         print("wrote", path)

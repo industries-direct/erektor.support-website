@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fleet — EREKTOR Support</title>
+<meta name="description" content="Internal leg registry: fleet state, open flags, service intervals and reconciliation.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script src="../assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
+        <a href="../maintenance.html" class="">Maintenance</a>
+        <a href="../docs/" class="">Documentation</a>
+        <a href="../docs/faults.html" class="">Fault codes</a>
+        <a href="../firmware/index.html" class="">Firmware</a>
+      <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="wrap">
+  <div class="regbar" data-regbar>
+    <span class="regbar__id">Registry</span>
+      <a href="index.html" aria-current="page">Fleet</a>
+      <a href="intake.html">Enter legs</a>
+    <span class="regbar__end">
+      <a href="../index.html">Public portal</a>
+      <button type="button" class="btn btn--sm" data-signout>Sign out</button>
+    </span>
+  </div>
+</div>
+
+<section class="wrap dash-head">
+  <div class="dash-head__id">
+    <span class="eyebrow">Internal &middot; leg registry</span>
+    <h1>Fleet</h1>
+    <p class="lede">Every leg is keyed on its <b>mechanical</b> serial, because that number is stamped into
+    the frame and outlives any ClearCore bolted to it. The electronics serial below is a current binding,
+    and swapping it is an event on the record rather than a new leg.</p>
+  </div>
+  <dl class="statbar" aria-label="Fleet at a glance">
+    <div><dt>Frames</dt><dd class="mono" data-k="fleet">&mdash;</dd></div>
+    <div><dt>In pool</dt><dd class="mono" data-k="pool">&mdash;</dd></div>
+    <div><dt>Out in the field</dt><dd class="mono" data-k="field">&mdash;</dd></div>
+    <div><dt>Carrying a flag</dt><dd class="mono" data-k="flagged">&mdash;</dd></div>
+    <div><dt>At interval</dt><dd class="mono" data-k="due">&mdash;</dd></div>
+    <div><dt>Unmatched intake</dt><dd class="mono" data-k="unmatched">&mdash;</dd></div>
+  </dl>
+</section>
+
+<section class="wrap mt-2" data-console>
+  <div data-error hidden></div>
+
+  <form class="filters" data-filters role="search" aria-label="Filter the fleet">
+    <div class="field field--grow">
+      <label for="q">Find a leg</label>
+      <input type="search" id="q" name="q" class="mono" placeholder="MX-24-08192, EL-25-014873, a facility…"
+             autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="fstate">State</label>
+      <select id="fstate" name="state"><option value="">Any</option></select>
+    </div>
+    <div class="field">
+      <label for="fvariant">Variant</label>
+      <select id="fvariant" name="variant"><option value="">Any</option></select>
+    </div>
+    <div class="toggles">
+      <label><input type="checkbox" name="flagged" value="1"> Flagged</label>
+      <label><input type="checkbox" name="due" value="1"> At interval</label>
+      <label><input type="checkbox" name="stale" value="1"> No recent contact</label>
+    </div>
+  </form>
+
+  <div class="dash-secline mt-2">
+    <h2>Legs <span class="muted mono small" data-count></span></h2>
+    <p>A leg is looked up in the field from whichever number is legible &mdash; the search takes either serial.</p>
+  </div>
+  <div data-legs><p class="muted">Loading the fleet&hellip;</p></div>
+
+  <section class="panel mt-2" data-orphans hidden aria-labelledby="p-orphans">
+    <header class="panel__head">
+      <h2 id="p-orphans">Field requests with no record</h2>
+      <span class="panel__meta mono">unmatched</span>
+    </header>
+    <div class="panel__body" data-orphan-body></div>
+    <footer class="panel__foot">
+      <span class="small muted">A flag or dispatch was filed against a serial the registry does not hold.
+      That is a bookkeeping gap, not a lost message &mdash; enter the leg and the request has somewhere to land.</span>
+    </footer>
+  </section>
+
+  <div class="panels mt-3">
+    <section class="panel" aria-labelledby="p-dist">
+      <header class="panel__head">
+        <h2 id="p-dist">Where the fleet is</h2>
+        <span class="panel__meta mono">by state</span>
+      </header>
+      <div class="panel__body" data-distribution>
+        <p class="muted small">Counted from the registry, not typed here.</p>
+      </div>
+      <footer class="panel__foot">
+        <span class="legend"><i class="swatch swatch--self"></i>Working</span>
+        <span class="legend"><i class="swatch swatch--flag"></i>Held or moving</span>
+        <span class="legend"><i class="swatch swatch--dispatch"></i>Out of the fleet</span>
+      </footer>
+    </section>
+
+    <section class="panel" aria-labelledby="p-act">
+      <header class="panel__head">
+        <h2 id="p-act">Latest activity</h2>
+        <span class="panel__meta mono">append-only</span>
+      </header>
+      <div class="panel__body" data-activity>
+        <p class="muted small">Every state change is an event on a leg, and events are never rewritten.</p>
+      </div>
+      <footer class="panel__foot">
+        <a class="small" href="/api/registry/export">Export the fleet as CSV &rarr;</a>
+      </footer>
+    </section>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="../dispatch.html">Request a replacement leg</a></li><li><a href="../maintenance.html">Flag a leg for ERS</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="../docs/operating.html">Operating procedures</a></li><li><a href="../docs/ers.html">The return line</a></li><li><a href="../docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="../firmware/index.html">Controller firmware</a></li><li><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/registry.js" defer></script>
+</body>
+</html>

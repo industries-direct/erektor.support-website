@@ -15,15 +15,14 @@
  * Bindings (all optional — the endpoint degrades rather than failing):
  *   REQUESTS        KV namespace   durable store for submitted requests
  *   INTAKE_WEBHOOK  secret         URL forwarded to for ticketing and paging
+ *   REGISTRY        D1 database    the internal leg registry, if provisioned
  */
+
+import { SERIAL } from './serials.js';
+import { reconcileIntake } from './registry.js';
 
 const KINDS = new Set(['flag', 'dispatch']);
 const MAX_BODY = 32 * 1024;
-
-const SERIAL = {
-  electronics: /^EL-\d{2}-\d{6}$/,
-  mechanical: /^MX-\d{2}-\d{5}$/
-};
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -131,6 +130,12 @@ export async function handleServiceRequest(request, env) {
   } else {
     record.status = 'received-unstored';
   }
+
+  // Land it on the leg's own record. A flag or a dispatch is part of that
+  // leg's history, and inspection reads flags off the frame — so the request
+  // has to reach the registry, not just a queue beside it. Never throws: the
+  // operator has already been promised a reference number.
+  await reconcileIntake(env, record);
 
   // Forward to whatever actually pages a technician or books the pool leg.
   if (env.INTAKE_WEBHOOK) {

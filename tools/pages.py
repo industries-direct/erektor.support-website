@@ -474,5 +474,6 @@ page("404.html", "/", "Page not found",
      head_extra='\n<meta name="robots" content="noindex">')
 
 if __name__ == "__main__":
-    import docs  # noqa: F401  registers the remaining pages
+    import docs      # noqa: F401  registers the documentation and firmware pages
+    import internal  # noqa: F401  registers the gated registry pages
     write()

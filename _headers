@@ -14,3 +14,10 @@
 
 /api/*
   Cache-Control: no-store
+
+# The gated registry. src/index.js sets these again on the responses it
+# returns, because _headers only decorates asset responses and these pages are
+# served through the Worker.
+/internal/*
+  Cache-Control: private, no-store
+  X-Robots-Tag: noindex, nofollow
