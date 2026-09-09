@@ -60,10 +60,13 @@ data/
 
 assets/css/site.css     Design system (EREKTOR brand tokens, field-tuned)
 assets/js/app.js        Progressive enhancement only
+assets/icons/favicon.svg        The mark: one leg, drawn from its own elevation
+assets/icons/apple-touch-icon.png
+favicon.ico             At the root, because that is where a browser looks
 404.html                Served for any missing path (root-absolute links)
 src/index.js            Worker entry — routes /api/*, assets handle the rest
 src/requests.js         Intake endpoint
-tools/                  Page assembler (see below)
+tools/                  Page assembler and icon rasteriser (see below)
 _headers _redirects     Edge config
 wrangler.jsonc          Deploy config
 .assetsignore           Keeps src/, tools/ and repo metadata off the CDN
@@ -91,6 +94,20 @@ python3 tools/pages.py     # rewrites the .html files in place
 Edit page content in `tools/pages.py` and `tools/docs.py`, diagrams in `tools/diagrams.py`,
 then re-run and commit. Editing the generated `.html` directly works too, but the next run
 of the assembler will overwrite it.
+
+The icons are the same arrangement — a committed output with the tool that made it:
+
+```sh
+python3 tools/icons.py     # favicon.svg -> favicon.ico + apple-touch-icon.png
+```
+
+`assets/icons/favicon.svg` is the only place the mark is defined. It follows the tab bar's
+theme; the rasters cannot, so they bake in the dark-theme ink on the brand ground rather
+than being transparent and vanishing on half the tab bars they land on. The rasteriser
+draws the mark itself instead of driving a browser: a headless screenshot of a 16x16 icon
+depends on window chrome and device scale factor, and fails by writing a plausible-looking
+wrong file. It understands only the shapes this mark uses and stops with an error on
+anything else, which is the failure mode you want from a build tool.
 
 ## Deploying
 

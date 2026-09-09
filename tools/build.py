@@ -58,6 +58,10 @@ def shell(depth, title, description, body, page=None, head_extra=""):
     # Only the root-absolute page (404) carries this: it is the one document
     # whose URL is not the one it was authored at, so the constraint has to be
     # stated where someone would otherwise "tidy" the links back to relative.
+    # The .ico is the only icon not written relative to the page: a browser
+    # requests /favicon.ico by itself, at that exact path, whatever depth the
+    # page it is looking at lives at. The SVG and the touch icon follow the
+    # page like every other asset here.
     root_note = (
         "\n<!-- Root-relative throughout: this page is served in place of any missing\n"
         "     path, at any depth, so relative URLs would break. -->"
@@ -93,6 +97,9 @@ def shell(depth, title, description, body, page=None, head_extra=""):
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">{root_note}
+<link rel="icon" href="{b}assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{b}assets/icons/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="stylesheet" href="{b}assets/css/site.css">
 <script src="{b}assets/js/app.js" defer></script>
 </head>
