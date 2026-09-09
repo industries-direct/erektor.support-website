@@ -7,5 +7,7 @@ README.md
 src/
 tools/
 node_modules/
+package.json
+package-lock.json
 .wrangler/
 .dev.vars

@@ -135,8 +135,13 @@ Consequences worth knowing:
   build instead of silently splitting the site in two.
 - The `erektor.support` zone must exist in the account — `custom_domain` routes bind an
   existing zone, they do not register a domain.
-- `.assetsignore` already excludes `.github/`, so the workflow is not uploaded as a static
-  asset.
+- `.assetsignore` excludes `.github/`, so the workflow is not uploaded as a static asset.
+- `.assetsignore` must also exclude `package.json` and `package-lock.json`. `wrangler-action`
+  runs `npm i wrangler@4` *inside the checkout*, and `assets.directory` is the repo root, so
+  those two files appear next to the site and get published unless ignored. They are not in
+  the repo — they exist only on the runner — which is why nothing in `git status` hints at
+  it. The first Actions deploy uploaded both to the CDN before this was added; the asset
+  count in the deploy log is the tell (20 real files, 22 uploaded).
 
 ### How routing works
 
