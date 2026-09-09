@@ -1,8 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  // Must match the Worker service the Cloudflare Git integration is attached
-  // to, or a production build creates a second service and binds the custom
-  // domain to that one instead, orphaning this one.
+  // Must match the live Worker service, or a deploy creates a second service
+  // and binds the custom domain to that one instead, orphaning this one.
+  // .github/workflows/deploy.yml asserts this value before wrangler runs.
   "name": "support-erektor-return-systems-website",
   "main": "src/index.js",
   "compatibility_date": "2026-08-14",

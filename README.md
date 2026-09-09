@@ -5,7 +5,7 @@ serviced, get a replacement leg to a site, read the procedures and diagrams, and
 firmware their controllers should be running.
 
 Production: **https://erektor.support** — a Cloudflare Worker with static assets,
-deployed from `main` by Cloudflare's Git integration.
+deployed from `main` by GitHub Actions.
 
 ---
 
@@ -94,33 +94,49 @@ of the assembler will overwrite it.
 
 ## Deploying
 
-Deploys come from **Cloudflare's Git integration** (Workers Builds), which is already
-connected to this repo and reports back as the `Workers Builds:
-support-erektor-return-systems-website` check. Pushing to `main` deploys; other branches get
-preview builds, which is why a PR shows that check too.
+Deploys come from **GitHub Actions** — `.github/workflows/deploy.yml` runs `wrangler deploy`
+on every push to `main`, and can be run by hand from the Actions tab. It needs two repository
+secrets, the same pair the sibling `industries.direct` site uses:
 
-There is deliberately **no GitHub Actions deploy workflow** here, unlike the sibling
-`industries.direct` site. Two pipelines both running `wrangler deploy` on the same push would
-race for the same Worker and the same custom domain. Because the integration exists and the
-Actions workflow would have to be given its own credentials, the integration wins.
+| Secret | Purpose |
+|---|---|
+| `CLOUDFLARE_API_TOKEN` | Authenticates the deploy. |
+| `CLOUDFLARE_ACCOUNT_ID` | The account the Worker lives in. |
+
+Scope the token with Cloudflare's **Edit Cloudflare Workers** template, granting it both this
+account *and* the `erektor.support` zone. Account → Workers Scripts: Edit alone is not
+enough: the `custom_domain` route in `wrangler.jsonc` also needs Zone → Workers Routes: Edit,
+and a token missing it fails *after* the script has already uploaded — the Worker updates,
+the route does not, and the deploy reports an error for a site that looks half-deployed.
+
+**Cloudflare's Git integration (Workers Builds) must be disconnected**, or this races it.
+Two pipelines both running `wrangler deploy` on the same push contend for the same Worker and
+the same custom domain, and neither knows the other exists. Disconnect it under Workers &
+Pages → the service → Settings → Builds → Git repository.
+
+Why the move: the integration is keyed to a specific repo, not a name. When this repo went
+from `mellonbot/support.erektor-return.systems-website` to
+`industries-direct/erektor.support-website`, GitHub's redirect kept the old URL browsable and
+Cloudflare kept building off the forwarded webhook — until it silently stopped, and every
+push after PR #12 landed on `main` without a build. There is no dashboard warning for that:
+the Worker just stops updating while `git log` keeps moving. A workflow committed *in* the
+repo cannot detach that way; it moves with the repo.
+
+What is lost with it: the `Workers Builds: support-erektor-return-systems-website` check, and
+with it **preview builds on pull requests**. This workflow deploys `main` only, so a PR no
+longer gets a preview URL. Adding one back means a second job running
+`wrangler versions upload` on `pull_request`.
 
 Consequences worth knowing:
 
-- `name` in `wrangler.jsonc` must stay equal to the connected Worker service. Change it and a
-  production build deploys a *second* service, binding `erektor.support` to that one and
-  leaving this one orphaned.
-- No `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` repository secrets are needed. The
-  integration carries its own credentials.
+- `name` in `wrangler.jsonc` must stay equal to the live Worker service. Change it and a
+  deploy creates a *second* service, binding `erektor.support` to that one and leaving this
+  one orphaned. The workflow asserts the name before wrangler runs, so this now fails the
+  build instead of silently splitting the site in two.
 - The `erektor.support` zone must exist in the account — `custom_domain` routes bind an
   existing zone, they do not register a domain.
-- The integration is keyed to a specific repo, not a name. When this repo moved from
-  `mellonbot/support.erektor-return.systems-website` to `industries-direct/erektor.support-website`,
-  GitHub's own redirect kept the old URL browsable, and Cloudflare kept building for a while
-  off the same forwarded webhook — but that stopped silently at some point, and every push
-  after PR #12 landed on `main` without a build. There is no dashboard warning for this: the
-  Worker just quietly stops updating while `git log` keeps moving. If a push to `main` isn't
-  showing up under Deployments within a minute or two, check Settings → Builds → Git
-  repository points at the *current* owner/name before debugging anything else.
+- `.assetsignore` already excludes `.github/`, so the workflow is not uploaded as a static
+  asset.
 
 ### How routing works
 
