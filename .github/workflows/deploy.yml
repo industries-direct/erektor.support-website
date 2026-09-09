@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Serialize deploys so two pushes in quick succession cannot land out of order
+# on the same Worker. This does NOT protect against Cloudflare's own Git
+# integration, which is why that has to be disconnected -- see README.
+concurrency:
+  group: deploy-erektor-support
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The service name is load-bearing: deploying under a different one
+      # creates a SECOND Worker and binds erektor.support to that, orphaning
+      # the live service. Cheap to assert, expensive to discover afterwards.
+      - name: Check the Worker service name
+        run: |
+          if ! grep -q '"name": "support-erektor-return-systems-website"' wrangler.jsonc; then
+            echo "::error file=wrangler.jsonc::Worker service name changed. Deploying would create a second service and rebind erektor.support to it." >&2
+            exit 1
+          fi
+
+      - name: Sanitize Cloudflare account ID
+        id: cloudflare-account
+        run: |
+          ACCOUNT_ID=$(printf '%s' "$RAW_ACCOUNT_ID" | tr -cd 'A-Za-z0-9_-')
+          if [ -z "$ACCOUNT_ID" ]; then
+            echo "::error::CLOUDFLARE_ACCOUNT_ID secret is empty after sanitization" >&2
+            exit 1
+          fi
+          echo "::add-mask::$ACCOUNT_ID"
+          echo "account-id=$ACCOUNT_ID" >> "$GITHUB_OUTPUT"
+        env:
+          RAW_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: deploy
+          wranglerVersion: "4"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ steps.cloudflare-account.outputs.account-id }}
