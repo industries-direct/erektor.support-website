@@ -152,14 +152,27 @@ and validates the serial that route is filed against. Two optional bindings:
 | `REQUESTS` | KV namespace | durable store for submitted requests |
 | `INTAKE_WEBHOOK` | secret | URL forwarded to for ticketing and paging |
 
-Both are optional and the endpoint degrades instead of failing — an unbound deployment still
-accepts, validates and acknowledges requests, reporting `received-unstored`. **Neither is
-bound yet**, so today a submitted request reaches nobody: the operator gets a reference
-number and a copyable summary, and that is all. Bind them before this carries real traffic:
+Both are optional and the endpoint degrades instead of failing rather than refusing the
+request: with neither bound it still accepts, validates and acknowledges, and the operator
+gets a reference number and a copyable summary that reaches nobody on its own.
+
+**Do not trust this file for whether a given deployment is bound** — ask the endpoint. It
+reports its own state in every response: `status` comes back as `received-unstored` when the
+KV store did not take the record, and `received` when it did.
+
+The two bindings are not bound the same way:
+
+- `INTAKE_WEBHOOK` is a secret, so it needs no change here. `wrangler secret put` is the whole
+  of it and the forward starts on the next request.
+- `REQUESTS` is a KV namespace, and creating one does nothing until its id is in
+  `wrangler.jsonc`. **There is no `kv_namespaces` block in that file**, so `env.REQUESTS` is
+  undefined in every deployment built from this repo, whatever exists in the account. That
+  sentence stops being true the moment someone adds the block — which is the point of stating
+  it about the repo rather than about today.
 
 ```sh
-wrangler kv namespace create REQUESTS   # then add the id to wrangler.jsonc
 wrangler secret put INTAKE_WEBHOOK
+wrangler kv namespace create REQUESTS   # then add the id to wrangler.jsonc, per above
 ```
 
 ---
