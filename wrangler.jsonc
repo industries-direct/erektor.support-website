@@ -22,6 +22,33 @@
     // ...which is exactly why the intake endpoint has to jump the queue:
     // without this it would be answered with 404.html instead of reaching
     // the Worker.
-    "run_worker_first": ["/api/*"]
-  }
+    //
+    // /internal/* is here for a sharper reason than reachability: those pages
+    // ARE static assets, and without this line the asset layer would serve the
+    // leg registry straight off the CDN to anyone who guessed the path. This
+    // entry is what puts src/auth.js in front of them. Removing it publishes
+    // the fleet, silently and with no error anywhere.
+    "run_worker_first": ["/api/*", "/internal/*"]
+  },
+
+  // The internal leg registry (src/registry.js). Create it with
+  //   wrangler d1 create erektor-registry
+  //   wrangler d1 migrations apply erektor-registry --remote
+  // then uncomment this block with the id it prints. Until it is bound,
+  // /api/registry/* answers 503 and the public intake simply skips
+  // reconciliation - the portal itself is unaffected.
+  //
+  // The section also needs two secrets, which are NOT config and never live
+  // in this file:
+  //   wrangler secret put REGISTRY_SECRET   # HMAC key for session cookies
+  //   wrangler secret put REGISTRY_ACCESS   # JSON array of operators
+  //
+  // "d1_databases": [
+  //   {
+  //     "binding": "REGISTRY",
+  //     "database_name": "erektor-registry",
+  //     "database_id": "<from wrangler d1 create>",
+  //     "migrations_dir": "migrations"
+  //   }
+  // ]
 }

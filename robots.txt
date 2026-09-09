@@ -1,0 +1,7 @@
+# The public portal is meant to be found: an operator searching a fault code
+# should land on it. /internal/ is the leg registry and is gated in the Worker
+# (src/auth.js) - this line is courtesy to well-behaved crawlers, not the
+# control. The control is run_worker_first in wrangler.jsonc.
+User-agent: *
+Disallow: /internal/
+Disallow: /api/

@@ -6,6 +6,7 @@ wrangler.jsonc
 README.md
 src/
 tools/
+migrations/
 node_modules/
 package.json
 package-lock.json

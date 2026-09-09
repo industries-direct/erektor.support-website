@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enter legs — EREKTOR Support</title>
+<meta name="description" content="Enter newly manufactured Erektor legs into the registry, one at a time or a work order at once.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script src="../assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
+        <a href="../maintenance.html" class="">Maintenance</a>
+        <a href="../docs/" class="">Documentation</a>
+        <a href="../docs/faults.html" class="">Fault codes</a>
+        <a href="../firmware/index.html" class="">Firmware</a>
+      <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="wrap">
+  <div class="regbar" data-regbar>
+    <span class="regbar__id">Registry</span>
+      <a href="index.html">Fleet</a>
+      <a href="intake.html" aria-current="page">Enter legs</a>
+    <span class="regbar__end">
+      <a href="../index.html">Public portal</a>
+      <button type="button" class="btn btn--sm" data-signout>Sign out</button>
+    </span>
+  </div>
+</div>
+
+<section class="wrap wrap--narrow" data-intake>
+  <p class="crumbs"><a href="index.html">Fleet</a><span>/</span>Enter legs</p>
+  <span class="eyebrow">Manufacturing intake</span>
+  <h1>Enter legs</h1>
+  <p class="lede">A leg enters the registry when its frame is stamped, not when it ships. The mechanical
+  serial is the record; everything that happens to the leg afterwards attaches to it.</p>
+
+  <div data-error hidden></div>
+
+  <div class="note note--info">
+    <p class="note__title">Two identities, entered at two different moments</p>
+    <p>A frame with no ClearCore bound has no operational identity, so it enters as <b>Built</b> and cannot
+    be assigned. It becomes <b>Commissioned</b> when electronics go in &mdash; recorded on the leg&rsquo;s own page,
+    which is also where a later swap is recorded. See
+    <a href="../docs/leg.html#identity">serials and identity</a>.</p>
+  </div>
+
+  <h2 class="mt-2">A work order</h2>
+  <p>A production run is consecutive frames, so give the first serial and the count rather than typing
+  fifty numbers. Nothing is sent until you have read the list back.</p>
+
+  <form class="form" data-batch>
+    <div class="grid grid--2">
+      <div class="field">
+        <label for="bfirst" class="required">First mechanical serial</label>
+        <input type="text" id="bfirst" name="first" class="mono" placeholder="MX-26-00101"
+               autocomplete="off" autocapitalize="characters" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="bcount" class="required">How many frames</label>
+        <input type="number" id="bcount" name="count" class="mono" min="1" max="200" step="1" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="bvariant" class="required">Variant</label>
+        <select id="bvariant" name="variant"><option value="">Select&hellip;</option></select>
+      </div>
+      <div class="field">
+        <label for="bbatch">Work order</label>
+        <input type="text" id="bbatch" name="batch" class="mono" placeholder="WO-2026-014" autocomplete="off">
+      </div>
+    </div>
+    <input type="hidden" name="controller" value="">
+  </form>
+  <div data-preview class="mt-1"></div>
+
+  <h2 class="mt-3">One leg</h2>
+  <p>For a frame that does not belong to a run, or one already carrying its electronics.</p>
+
+  <form class="form" data-intake-form>
+    <div class="field">
+      <label for="imx" class="required">Mechanical serial</label>
+      <input type="text" id="imx" name="mechanical_serial" class="mono" data-serial="mechanical" required autocomplete="off">
+      <p class="field__hint">Stamped into the frame above the bracket face. This is the registry key.</p>
+      <p class="field__err" data-serial-err hidden></p>
+    </div>
+    <div class="field">
+      <label for="ivariant" class="required">Variant</label>
+      <select id="ivariant" name="variant" required><option value="">Select&hellip;</option></select>
+    </div>
+    <div class="field">
+      <label for="iel">Electronics serial <span class="muted">(if already bound)</span></label>
+      <input type="text" id="iel" name="electronics_serial" class="mono" data-serial="electronics" autocomplete="off">
+      <p class="field__hint">Leave blank for a bare frame. Giving one enters the leg as Commissioned.</p>
+      <p class="field__err" data-serial-err hidden></p>
+    </div>
+    <div class="grid grid--2">
+      <div class="field">
+        <label for="icontroller">Controller</label>
+        <input type="text" id="icontroller" name="controller" class="mono" placeholder="CC-1" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="ibatch">Work order</label>
+        <input type="text" id="ibatch" name="batch" class="mono" autocomplete="off">
+      </div>
+    </div>
+    <div class="field">
+      <label for="inotes">Notes</label>
+      <textarea id="inotes" name="notes" placeholder="Anything about this frame that will not be obvious in six months."></textarea>
+    </div>
+    <div class="btn-row">
+      <button type="submit" class="btn btn--primary">Enter this leg</button>
+    </div>
+  </form>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="../dispatch.html">Request a replacement leg</a></li><li><a href="../maintenance.html">Flag a leg for ERS</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="../docs/operating.html">Operating procedures</a></li><li><a href="../docs/ers.html">The return line</a></li><li><a href="../docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="../firmware/index.html">Controller firmware</a></li><li><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/registry.js" defer></script>
+</body>
+</html>

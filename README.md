@@ -53,20 +53,33 @@ docs/
   safety.html           Held loads, the walk-off, transport securement
 firmware/index.html     Manifest, release notes, how a bundle reaches a leg
 
+internal/               The leg registry — gated, not linked from anywhere public
+  signin.html           The one page in the section served without a session
+  index.html            Fleet console: state, flags, intervals, reconciliation
+  leg.html              One leg: both identities, event history, actions
+  intake.html           Enter legs as they come off the line, singly or a work order
+
 data/
   hardware.json         Leg variants, controllers, serial formats
   faults.json           Fault code → service route table
   firmware.json         Release manifest (the OTA seed)
+  lifecycle.json        Leg states, transitions, event types, service intervals
 
 assets/css/site.css     Design system (EREKTOR brand tokens, field-tuned)
 assets/js/app.js        Progressive enhancement only
+assets/js/registry.js   The registry console — loaded only by /internal/*
 404.html                Served for any missing path (root-absolute links)
-src/index.js            Worker entry — routes /api/*, assets handle the rest
+src/index.js            Worker entry — routes /api/*, gates /internal/*
 src/requests.js         Intake endpoint
-tools/                  Page assembler (see below)
+src/registry.js         Registry API over D1
+src/auth.js             The gate on /internal/* and /api/registry/*
+src/serials.js          Serial formats, shared by both endpoints
+migrations/             D1 schema for the registry
+tools/                  Page assembler and the registry test suite (see below)
 _headers _redirects     Edge config
+robots.txt              Keeps well-behaved crawlers out of /internal/
 wrangler.jsonc          Deploy config
-.assetsignore           Keeps src/, tools/ and repo metadata off the CDN
+.assetsignore           Keeps src/, tools/, migrations/ and repo metadata off the CDN
 ```
 
 **Product facts live in `data/*.json`, never in markup.** The pages fetch and render them at
@@ -81,15 +94,15 @@ There is **no deploy-time build**. Wrangler uploads the committed HTML as-is. Th
 deliberate: the previous generation of this site used Jekyll, and the Ruby toolchain is what
 broke the deploys.
 
-The eleven pages share a header and footer via a local assembler that you run yourself and
+The fifteen pages share a header and footer via a local assembler that you run yourself and
 commit the output of:
 
 ```sh
 python3 tools/pages.py     # rewrites the .html files in place
 ```
 
-Edit page content in `tools/pages.py` and `tools/docs.py`, diagrams in `tools/diagrams.py`,
-then re-run and commit. Editing the generated `.html` directly works too, but the next run
+Edit page content in `tools/pages.py`, `tools/docs.py` and `tools/internal.py`, diagrams in
+`tools/diagrams.py`, then re-run and commit. Editing the generated `.html` directly works too, but the next run
 of the assembler will overwrite it.
 
 ## Deploying
@@ -146,9 +159,15 @@ Consequences worth knowing:
 ### How routing works
 
 Requests hit the static-asset layer first, which applies `_headers` and `_redirects` and
-falls back to `404.html`. The one exception is `/api/*`, listed in `run_worker_first`, which
-reaches `src/index.js` instead — without that, `not_found_handling: "404-page"` would answer
-the intake endpoint with the 404 page.
+falls back to `404.html`. Two prefixes are listed in `run_worker_first` and reach
+`src/index.js` instead:
+
+- `/api/*` — without it, `not_found_handling: "404-page"` would answer the intake endpoint
+  with the 404 page.
+- `/internal/*` — for a sharper reason. Those pages *are* static assets, so without this line
+  the asset layer would serve the leg registry straight off the CDN to anyone who guessed the
+  path, and the gate in `src/auth.js` would never run. **Removing that entry publishes the
+  fleet, silently, with no error anywhere.**
 
 `_headers` only decorates *asset* responses. Responses generated in the Worker set their own
 headers, which is why `src/index.js` repeats them.
@@ -172,8 +191,9 @@ and validates the serial that route is filed against. Two optional bindings:
 |---|---|---|
 | `REQUESTS` | KV namespace | durable store for submitted requests |
 | `INTAKE_WEBHOOK` | secret | URL forwarded to for ticketing and paging |
+| `REGISTRY` | D1 database | the leg registry, so a request lands on the leg's own record |
 
-Both are optional and the endpoint degrades instead of failing — an unbound deployment still
+All three are optional and the endpoint degrades instead of failing — an unbound deployment still
 accepts, validates and acknowledges requests, reporting `received-unstored`. **Neither is
 bound yet**, so today a submitted request reaches nobody: the operator gets a reference
 number and a copyable summary, and that is all. Bind them before this carries real traffic:
@@ -196,6 +216,102 @@ Serving actual binaries is not built yet. When it is, the manifest shape is alre
 add a `url` per release and an endpoint that answers a controller's `{target, version,
 channel}` poll from this file.
 
+
+---
+
+## The leg registry
+
+`/internal/` is the fleet record: every frame EREKTOR has built, what is bound to it, where it
+is, and what it is carrying. It is the registry `docs/ers.html#registry` already describes —
+"an always-online registry of every leg across every facility", whose main job is preventing a
+false loss. It is not linked from anywhere public and is gated in the Worker.
+
+### Why it is shaped this way
+
+The same three facts that shape the public portal decide the schema:
+
+1. **The durable entity is the leg.** There is no persistent Erektor above it, so there is no
+   machine record to hang a leg off — the leg *is* the record.
+2. **A leg has two identities.** The registry is keyed on the **mechanical** serial, which is
+   stamped into the frame and permanent. The electronics serial lives in a nullable,
+   uniquely-indexed column: a *current binding*, rewritten by a swap. Keying on the
+   electronics serial instead would silently reset a leg's wear, interval and history every
+   time a ClearCore was changed — which is the one mistake this schema exists to prevent, and
+   the one the test suite checks first.
+3. **Every leg comes home.** So an open flag is a column on the leg rather than a ticket
+   somewhere else, because inspection reads flags off the frame as the leg passes.
+
+`data/lifecycle.json` is to the registry what `data/faults.json` is to the portal: the states,
+the transitions between them, the event types, and the service intervals. The console builds
+its filters and its event picker from it, and `src/registry.js` fetches it from the asset layer
+rather than duplicating it, so a state added there appears in the UI and is enforced by the API
+without either being edited.
+
+### Events, not edits
+
+`leg_events` is append-only and is never rewritten — a correction is another event. The `legs`
+table is a *projection* of that log, and every write appends the event and updates the
+projection in one D1 batch, so the two cannot disagree and the projection can be rebuilt from
+the log. State moves only by recording an event; the console's field editor deliberately cannot
+touch it.
+
+Two consequences worth stating:
+
+- **Only a closed service record resets the interval.** Not a controller swap. That is the
+  whole point of accruing wear against the frame, and `SES-30` clears the same way.
+- **A field request lands on the leg.** `POST /api/requests` reconciles into the registry: a
+  flag sets the leg's open flag, a dispatch appends to its history. A request naming a serial
+  the registry does not hold goes to `orphan_intake` and shows on the console as unmatched —
+  dropping it would be exactly the failure the public intake is written to avoid.
+
+### The gate
+
+The public portal degrades **open**: if intake is unreachable the operator still walks away
+with a reference number, because a leg that has stopped is not the moment to lose a request.
+The registry degrades **closed**. Unbound secrets serve nothing; no session redirects to
+sign-in; the failure mode being avoided is publishing the fleet, not losing a keystroke.
+
+Enforcement is one place — `src/auth.js` — reached because `/internal/*` is in
+`run_worker_first`. Sessions are HMAC-signed cookies (`HttpOnly`, `Secure`, `SameSite=Strict`),
+one shift long. Roles come from `lifecycle.json`: `viewer` reads, `operator` writes, `admin`
+additionally retires and deletes. Sign-in attempts are throttled per IP.
+
+**Put Cloudflare Access in front of this.** Zero Trust gives SSO, per-person revocation and an
+edge audit trail that an access code cannot. The Worker gate is what makes the section
+non-public from day one with nothing to configure in a dashboard; it is a floor, not a ceiling.
+
+### Provisioning
+
+Nothing here is bound yet, and until it is, `/internal/` answers 503 and `/api/registry/*`
+answers 503. The public portal is unaffected either way.
+
+```sh
+wrangler d1 create erektor-registry                          # then uncomment the
+                                                             # d1_databases block in
+                                                             # wrangler.jsonc with the id
+wrangler d1 migrations apply erektor-registry --remote
+
+wrangler secret put REGISTRY_SECRET   # any long random string; signs session cookies
+wrangler secret put REGISTRY_ACCESS   # [{"code":"…","id":"em","name":"E Mellon","role":"admin"}]
+```
+
+`REGISTRY_ACCESS` is a JSON array of operators. Rotating an access code means editing that
+secret; there is no user table, deliberately — the audit trail that matters is `leg_events`,
+which records who did what to which leg.
+
+### Tests
+
+```sh
+node --experimental-sqlite tools/test/registry.mjs
+```
+
+Runs the real Worker against a real SQLite database via a small D1 shim, so the SQL is
+genuinely exercised: the unique partial index on the electronics serial, the interval
+arithmetic, the batch that keeps the projection in step with the log. It checks the rules the
+design rests on rather than that the endpoints answer — the gate, the identity split, what does
+and does not reset an interval, the transition table, and that an unmatched field request is
+held rather than dropped.
+
 ---
 
 ## Conventions
@@ -204,6 +320,9 @@ channel}` poll from this file.
   validation and the API's server-side check. Change them in one place.
 - **Fault codes** are `SUB-nn`. Adding one means adding an entry to `data/faults.json` with a
   `route` and a `doc` anchor that exists — nothing else.
+- **Leg states** are declared once, in `data/lifecycle.json`, and drive the console's filters,
+  its event picker and the API's transition check. Adding a state means adding an entry with a
+  `to` list — nothing else.
 - **Diagrams** are inline SVG using theme classes (`d-stroke`, `d-accent`, `d-label`…) so
   they stay legible in both themes and in print. No raster images.
 - **Colour carries meaning**: red is the dispatch/critical route, amber is the flag route,
