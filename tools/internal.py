@@ -611,7 +611,7 @@ page("internal/materials.html", 1, "Materials",
     </section>
 
     <section class="panel" aria-labelledby="p-add">
-      <header class="panel__head"><h2 id="p-add">Add a material</h2></header>
+      <header class="panel__head"><h2 id="p-add" data-material-title>Add a material</h2></header>
       <form class="panel__body form" data-material-form>
         <div class="grid grid--2 grid--tight">
           <div class="field">
@@ -631,7 +631,7 @@ page("internal/materials.html", 1, "Materials",
             <label for="areorder">Reorder at</label>
             <input type="number" id="areorder" name="reorder_at" class="mono" min="0" step="any" inputmode="decimal" placeholder="0">
           </div>
-          <div class="field">
+          <div class="field" data-when-new>
             <label for="aonhand">Opening stock</label>
             <input type="number" id="aonhand" name="on_hand" class="mono" min="0" step="any" inputmode="decimal" placeholder="0">
           </div>
@@ -644,7 +644,12 @@ page("internal/materials.html", 1, "Materials",
           <label for="asupplier">Supplier</label>
           <input type="text" id="asupplier" name="supplier" autocomplete="off">
         </div>
-        <div class="btn-row"><button type="submit" class="btn">Add material</button></div>
+        <p class="field__hint" data-when-edit hidden>The count is not edited here: record a delivery, a use
+        or a stock count in <b>Record a stock move</b>.</p>
+        <div class="btn-row">
+          <button type="submit" class="btn" data-material-submit>Add material</button>
+          <button type="button" class="btn" data-material-cancel hidden>Cancel</button>
+        </div>
         <div data-result hidden></div>
       </form>
     </section>
