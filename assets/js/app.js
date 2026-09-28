@@ -21,6 +21,14 @@
     url: function (p) { return BASE + String(p).replace(/^\//, ''); }
   };
 
+  // The CSP (style-src 'self') drops style="" attributes in injected markup,
+  // so bar widths ride on data-w and are applied through the CSSOM instead.
+  ERS.widths = function (root) {
+    root.querySelectorAll('[data-w]').forEach(function (el) {
+      el.style.width = el.getAttribute('data-w') + '%';
+    });
+  };
+
   ERS.esc = function (s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -313,6 +321,7 @@
       var el = root.querySelector(sel);
       if (!el) return;
       el.innerHTML = html;
+      ERS.widths(el);
       // Marks the swap so the panel fades in rather than snapping. The space
       // it lands in is already reserved, so nothing below it moves.
       el.setAttribute('data-filled', '');
@@ -369,7 +378,7 @@
         var g = by[sub];
         var name = String(f.subsystems[sub] || sub).split('—')[0].trim();
         var mix = ROUTES.filter(function (r) { return g[r]; }).map(function (r) {
-          return '<span class="m-' + r + '" style="width:' + (g[r] / g.total * 100) + '%"></span>';
+          return '<span class="m-' + r + '" data-w="' + (g[r] / g.total * 100) + '"></span>';
         }).join('');
         var breakdown = ROUTES.filter(function (r) { return g[r]; }).map(function (r) {
           return g[r] + ' ' + ROUTE_WORD[r];
@@ -378,7 +387,7 @@
           '<span class="chartrow__k">' + tag(sub) + ' ' + ERS.esc(name) + '</span>' +
           '<span class="chartrow__sub">' + breakdown + '</span>' +
           '<span class="chartrow__track"><span class="mixbar" aria-hidden="true" ' +
-            'style="width:' + (g.total / busiest * 100) + '%">' + mix + '</span></span>' +
+            'data-w="' + (g.total / busiest * 100) + '">' + mix + '</span></span>' +
           '<span class="chartrow__v">' + g.total + (g.total === 1 ? ' code' : ' codes') + '</span>' +
         '</div>';
       }).join('') + '</div>');
