@@ -106,7 +106,7 @@
     var pct = Math.min(Math.round((leg.interval_fraction || 0) * 100), 100);
     var kind = leg.due ? 'dispatch' : leg.due_soon ? 'flag' : 'self';
     return '<span class="meter" title="' + esc(leg.hours_since_service + ' h since the last closed service record') + '">' +
-      '<span class="meter__track"><span class="meter__fill meter__fill--' + kind + '" style="width:' + pct + '%"></span></span>' +
+      '<span class="meter__track"><span class="meter__fill meter__fill--' + kind + '" data-w="' + pct + '"></span></span>' +
       '<b class="mono">' + esc(leg.hours_since_service) + '</b></span>';
   }
 
@@ -212,9 +212,10 @@
             return '<div class="chartrow">' +
               '<span class="chartrow__k">' + esc(st.label) + '<span class="chartrow__sub">' + esc(st.short) + '</span></span>' +
               '<span class="chartrow__track"><span class="mixbar"><span class="m-' + barClass(st.kind) +
-                '" style="width:' + (n / total * 100) + '%"></span></span></span>' +
+                '" data-w="' + (n / total * 100) + '"></span></span></span>' +
               '<b class="chartrow__v mono">' + n + '</b></div>';
           }).join('') || '<p class="muted small">No legs entered yet.</p>';
+          ERS.widths(dist);
         }
 
         var act = root.querySelector('[data-activity]');
@@ -286,6 +287,7 @@
             ? '<p class="small muted mt-0">Showing ' + d.legs.length + ' of ' + d.total +
               '. Narrow the filters, or <a href="' + ERS.url('api/registry/export') + '">export the lot as CSV</a>.</p>'
             : '');
+        ERS.widths(listEl);
       }).catch(function (err) {
         listEl.removeAttribute('aria-busy');
         fail(errEl, err);
@@ -390,7 +392,7 @@
         : '<p class="muted">Nothing recorded yet.</p>';
     }
 
-    function set(sel, html) { var el = root.querySelector(sel); if (el) el.innerHTML = html; }
+    function set(sel, html) { var el = root.querySelector(sel); if (el) { el.innerHTML = html; ERS.widths(el); } }
     function txt(sel, v) { var el = root.querySelector(sel); if (el) el.textContent = v; }
 
     /* The event form. Which fields it shows follows from the event type and
