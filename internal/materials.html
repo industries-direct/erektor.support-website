@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materials — EREKTOR Support</title>
+<meta name="description" content="Stock against the leg bill of materials, reorder points, and purchase orders for approval.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script src="../assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../index.html">
+      <b>EREKTOR</b><span class="tag">Support</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+        <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
+        <a href="../maintenance.html" class="">Maintenance</a>
+        <a href="../docs/" class="">Documentation</a>
+        <a href="../docs/faults.html" class="">Fault codes</a>
+        <a href="../firmware/index.html" class="">Firmware</a>
+      <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="wrap">
+  <div class="regbar" data-regbar>
+    <span class="regbar__id">Registry</span>
+      <a href="index.html">Fleet</a>
+      <a href="intake.html">Enter legs</a>
+      <a href="batches.html">Batches</a>
+      <a href="materials.html" aria-current="page">Materials</a>
+      <a href="timesheets.html">Timesheets</a>
+      <a href="metrics.html">Metrics</a>
+    <span class="regbar__end">
+      <a href="../index.html">Public portal</a>
+      <button type="button" class="btn btn--sm" data-signout>Sign out</button>
+    </span>
+  </div>
+</div>
+
+<section class="wrap dash-head">
+  <div class="dash-head__id">
+    <span class="eyebrow">Manufacturing &middot; supply</span>
+    <h1>Materials</h1>
+    <p class="lede">What is on the shelf against what the line draws. A part with a <b>per leg</b> quantity is on the
+    bill of materials, and every logged batch draws it automatically. The count only ever moves by a recorded
+    delivery, use or stock count &mdash; never by editing the number.</p>
+  </div>
+  <dl class="statbar" aria-label="Stock at a glance">
+    <div><dt>Parts listed</dt><dd class="mono" data-k="parts">&mdash;</dd></div>
+    <div><dt>Below reorder point</dt><dd class="mono" data-k="order">&mdash;</dd></div>
+    <div><dt>Orders awaiting approval</dt><dd class="mono" data-k="drafts">&mdash;</dd></div>
+    <div><dt>Orders to receive</dt><dd class="mono" data-k="approved">&mdash;</dd></div>
+  </dl>
+</section>
+
+<section class="wrap mt-2" data-materials-page>
+  <div data-error hidden></div>
+
+  <div class="dash-secline">
+    <h2>Stock</h2>
+    <p>Days of cover is stock divided by the last 30 days&rsquo; average daily draw.</p>
+  </div>
+  <div data-materials><p class="muted">Loading&hellip;</p></div>
+
+  <div class="panels mt-2">
+    <section class="panel panel--span2" aria-labelledby="p-orders">
+      <header class="panel__head">
+        <h2 id="p-orders">Purchase orders</h2>
+        <span class="panel__meta mono">draft &rarr; approved &rarr; received</span>
+      </header>
+      <div data-orders><p class="muted small panel__body">Loading&hellip;</p></div>
+      <footer class="panel__foot">
+        <span class="small muted">An order is approved by an administrator other than whoever drafted it.
+        Receiving it books every line onto the shelf.</span>
+      </footer>
+    </section>
+
+    <section class="panel" aria-labelledby="p-draft">
+      <header class="panel__head"><h2 id="p-draft">Draft an order</h2></header>
+      <form class="panel__body form" data-order-form>
+        <p class="small muted mt-0">Parts below their reorder point are filled in. Set a quantity of 0 to leave one off.</p>
+        <div data-order-lines></div>
+        <div class="field">
+          <label for="oneed">Needed by</label>
+          <input type="date" id="oneed" name="needed_by">
+        </div>
+        <div class="btn-row"><button type="submit" class="btn btn--primary">Send for approval</button></div>
+        <div data-result hidden></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="grid grid--2 mt-3">
+    <section class="panel" aria-labelledby="p-move">
+      <header class="panel__head"><h2 id="p-move">Record a stock move</h2></header>
+      <form class="panel__body form" data-move-form>
+        <div class="field">
+          <label for="msku" class="required">Part</label>
+          <select id="msku" name="sku" required></select>
+        </div>
+        <div class="grid grid--2 grid--tight">
+          <div class="field">
+            <label for="mreason" class="required">What happened</label>
+            <select id="mreason" name="reason" required>
+              <option value="received">Received</option>
+              <option value="used">Used, off the BOM</option>
+              <option value="count">Stock count</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="mqty" class="required">Quantity</label>
+            <input type="number" id="mqty" name="quantity" class="mono" required min="0" step="any" inputmode="decimal">
+          </div>
+        </div>
+        <p class="field__hint">A stock count gives what is on the shelf now; the difference is recorded.</p>
+        <div class="field">
+          <label for="mref">Reference</label>
+          <input type="text" id="mref" name="reference" class="mono" placeholder="Delivery note, reason" autocomplete="off">
+        </div>
+        <div class="btn-row"><button type="submit" class="btn">Record it</button></div>
+        <div data-result hidden></div>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="p-add">
+      <header class="panel__head"><h2 id="p-add">Add a material</h2></header>
+      <form class="panel__body form" data-material-form>
+        <div class="grid grid--2 grid--tight">
+          <div class="field">
+            <label for="asku" class="required">Part number</label>
+            <input type="text" id="asku" name="sku" class="mono" required placeholder="BRK-U2" autocomplete="off"
+                   autocapitalize="characters" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="aname" class="required">Name</label>
+            <input type="text" id="aname" name="name" required placeholder="Rail bracket" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="aper">Per leg</label>
+            <input type="number" id="aper" name="per_leg" class="mono" min="0" step="any" inputmode="decimal" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="areorder">Reorder at</label>
+            <input type="number" id="areorder" name="reorder_at" class="mono" min="0" step="any" inputmode="decimal" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="aonhand">Opening stock</label>
+            <input type="number" id="aonhand" name="on_hand" class="mono" min="0" step="any" inputmode="decimal" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="aunit">Unit</label>
+            <input type="text" id="aunit" name="unit" placeholder="each" autocomplete="off">
+          </div>
+        </div>
+        <div class="field">
+          <label for="asupplier">Supplier</label>
+          <input type="text" id="asupplier" name="supplier" autocomplete="off">
+        </div>
+        <div class="btn-row"><button type="submit" class="btn">Add material</button></div>
+        <div data-result hidden></div>
+      </form>
+    </section>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-cols">
+        <div>
+          <h4>Service</h4>
+          <ul><li><a href="../dispatch.html">Request a replacement leg</a></li><li><a href="../maintenance.html">Flag a leg for ERS</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul><li><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="../docs/operating.html">Operating procedures</a></li><li><a href="../docs/ers.html">The return line</a></li><li><a href="../docs/safety.html">Safety</a></li></ul>
+        </div>
+        <div>
+          <h4>Fleet</h4>
+          <ul><li><a href="../firmware/index.html">Controller firmware</a></li><li><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@erektor.systems">support@erektor.systems</a></li>
+            <li><a href="https://erektor.systems">erektor.systems</a></li>
+          </ul>
+          <p class="small muted mt-0">Emergency dispatch is staffed 24/7. Everything else answers on the next working day.</p>
+        </div>
+    </div>
+    <div class="foot-base">
+      <div>EREKTOR &middot; Erektor Return System</div>
+      <div class="compliance">
+        <span>ISO/TS 15066</span>
+        <span>ANSI/RIA R15.08</span>
+        <span>FMCSA &sect;393.100&ndash;136</span>
+      </div>
+      <div>&copy; <span id="year">2026</span> EREKTOR</div>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/registry.js" defer></script>
+<script src="../assets/js/manufacturing.js" defer></script>
+</body>
+</html>

@@ -15,6 +15,8 @@ from build import page
 
 NOINDEX = '\n<meta name="robots" content="noindex, nofollow">'
 SCRIPT = '\n<script src="../assets/js/registry.js" defer></script>'
+# The manufacturing pages build on REG from registry.js, so they load after it.
+MFG = SCRIPT + '\n<script src="../assets/js/manufacturing.js" defer></script>'
 
 
 def regbar(current):
@@ -23,6 +25,10 @@ def regbar(current):
     links = [
         ("index.html", "Fleet"),
         ("intake.html", "Enter legs"),
+        ("batches.html", "Batches"),
+        ("materials.html", "Materials"),
+        ("timesheets.html", "Timesheets"),
+        ("metrics.html", "Metrics"),
     ]
     items = "".join(
         '\n      <a href="{href}"{cur}>{label}</a>'.format(
@@ -430,3 +436,398 @@ page("internal/intake.html", 1, "Enter legs",
 </section>
 """,
      head_extra=NOINDEX, foot_extra=SCRIPT)
+
+
+# ===========================================================================
+# Manufacturing — the facility's side: batches, stock, time, and the numbers
+#
+# Same gate, same database as the fleet. A batch is the run that put frames
+# into the registry, so its frames are entered from here and every metric
+# joins the two: a batch's first-pass yield against its field returns.
+# ===========================================================================
+page("internal/batches.html", 1, "Batches",
+     "Log a production batch, enter its frames into the registry, and move it through QA to release.",
+     regbar("batches.html") + """
+<section class="wrap dash-head">
+  <div class="dash-head__id">
+    <span class="eyebrow">Manufacturing &middot; build</span>
+    <h1>Batches</h1>
+    <p class="lede">A batch is one production run of one variant. Logging it enters every frame into the registry
+    as <b>Built</b> and draws its bill of materials from stock, in one step &mdash; a run that cannot be entered
+    whole is not entered at all.</p>
+  </div>
+  <dl class="statbar" aria-label="Batches at a glance">
+    <div><dt>In assembly</dt><dd class="mono" data-k="assembly">&mdash;</dd></div>
+    <div><dt>In QA</dt><dd class="mono" data-k="qa">&mdash;</dd></div>
+    <div><dt>Commissioning</dt><dd class="mono" data-k="commissioning">&mdash;</dd></div>
+    <div><dt>Released</dt><dd class="mono" data-k="released">&mdash;</dd></div>
+  </dl>
+</section>
+
+<section class="wrap mt-2" data-batches-page>
+  <div data-error hidden></div>
+
+  <div class="panels">
+    <section class="panel panel--span2" aria-labelledby="p-batches">
+      <header class="panel__head">
+        <h2 id="p-batches">All batches</h2>
+        <span class="panel__meta mono" data-count></span>
+      </header>
+      <div data-batches><p class="muted small panel__body">Loading&hellip;</p></div>
+      <footer class="panel__foot">
+        <span class="small muted">Stages move forward one at a time. A batch is not released until its QA
+        result is recorded, so first-pass yield never has a hole in it.</span>
+      </footer>
+    </section>
+
+    <section class="panel" aria-labelledby="p-new">
+      <header class="panel__head"><h2 id="p-new">Log a batch</h2></header>
+      <form class="panel__body form" data-batch-form>
+        <div class="field">
+          <label for="bnum" class="required">Batch number</label>
+          <input type="text" id="bnum" name="batch_number" class="mono" required placeholder="B-2609-A"
+                 autocomplete="off" autocapitalize="characters" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="bvar" class="required">Variant</label>
+          <select id="bvar" name="variant" required><option value="">Select&hellip;</option></select>
+        </div>
+        <div class="grid grid--2 grid--tight">
+          <div class="field">
+            <label for="bfirst" class="required">First serial</label>
+            <input type="text" id="bfirst" name="first_serial" class="mono" required placeholder="MX-24-08237"
+                   autocomplete="off" autocapitalize="characters" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="bcount" class="required">Frames</label>
+            <input type="number" id="bcount" name="frame_count" class="mono" required min="1" max="200" step="1"
+                   inputmode="numeric">
+          </div>
+        </div>
+        <p class="field__hint" data-range aria-live="polite">Give the first serial and the frame count to see the range.</p>
+        <div class="field">
+          <label for="blots">Material lots used</label>
+          <input type="text" id="blots" name="lots" placeholder="Extrusion lot, bracket lot" autocomplete="off">
+          <p class="field__hint">Lets a field failure be traced to a lot, not just a batch.</p>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn--primary">Log batch and enter its frames</button>
+        </div>
+        <div data-result hidden></div>
+      </form>
+    </section>
+  </div>
+</section>
+""",
+     head_extra=NOINDEX, foot_extra=MFG)
+
+
+page("internal/materials.html", 1, "Materials",
+     "Stock against the leg bill of materials, reorder points, and purchase orders for approval.",
+     regbar("materials.html") + """
+<section class="wrap dash-head">
+  <div class="dash-head__id">
+    <span class="eyebrow">Manufacturing &middot; supply</span>
+    <h1>Materials</h1>
+    <p class="lede">What is on the shelf against what the line draws. A part with a <b>per leg</b> quantity is on the
+    bill of materials, and every logged batch draws it automatically. The count only ever moves by a recorded
+    delivery, use or stock count &mdash; never by editing the number.</p>
+  </div>
+  <dl class="statbar" aria-label="Stock at a glance">
+    <div><dt>Parts listed</dt><dd class="mono" data-k="parts">&mdash;</dd></div>
+    <div><dt>Below reorder point</dt><dd class="mono" data-k="order">&mdash;</dd></div>
+    <div><dt>Orders awaiting approval</dt><dd class="mono" data-k="drafts">&mdash;</dd></div>
+    <div><dt>Orders to receive</dt><dd class="mono" data-k="approved">&mdash;</dd></div>
+  </dl>
+</section>
+
+<section class="wrap mt-2" data-materials-page>
+  <div data-error hidden></div>
+
+  <div class="dash-secline">
+    <h2>Stock</h2>
+    <p>Days of cover is stock divided by the last 30 days&rsquo; average daily draw.</p>
+  </div>
+  <div data-materials><p class="muted">Loading&hellip;</p></div>
+
+  <div class="panels mt-2">
+    <section class="panel panel--span2" aria-labelledby="p-orders">
+      <header class="panel__head">
+        <h2 id="p-orders">Purchase orders</h2>
+        <span class="panel__meta mono">draft &rarr; approved &rarr; received</span>
+      </header>
+      <div data-orders><p class="muted small panel__body">Loading&hellip;</p></div>
+      <footer class="panel__foot">
+        <span class="small muted">An order is approved by an administrator other than whoever drafted it.
+        Receiving it books every line onto the shelf.</span>
+      </footer>
+    </section>
+
+    <section class="panel" aria-labelledby="p-draft">
+      <header class="panel__head"><h2 id="p-draft">Draft an order</h2></header>
+      <form class="panel__body form" data-order-form>
+        <p class="small muted mt-0">Parts below their reorder point are filled in. Set a quantity of 0 to leave one off.</p>
+        <div data-order-lines></div>
+        <div class="field">
+          <label for="oneed">Needed by</label>
+          <input type="date" id="oneed" name="needed_by">
+        </div>
+        <div class="btn-row"><button type="submit" class="btn btn--primary">Send for approval</button></div>
+        <div data-result hidden></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="grid grid--2 mt-3">
+    <section class="panel" aria-labelledby="p-move">
+      <header class="panel__head"><h2 id="p-move">Record a stock move</h2></header>
+      <form class="panel__body form" data-move-form>
+        <div class="field">
+          <label for="msku" class="required">Part</label>
+          <select id="msku" name="sku" required></select>
+        </div>
+        <div class="grid grid--2 grid--tight">
+          <div class="field">
+            <label for="mreason" class="required">What happened</label>
+            <select id="mreason" name="reason" required>
+              <option value="received">Received</option>
+              <option value="used">Used, off the BOM</option>
+              <option value="count">Stock count</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="mqty" class="required">Quantity</label>
+            <input type="number" id="mqty" name="quantity" class="mono" required min="0" step="any" inputmode="decimal">
+          </div>
+        </div>
+        <p class="field__hint">A stock count gives what is on the shelf now; the difference is recorded.</p>
+        <div class="field">
+          <label for="mref">Reference</label>
+          <input type="text" id="mref" name="reference" class="mono" placeholder="Delivery note, reason" autocomplete="off">
+        </div>
+        <div class="btn-row"><button type="submit" class="btn">Record it</button></div>
+        <div data-result hidden></div>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="p-add">
+      <header class="panel__head"><h2 id="p-add">Add a material</h2></header>
+      <form class="panel__body form" data-material-form>
+        <div class="grid grid--2 grid--tight">
+          <div class="field">
+            <label for="asku" class="required">Part number</label>
+            <input type="text" id="asku" name="sku" class="mono" required placeholder="BRK-U2" autocomplete="off"
+                   autocapitalize="characters" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="aname" class="required">Name</label>
+            <input type="text" id="aname" name="name" required placeholder="Rail bracket" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="aper">Per leg</label>
+            <input type="number" id="aper" name="per_leg" class="mono" min="0" step="any" inputmode="decimal" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="areorder">Reorder at</label>
+            <input type="number" id="areorder" name="reorder_at" class="mono" min="0" step="any" inputmode="decimal" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="aonhand">Opening stock</label>
+            <input type="number" id="aonhand" name="on_hand" class="mono" min="0" step="any" inputmode="decimal" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="aunit">Unit</label>
+            <input type="text" id="aunit" name="unit" placeholder="each" autocomplete="off">
+          </div>
+        </div>
+        <div class="field">
+          <label for="asupplier">Supplier</label>
+          <input type="text" id="asupplier" name="supplier" autocomplete="off">
+        </div>
+        <div class="btn-row"><button type="submit" class="btn">Add material</button></div>
+        <div data-result hidden></div>
+      </form>
+    </section>
+  </div>
+</section>
+""",
+     head_extra=NOINDEX, foot_extra=MFG)
+
+
+page("internal/timesheets.html", 1, "Timesheets",
+     "Clock in and out, book hours against a batch, and see the facility team's week.",
+     regbar("timesheets.html") + """
+<section class="wrap dash-head">
+  <div class="dash-head__id">
+    <span class="eyebrow">Manufacturing &middot; team</span>
+    <h1>Timesheets</h1>
+    <p class="lede">Hours are booked against the batch they were spent on, so every batch carries its real labour
+    cost. You clock yourself in and out; an administrator can enter a finished stretch for anyone.</p>
+  </div>
+  <div class="btn-row weeknav" role="group" aria-label="Week">
+    <button type="button" class="btn btn--sm" data-week="-1" aria-label="Previous week">&larr;</button>
+    <span class="mono" data-week-label>&mdash;</span>
+    <button type="button" class="btn btn--sm" data-week="1" aria-label="Next week">&rarr;</button>
+  </div>
+</section>
+
+<section class="wrap mt-2" data-time-page>
+  <div data-error hidden></div>
+
+  <div class="panels">
+    <section class="panel" aria-labelledby="p-clock">
+      <header class="panel__head">
+        <h2 id="p-clock">Your time</h2>
+        <span class="panel__meta" data-me></span>
+      </header>
+      <form class="panel__body form" data-clock-form>
+        <p class="clock" data-clock-state aria-live="polite">&mdash;</p>
+        <div class="field" data-when-out>
+          <label for="cbatch">Working on</label>
+          <select id="cbatch" name="batch_number"><option value="">Not batch work</option></select>
+        </div>
+        <div class="field" data-when-out>
+          <label for="cact">Activity</label>
+          <input type="text" id="cact" name="activity" placeholder="Assembly, QA, receiving…" autocomplete="off">
+        </div>
+        <div class="btn-row"><button type="submit" class="btn btn--primary" data-clock-btn>Clock in</button></div>
+        <div data-result hidden></div>
+      </form>
+    </section>
+
+    <section class="panel panel--span2" aria-labelledby="p-week">
+      <header class="panel__head">
+        <h2 id="p-week">Facility team &middot; this week</h2>
+        <span class="panel__meta mono">hours</span>
+      </header>
+      <div data-week-table><p class="muted small panel__body">Loading&hellip;</p></div>
+    </section>
+  </div>
+
+  <div class="grid grid--2 mt-2">
+    <section class="panel" aria-labelledby="p-bybatch">
+      <header class="panel__head"><h2 id="p-bybatch">Hours by batch</h2></header>
+      <div class="panel__body" data-by-batch></div>
+    </section>
+
+    <section class="panel" aria-labelledby="p-entry">
+      <header class="panel__head">
+        <h2 id="p-entry">Enter time for someone</h2>
+        <span class="panel__meta">administrators</span>
+      </header>
+      <form class="panel__body form" data-entry-form>
+        <div class="grid grid--2 grid--tight">
+          <div class="field">
+            <label for="emember" class="required">Operator id</label>
+            <input type="text" id="emember" name="member" class="mono" required autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="ename" class="required">Name</label>
+            <input type="text" id="ename" name="member_name" required autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="ein" class="required">Start</label>
+            <input type="datetime-local" id="ein" name="clock_in" required>
+          </div>
+          <div class="field">
+            <label for="eout" class="required">End</label>
+            <input type="datetime-local" id="eout" name="clock_out" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ebatch">Batch</label>
+          <select id="ebatch" name="batch_number"><option value="">Not batch work</option></select>
+        </div>
+        <div class="btn-row"><button type="submit" class="btn">Enter it</button></div>
+        <div data-result hidden></div>
+      </form>
+    </section>
+  </div>
+</section>
+""",
+     head_extra=NOINDEX, foot_extra=MFG)
+
+
+page("internal/metrics.html", 1, "Metrics",
+     "Manufacturing metrics: first-pass yield, early-life failures, cycle time, labour per unit and days of cover.",
+     regbar("metrics.html") + """
+<section class="wrap dash-head">
+  <div class="dash-head__id">
+    <span class="eyebrow">Manufacturing &middot; performance</span>
+    <h1>Metrics</h1>
+    <p class="lede">Five numbers, one per question: are we building it right, does it hold up in the field, how
+    fast, what it costs in hours, and whether we will run out. Each is computed from the records on these pages;
+    none is typed in, and a number with nothing behind it shows as a gap rather than a zero.</p>
+  </div>
+  <div class="btn-row" role="group" aria-label="Period" data-period>
+    <button type="button" class="btn btn--sm" data-days="30" aria-pressed="false">30 days</button>
+    <button type="button" class="btn btn--sm" data-days="90" aria-pressed="true">90 days</button>
+    <button type="button" class="btn btn--sm" data-days="365" aria-pressed="false">Year</button>
+  </div>
+</section>
+
+<section class="wrap mt-2" data-metrics-page>
+  <div data-error hidden></div>
+
+  <div class="kpis">
+    <article class="kpi kpi--quality">
+      <span class="kpi__k">Quality</span>
+      <h2>First-pass yield</h2>
+      <b class="kpi__v" data-m="fpy">&mdash;</b>
+      <p class="kpi__how" data-m-how="fpy">Frames passing QA first time, of all inspected.</p>
+    </article>
+    <article class="kpi kpi--reliability">
+      <span class="kpi__k">Reliability</span>
+      <h2>Early-life failures</h2>
+      <b class="kpi__v" data-m="elf">&mdash;</b>
+      <p class="kpi__how" data-m-how="elf">Commissioned legs flagged or dispatched within 90 days.</p>
+    </article>
+    <article class="kpi kpi--speed">
+      <span class="kpi__k">Speed</span>
+      <h2>Batch cycle time</h2>
+      <b class="kpi__v" data-m="cycle">&mdash;</b>
+      <p class="kpi__how" data-m-how="cycle">Logged to released, median across batches.</p>
+    </article>
+    <article class="kpi kpi--cost">
+      <span class="kpi__k">Cost</span>
+      <h2>Labour per unit</h2>
+      <b class="kpi__v" data-m="labour">&mdash;</b>
+      <p class="kpi__how" data-m-how="labour">Hours booked to released batches, over their frames.</p>
+    </article>
+    <article class="kpi kpi--supply">
+      <span class="kpi__k">Supply</span>
+      <h2>Shortest cover</h2>
+      <b class="kpi__v" data-m="cover">&mdash;</b>
+      <p class="kpi__how" data-m-how="cover">Days until the tightest BOM part runs out at its current draw.</p>
+    </article>
+  </div>
+
+  <div class="panels mt-2">
+    <section class="panel panel--span2" aria-labelledby="p-yield">
+      <header class="panel__head">
+        <h2 id="p-yield">Yield and field returns by batch</h2>
+        <span class="panel__meta mono">latest 12</span>
+      </header>
+      <div data-by-batch><p class="muted small panel__body">Loading&hellip;</p></div>
+      <footer class="panel__foot">
+        <span class="small muted">A batch with low yield that also comes back from the field points at a part lot or
+        a process step. The lots are on the batch record.</span>
+      </footer>
+    </section>
+
+    <section class="panel" aria-labelledby="p-stages">
+      <header class="panel__head">
+        <h2 id="p-stages">Where cycle time goes</h2>
+        <span class="panel__meta mono">median days</span>
+      </header>
+      <div class="panel__body" data-stages></div>
+      <footer class="panel__foot">
+        <span class="legend"><i class="swatch swatch--info"></i>Assembly</span>
+        <span class="legend"><i class="swatch swatch--flag"></i>QA</span>
+        <span class="legend"><i class="swatch swatch--self"></i>Commissioning</span>
+      </footer>
+    </section>
+  </div>
+</section>
+""",
+     head_extra=NOINDEX, foot_extra=MFG)

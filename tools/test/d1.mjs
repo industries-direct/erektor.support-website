@@ -11,11 +11,14 @@
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
 
-export function makeD1(schemaPath) {
+/** `schemaPaths`: the migrations, applied in order as wrangler would. */
+export function makeD1(...schemaPaths) {
   const db = new DatabaseSync(':memory:');
-  const sql = readFileSync(schemaPath, 'utf8')
-    .split('\n').filter((l) => !/^\s*--/.test(l)).join('\n');
-  for (const stmt of sql.split(';').map((s) => s.trim()).filter(Boolean)) db.exec(stmt);
+  for (const schemaPath of schemaPaths) {
+    const sql = readFileSync(schemaPath, 'utf8')
+      .split('\n').filter((l) => !/^\s*--/.test(l)).join('\n');
+    for (const stmt of sql.split(';').map((s) => s.trim()).filter(Boolean)) db.exec(stmt);
+  }
 
   const norm = (v) => (v === undefined ? null : v);
   function prepare(text) {

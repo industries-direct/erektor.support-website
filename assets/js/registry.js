@@ -125,6 +125,7 @@
     el.innerHTML = '<div class="note note--' + kind + '"><p class="note__title">' + esc(title) + '</p>' +
       (body ? '<p>' + body + '</p>' : '') + '</div>';
   }
+  REG.note = note;
 
   /* ------------------------------------------------------------- sign in */
 
