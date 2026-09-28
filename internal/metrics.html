@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fleet — EREKTOR Support</title>
-<meta name="description" content="Internal leg registry: fleet state, open flags, service intervals and reconciliation.">
+<title>Metrics — EREKTOR Support</title>
+<meta name="description" content="Manufacturing metrics: first-pass yield, early-life failures, cycle time, labour per unit and days of cover.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
@@ -45,12 +45,12 @@
 <div class="wrap">
   <div class="regbar" data-regbar>
     <span class="regbar__id">Registry</span>
-      <a href="index.html" aria-current="page">Fleet</a>
+      <a href="index.html">Fleet</a>
       <a href="intake.html">Enter legs</a>
       <a href="batches.html">Batches</a>
       <a href="materials.html">Materials</a>
       <a href="timesheets.html">Timesheets</a>
-      <a href="metrics.html">Metrics</a>
+      <a href="metrics.html" aria-current="page">Metrics</a>
     <span class="regbar__end">
       <a href="../index.html">Public portal</a>
       <button type="button" class="btn btn--sm" data-signout>Sign out</button>
@@ -60,90 +60,78 @@
 
 <section class="wrap dash-head">
   <div class="dash-head__id">
-    <span class="eyebrow">Internal &middot; leg registry</span>
-    <h1>Fleet</h1>
-    <p class="lede">Every leg is keyed on its <b>mechanical</b> serial, because that number is stamped into
-    the frame and outlives any ClearCore bolted to it. The electronics serial below is a current binding,
-    and swapping it is an event on the record rather than a new leg.</p>
+    <span class="eyebrow">Manufacturing &middot; performance</span>
+    <h1>Metrics</h1>
+    <p class="lede">Five numbers, one per question: are we building it right, does it hold up in the field, how
+    fast, what it costs in hours, and whether we will run out. Each is computed from the records on these pages;
+    none is typed in, and a number with nothing behind it shows as a gap rather than a zero.</p>
   </div>
-  <dl class="statbar" aria-label="Fleet at a glance">
-    <div><dt>Frames</dt><dd class="mono" data-k="fleet">&mdash;</dd></div>
-    <div><dt>In pool</dt><dd class="mono" data-k="pool">&mdash;</dd></div>
-    <div><dt>Out in the field</dt><dd class="mono" data-k="field">&mdash;</dd></div>
-    <div><dt>Carrying a flag</dt><dd class="mono" data-k="flagged">&mdash;</dd></div>
-    <div><dt>At interval</dt><dd class="mono" data-k="due">&mdash;</dd></div>
-    <div><dt>Unmatched intake</dt><dd class="mono" data-k="unmatched">&mdash;</dd></div>
-  </dl>
+  <div class="btn-row" role="group" aria-label="Period" data-period>
+    <button type="button" class="btn btn--sm" data-days="30" aria-pressed="false">30 days</button>
+    <button type="button" class="btn btn--sm" data-days="90" aria-pressed="true">90 days</button>
+    <button type="button" class="btn btn--sm" data-days="365" aria-pressed="false">Year</button>
+  </div>
 </section>
 
-<section class="wrap mt-2" data-console>
+<section class="wrap mt-2" data-metrics-page>
   <div data-error hidden></div>
 
-  <form class="filters" data-filters role="search" aria-label="Filter the fleet">
-    <div class="field field--grow">
-      <label for="q">Find a leg</label>
-      <input type="search" id="q" name="q" class="mono" placeholder="MX-24-08192, EL-25-014873, a facility…"
-             autocomplete="off">
-    </div>
-    <div class="field">
-      <label for="fstate">State</label>
-      <select id="fstate" name="state"><option value="">Any</option></select>
-    </div>
-    <div class="field">
-      <label for="fvariant">Variant</label>
-      <select id="fvariant" name="variant"><option value="">Any</option></select>
-    </div>
-    <div class="toggles">
-      <label><input type="checkbox" name="flagged" value="1"> Flagged</label>
-      <label><input type="checkbox" name="due" value="1"> At interval</label>
-      <label><input type="checkbox" name="stale" value="1"> No recent contact</label>
-    </div>
-  </form>
-
-  <div class="dash-secline mt-2">
-    <h2>Legs <span class="muted mono small" data-count></span></h2>
-    <p>A leg is looked up in the field from whichever number is legible &mdash; the search takes either serial.</p>
+  <div class="kpis">
+    <article class="kpi kpi--quality">
+      <span class="kpi__k">Quality</span>
+      <h2>First-pass yield</h2>
+      <b class="kpi__v" data-m="fpy">&mdash;</b>
+      <p class="kpi__how" data-m-how="fpy">Frames passing QA first time, of all inspected.</p>
+    </article>
+    <article class="kpi kpi--reliability">
+      <span class="kpi__k">Reliability</span>
+      <h2>Early-life failures</h2>
+      <b class="kpi__v" data-m="elf">&mdash;</b>
+      <p class="kpi__how" data-m-how="elf">Commissioned legs flagged or dispatched within 90 days.</p>
+    </article>
+    <article class="kpi kpi--speed">
+      <span class="kpi__k">Speed</span>
+      <h2>Batch cycle time</h2>
+      <b class="kpi__v" data-m="cycle">&mdash;</b>
+      <p class="kpi__how" data-m-how="cycle">Logged to released, median across batches.</p>
+    </article>
+    <article class="kpi kpi--cost">
+      <span class="kpi__k">Cost</span>
+      <h2>Labour per unit</h2>
+      <b class="kpi__v" data-m="labour">&mdash;</b>
+      <p class="kpi__how" data-m-how="labour">Hours booked to released batches, over their frames.</p>
+    </article>
+    <article class="kpi kpi--supply">
+      <span class="kpi__k">Supply</span>
+      <h2>Shortest cover</h2>
+      <b class="kpi__v" data-m="cover">&mdash;</b>
+      <p class="kpi__how" data-m-how="cover">Days until the tightest BOM part runs out at its current draw.</p>
+    </article>
   </div>
-  <div data-legs><p class="muted">Loading the fleet&hellip;</p></div>
 
-  <section class="panel mt-2" data-orphans hidden aria-labelledby="p-orphans">
-    <header class="panel__head">
-      <h2 id="p-orphans">Field requests with no record</h2>
-      <span class="panel__meta mono">unmatched</span>
-    </header>
-    <div class="panel__body" data-orphan-body></div>
-    <footer class="panel__foot">
-      <span class="small muted">A flag or dispatch was filed against a serial the registry does not hold.
-      That is a bookkeeping gap, not a lost message &mdash; enter the leg and the request has somewhere to land.</span>
-    </footer>
-  </section>
-
-  <div class="panels mt-3">
-    <section class="panel" aria-labelledby="p-dist">
+  <div class="panels mt-2">
+    <section class="panel panel--span2" aria-labelledby="p-yield">
       <header class="panel__head">
-        <h2 id="p-dist">Where the fleet is</h2>
-        <span class="panel__meta mono">by state</span>
+        <h2 id="p-yield">Yield and field returns by batch</h2>
+        <span class="panel__meta mono">latest 12</span>
       </header>
-      <div class="panel__body" data-distribution>
-        <p class="muted small">Counted from the registry, not typed here.</p>
-      </div>
+      <div data-by-batch><p class="muted small panel__body">Loading&hellip;</p></div>
       <footer class="panel__foot">
-        <span class="legend"><i class="swatch swatch--self"></i>Working</span>
-        <span class="legend"><i class="swatch swatch--flag"></i>Held or moving</span>
-        <span class="legend"><i class="swatch swatch--dispatch"></i>Out of the fleet</span>
+        <span class="small muted">A batch with low yield that also comes back from the field points at a part lot or
+        a process step. The lots are on the batch record.</span>
       </footer>
     </section>
 
-    <section class="panel" aria-labelledby="p-act">
+    <section class="panel" aria-labelledby="p-stages">
       <header class="panel__head">
-        <h2 id="p-act">Latest activity</h2>
-        <span class="panel__meta mono">append-only</span>
+        <h2 id="p-stages">Where cycle time goes</h2>
+        <span class="panel__meta mono">median days</span>
       </header>
-      <div class="panel__body" data-activity>
-        <p class="muted small">Every state change is an event on a leg, and events are never rewritten.</p>
-      </div>
+      <div class="panel__body" data-stages></div>
       <footer class="panel__foot">
-        <a class="small" href="/api/registry/export">Export the fleet as CSV &rarr;</a>
+        <span class="legend"><i class="swatch swatch--info"></i>Assembly</span>
+        <span class="legend"><i class="swatch swatch--flag"></i>QA</span>
+        <span class="legend"><i class="swatch swatch--self"></i>Commissioning</span>
       </footer>
     </section>
   </div>
@@ -187,5 +175,6 @@
   </div>
 </footer>
 <script src="../assets/js/registry.js" defer></script>
+<script src="../assets/js/manufacturing.js" defer></script>
 </body>
 </html>

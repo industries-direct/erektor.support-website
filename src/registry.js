@@ -22,6 +22,7 @@
 
 import { SERIAL, normalise } from './serials.js';
 import { sessionFor, canWrite, isAdmin, crossSite } from './auth.js';
+import { handleManufacturing } from './manufacturing.js';
 
 const json = (body, status = 200, extra = {}) =>
   new Response(JSON.stringify(body), {
@@ -396,6 +397,65 @@ export async function reconcileIntake(env, record_) {
   }
 }
 
+/**
+ * Validate new frames and build the statements that enter them, without
+ * running them. The registry's own intake runs them alone; a manufacturing
+ * batch runs them in the same D1 batch as the batch record and its material
+ * moves, so a run is entered whole or not at all.
+ */
+export async function prepareLegs(env, doc, incoming, actor) {
+  // A batch is all-or-nothing on validation. Half a work order in the
+  // registry is worse than none: the operator cannot tell which half.
+  const checked = incoming.map((leg) => ({ leg, ...checkNewLeg(leg, doc) }));
+  const problems = checked.flatMap((c) => c.problems);
+  const seen = new Set();
+  for (const c of checked) {
+    if (c.mx && seen.has(c.mx)) problems.push(`${c.mx} appears twice in this batch.`);
+    seen.add(c.mx);
+  }
+  if (problems.length) return { status: 422, error: { error: 'Nothing was entered.', problems } };
+
+  const existing = await env.REGISTRY.prepare(
+    `SELECT mechanical_serial FROM legs WHERE mechanical_serial IN (${checked.map(() => '?').join(',')})`
+  ).bind(...checked.map((c) => c.mx)).all();
+  if (existing.results.length) {
+    return {
+      status: 409,
+      error: {
+        error: 'Nothing was entered.',
+        problems: existing.results.map((r) => `${r.mechanical_serial} is already in the registry.`)
+      }
+    };
+  }
+
+  const now = new Date().toISOString();
+  const statements = [];
+  for (const c of checked) {
+    const l = c.leg;
+    statements.push(env.REGISTRY.prepare(
+      `INSERT INTO legs
+         (mechanical_serial, electronics_serial, variant, controller, firmware,
+          state, holder, location, motor_hours, hours_at_service, built_at,
+          commissioned_at, last_seen_at, batch, notes, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(
+      c.mx, c.el || null, text(l.variant), text(l.controller), text(l.firmware),
+      c.state, text(l.holder), text(l.location), Number(l.motor_hours) || 0,
+      text(l.built_at) || now, c.el ? now : null, now,
+      text(l.batch), text(l.notes), now, now
+    ));
+    statements.push(env.REGISTRY.prepare(
+      `INSERT INTO leg_events
+         (mechanical_serial, at, type, actor, from_state, to_state, electronics_serial, detail)
+       VALUES (?, ?, ?, ?, NULL, ?, ?, ?)`
+    ).bind(
+      c.mx, now, c.el ? 'commissioned' : 'built', actor, c.state, c.el || null,
+      text(l.batch) ? 'Batch ' + text(l.batch) : null
+    ));
+  }
+  return { statements, serials: checked.map((c) => c.mx) };
+}
+
 /* --------------------------------------------------------------- routing */
 
 export async function handleRegistry(request, env) {
@@ -419,6 +479,10 @@ export async function handleRegistry(request, env) {
   const life = await rules(env, request);
   const doc = life.doc;
   const parts = path ? path.split('/') : [];
+
+  /* ---- the facility's own bookkeeping, behind the same gate ---- */
+
+  if (parts[0] === 'mfg') return handleManufacturing(request, env, url, parts.slice(1), session, doc);
 
   /* ---- collection ---- */
 
@@ -465,54 +529,10 @@ export async function handleRegistry(request, env) {
         return json({ error: `Enter at most ${MAX_BATCH} legs at a time.` }, 413);
       }
 
-      // A batch is all-or-nothing on validation. Half a work order in the
-      // registry is worse than none: the operator cannot tell which half.
-      const checked = incoming.map((leg) => ({ leg, ...checkNewLeg(leg, doc) }));
-      const problems = checked.flatMap((c) => c.problems);
-      const seen = new Set();
-      for (const c of checked) {
-        if (c.mx && seen.has(c.mx)) problems.push(`${c.mx} appears twice in this batch.`);
-        seen.add(c.mx);
-      }
-      if (problems.length) return json({ error: 'Nothing was entered.', problems }, 422);
-
-      const existing = await env.REGISTRY.prepare(
-        `SELECT mechanical_serial FROM legs WHERE mechanical_serial IN (${checked.map(() => '?').join(',')})`
-      ).bind(...checked.map((c) => c.mx)).all();
-      if (existing.results.length) {
-        return json({
-          error: 'Nothing was entered.',
-          problems: existing.results.map((r) => `${r.mechanical_serial} is already in the registry.`)
-        }, 409);
-      }
-
-      const now = new Date().toISOString();
-      const statements = [];
-      for (const c of checked) {
-        const l = c.leg;
-        statements.push(env.REGISTRY.prepare(
-          `INSERT INTO legs
-             (mechanical_serial, electronics_serial, variant, controller, firmware,
-              state, holder, location, motor_hours, hours_at_service, built_at,
-              commissioned_at, last_seen_at, batch, notes, created_at, updated_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?)`
-        ).bind(
-          c.mx, c.el || null, text(l.variant), text(l.controller), text(l.firmware),
-          c.state, text(l.holder), text(l.location), Number(l.motor_hours) || 0,
-          text(l.built_at) || now, c.el ? now : null, now,
-          text(l.batch), text(l.notes), now, now
-        ));
-        statements.push(env.REGISTRY.prepare(
-          `INSERT INTO leg_events
-             (mechanical_serial, at, type, actor, from_state, to_state, electronics_serial, detail)
-           VALUES (?, ?, ?, ?, NULL, ?, ?, ?)`
-        ).bind(
-          c.mx, now, c.el ? 'commissioned' : 'built', session.sub, c.state, c.el || null,
-          text(l.batch) ? 'Batch ' + text(l.batch) : null
-        ));
-      }
-      await env.REGISTRY.batch(statements);
-      return json({ entered: checked.length, serials: checked.map((c) => c.mx) }, 201);
+      const out = await prepareLegs(env, doc, incoming, session.sub);
+      if (out.error) return json(out.error, out.status);
+      await env.REGISTRY.batch(out.statements);
+      return json({ entered: out.serials.length, serials: out.serials }, 201);
     }
   }
 

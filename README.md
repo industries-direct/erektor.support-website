@@ -303,6 +303,7 @@ which records who did what to which leg.
 
 ```sh
 node --experimental-sqlite tools/test/registry.mjs
+node --experimental-sqlite tools/test/manufacturing.mjs
 ```
 
 Runs the real Worker against a real SQLite database via a small D1 shim, so the SQL is
@@ -311,6 +312,31 @@ arithmetic, the batch that keeps the projection in step with the log. It checks 
 design rests on rather than that the endpoints answer — the gate, the identity split, what does
 and does not reset an interval, the transition table, and that an unmatched field request is
 held rather than dropped.
+
+### Manufacturing
+
+`/internal/batches.html`, `materials.html`, `timesheets.html` and `metrics.html` are the
+production facility's side of the same section: same gate, same D1 database, API under
+`/api/registry/mfg/*` (`src/manufacturing.js`), schema in `migrations/0002_manufacturing.sql`.
+
+- **A batch enters its frames.** Logging batch `B-2609-A` with a first serial and a count
+  enters every frame into `legs` as Built with `batch` set, and draws each material's
+  `per_leg` quantity from stock — all in one D1 batch, through the same validation as the
+  registry's own intake (`prepareLegs`). A run that cannot be entered whole changes nothing.
+- **Stock is a projection.** `materials.on_hand` moves only together with a `material_moves`
+  row (received, used, count), the same rule as `legs` and `leg_events`. The count cannot be
+  edited directly.
+- **Stages go forward.** Assembly → QA → commissioning → released, one step at a time, and a
+  batch is not released without a QA result, so first-pass yield has no silent gaps.
+- **Spending is split.** Any operator drafts a purchase order; an administrator other than the
+  drafter approves it; receiving it books every line onto the shelf.
+- **Time is per operator.** Operators clock themselves in and out against a batch (ids come from
+  `REGISTRY_ACCESS`); an administrator can enter a finished stretch for anyone.
+- **Metrics are computed, never typed** — first-pass yield, early-life failures (a batch's
+  commissioned legs flagged or dispatched within 90 days, from `leg_events`), batch cycle
+  time, labour hours per unit, and days of cover on the tightest BOM part.
+
+Provisioning is the registry's, plus the second migration — `migrations apply` picks it up.
 
 ---
 

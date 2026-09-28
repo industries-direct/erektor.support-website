@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fleet — EREKTOR Support</title>
-<meta name="description" content="Internal leg registry: fleet state, open flags, service intervals and reconciliation.">
+<title>Timesheets — EREKTOR Support</title>
+<meta name="description" content="Clock in and out, book hours against a batch, and see the facility team's week.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
@@ -45,11 +45,11 @@
 <div class="wrap">
   <div class="regbar" data-regbar>
     <span class="regbar__id">Registry</span>
-      <a href="index.html" aria-current="page">Fleet</a>
+      <a href="index.html">Fleet</a>
       <a href="intake.html">Enter legs</a>
       <a href="batches.html">Batches</a>
       <a href="materials.html">Materials</a>
-      <a href="timesheets.html">Timesheets</a>
+      <a href="timesheets.html" aria-current="page">Timesheets</a>
       <a href="metrics.html">Metrics</a>
     <span class="regbar__end">
       <a href="../index.html">Public portal</a>
@@ -60,91 +60,88 @@
 
 <section class="wrap dash-head">
   <div class="dash-head__id">
-    <span class="eyebrow">Internal &middot; leg registry</span>
-    <h1>Fleet</h1>
-    <p class="lede">Every leg is keyed on its <b>mechanical</b> serial, because that number is stamped into
-    the frame and outlives any ClearCore bolted to it. The electronics serial below is a current binding,
-    and swapping it is an event on the record rather than a new leg.</p>
+    <span class="eyebrow">Manufacturing &middot; team</span>
+    <h1>Timesheets</h1>
+    <p class="lede">Hours are booked against the batch they were spent on, so every batch carries its real labour
+    cost. You clock yourself in and out; an administrator can enter a finished stretch for anyone.</p>
   </div>
-  <dl class="statbar" aria-label="Fleet at a glance">
-    <div><dt>Frames</dt><dd class="mono" data-k="fleet">&mdash;</dd></div>
-    <div><dt>In pool</dt><dd class="mono" data-k="pool">&mdash;</dd></div>
-    <div><dt>Out in the field</dt><dd class="mono" data-k="field">&mdash;</dd></div>
-    <div><dt>Carrying a flag</dt><dd class="mono" data-k="flagged">&mdash;</dd></div>
-    <div><dt>At interval</dt><dd class="mono" data-k="due">&mdash;</dd></div>
-    <div><dt>Unmatched intake</dt><dd class="mono" data-k="unmatched">&mdash;</dd></div>
-  </dl>
+  <div class="btn-row weeknav" role="group" aria-label="Week">
+    <button type="button" class="btn btn--sm" data-week="-1" aria-label="Previous week">&larr;</button>
+    <span class="mono" data-week-label>&mdash;</span>
+    <button type="button" class="btn btn--sm" data-week="1" aria-label="Next week">&rarr;</button>
+  </div>
 </section>
 
-<section class="wrap mt-2" data-console>
+<section class="wrap mt-2" data-time-page>
   <div data-error hidden></div>
 
-  <form class="filters" data-filters role="search" aria-label="Filter the fleet">
-    <div class="field field--grow">
-      <label for="q">Find a leg</label>
-      <input type="search" id="q" name="q" class="mono" placeholder="MX-24-08192, EL-25-014873, a facility…"
-             autocomplete="off">
-    </div>
-    <div class="field">
-      <label for="fstate">State</label>
-      <select id="fstate" name="state"><option value="">Any</option></select>
-    </div>
-    <div class="field">
-      <label for="fvariant">Variant</label>
-      <select id="fvariant" name="variant"><option value="">Any</option></select>
-    </div>
-    <div class="toggles">
-      <label><input type="checkbox" name="flagged" value="1"> Flagged</label>
-      <label><input type="checkbox" name="due" value="1"> At interval</label>
-      <label><input type="checkbox" name="stale" value="1"> No recent contact</label>
-    </div>
-  </form>
-
-  <div class="dash-secline mt-2">
-    <h2>Legs <span class="muted mono small" data-count></span></h2>
-    <p>A leg is looked up in the field from whichever number is legible &mdash; the search takes either serial.</p>
-  </div>
-  <div data-legs><p class="muted">Loading the fleet&hellip;</p></div>
-
-  <section class="panel mt-2" data-orphans hidden aria-labelledby="p-orphans">
-    <header class="panel__head">
-      <h2 id="p-orphans">Field requests with no record</h2>
-      <span class="panel__meta mono">unmatched</span>
-    </header>
-    <div class="panel__body" data-orphan-body></div>
-    <footer class="panel__foot">
-      <span class="small muted">A flag or dispatch was filed against a serial the registry does not hold.
-      That is a bookkeeping gap, not a lost message &mdash; enter the leg and the request has somewhere to land.</span>
-    </footer>
-  </section>
-
-  <div class="panels mt-3">
-    <section class="panel" aria-labelledby="p-dist">
+  <div class="panels">
+    <section class="panel" aria-labelledby="p-clock">
       <header class="panel__head">
-        <h2 id="p-dist">Where the fleet is</h2>
-        <span class="panel__meta mono">by state</span>
+        <h2 id="p-clock">Your time</h2>
+        <span class="panel__meta" data-me></span>
       </header>
-      <div class="panel__body" data-distribution>
-        <p class="muted small">Counted from the registry, not typed here.</p>
-      </div>
-      <footer class="panel__foot">
-        <span class="legend"><i class="swatch swatch--self"></i>Working</span>
-        <span class="legend"><i class="swatch swatch--flag"></i>Held or moving</span>
-        <span class="legend"><i class="swatch swatch--dispatch"></i>Out of the fleet</span>
-      </footer>
+      <form class="panel__body form" data-clock-form>
+        <p class="clock" data-clock-state aria-live="polite">&mdash;</p>
+        <div class="field" data-when-out>
+          <label for="cbatch">Working on</label>
+          <select id="cbatch" name="batch_number"><option value="">Not batch work</option></select>
+        </div>
+        <div class="field" data-when-out>
+          <label for="cact">Activity</label>
+          <input type="text" id="cact" name="activity" placeholder="Assembly, QA, receiving…" autocomplete="off">
+        </div>
+        <div class="btn-row"><button type="submit" class="btn btn--primary" data-clock-btn>Clock in</button></div>
+        <div data-result hidden></div>
+      </form>
     </section>
 
-    <section class="panel" aria-labelledby="p-act">
+    <section class="panel panel--span2" aria-labelledby="p-week">
       <header class="panel__head">
-        <h2 id="p-act">Latest activity</h2>
-        <span class="panel__meta mono">append-only</span>
+        <h2 id="p-week">Facility team &middot; this week</h2>
+        <span class="panel__meta mono">hours</span>
       </header>
-      <div class="panel__body" data-activity>
-        <p class="muted small">Every state change is an event on a leg, and events are never rewritten.</p>
-      </div>
-      <footer class="panel__foot">
-        <a class="small" href="/api/registry/export">Export the fleet as CSV &rarr;</a>
-      </footer>
+      <div data-week-table><p class="muted small panel__body">Loading&hellip;</p></div>
+    </section>
+  </div>
+
+  <div class="grid grid--2 mt-2">
+    <section class="panel" aria-labelledby="p-bybatch">
+      <header class="panel__head"><h2 id="p-bybatch">Hours by batch</h2></header>
+      <div class="panel__body" data-by-batch></div>
+    </section>
+
+    <section class="panel" aria-labelledby="p-entry">
+      <header class="panel__head">
+        <h2 id="p-entry">Enter time for someone</h2>
+        <span class="panel__meta">administrators</span>
+      </header>
+      <form class="panel__body form" data-entry-form>
+        <div class="grid grid--2 grid--tight">
+          <div class="field">
+            <label for="emember" class="required">Operator id</label>
+            <input type="text" id="emember" name="member" class="mono" required autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="ename" class="required">Name</label>
+            <input type="text" id="ename" name="member_name" required autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="ein" class="required">Start</label>
+            <input type="datetime-local" id="ein" name="clock_in" required>
+          </div>
+          <div class="field">
+            <label for="eout" class="required">End</label>
+            <input type="datetime-local" id="eout" name="clock_out" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ebatch">Batch</label>
+          <select id="ebatch" name="batch_number"><option value="">Not batch work</option></select>
+        </div>
+        <div class="btn-row"><button type="submit" class="btn">Enter it</button></div>
+        <div data-result hidden></div>
+      </form>
     </section>
   </div>
 </section>
@@ -187,5 +184,6 @@
   </div>
 </footer>
 <script src="../assets/js/registry.js" defer></script>
+<script src="../assets/js/manufacturing.js" defer></script>
 </body>
 </html>

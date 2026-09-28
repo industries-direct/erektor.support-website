@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fleet — EREKTOR Support</title>
-<meta name="description" content="Internal leg registry: fleet state, open flags, service intervals and reconciliation.">
+<title>Batches — EREKTOR Support</title>
+<meta name="description" content="Log a production batch, enter its frames into the registry, and move it through QA to release.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
@@ -45,9 +45,9 @@
 <div class="wrap">
   <div class="regbar" data-regbar>
     <span class="regbar__id">Registry</span>
-      <a href="index.html" aria-current="page">Fleet</a>
+      <a href="index.html">Fleet</a>
       <a href="intake.html">Enter legs</a>
-      <a href="batches.html">Batches</a>
+      <a href="batches.html" aria-current="page">Batches</a>
       <a href="materials.html">Materials</a>
       <a href="timesheets.html">Timesheets</a>
       <a href="metrics.html">Metrics</a>
@@ -60,91 +60,71 @@
 
 <section class="wrap dash-head">
   <div class="dash-head__id">
-    <span class="eyebrow">Internal &middot; leg registry</span>
-    <h1>Fleet</h1>
-    <p class="lede">Every leg is keyed on its <b>mechanical</b> serial, because that number is stamped into
-    the frame and outlives any ClearCore bolted to it. The electronics serial below is a current binding,
-    and swapping it is an event on the record rather than a new leg.</p>
+    <span class="eyebrow">Manufacturing &middot; build</span>
+    <h1>Batches</h1>
+    <p class="lede">A batch is one production run of one variant. Logging it enters every frame into the registry
+    as <b>Built</b> and draws its bill of materials from stock, in one step &mdash; a run that cannot be entered
+    whole is not entered at all.</p>
   </div>
-  <dl class="statbar" aria-label="Fleet at a glance">
-    <div><dt>Frames</dt><dd class="mono" data-k="fleet">&mdash;</dd></div>
-    <div><dt>In pool</dt><dd class="mono" data-k="pool">&mdash;</dd></div>
-    <div><dt>Out in the field</dt><dd class="mono" data-k="field">&mdash;</dd></div>
-    <div><dt>Carrying a flag</dt><dd class="mono" data-k="flagged">&mdash;</dd></div>
-    <div><dt>At interval</dt><dd class="mono" data-k="due">&mdash;</dd></div>
-    <div><dt>Unmatched intake</dt><dd class="mono" data-k="unmatched">&mdash;</dd></div>
+  <dl class="statbar" aria-label="Batches at a glance">
+    <div><dt>In assembly</dt><dd class="mono" data-k="assembly">&mdash;</dd></div>
+    <div><dt>In QA</dt><dd class="mono" data-k="qa">&mdash;</dd></div>
+    <div><dt>Commissioning</dt><dd class="mono" data-k="commissioning">&mdash;</dd></div>
+    <div><dt>Released</dt><dd class="mono" data-k="released">&mdash;</dd></div>
   </dl>
 </section>
 
-<section class="wrap mt-2" data-console>
+<section class="wrap mt-2" data-batches-page>
   <div data-error hidden></div>
 
-  <form class="filters" data-filters role="search" aria-label="Filter the fleet">
-    <div class="field field--grow">
-      <label for="q">Find a leg</label>
-      <input type="search" id="q" name="q" class="mono" placeholder="MX-24-08192, EL-25-014873, a facility…"
-             autocomplete="off">
-    </div>
-    <div class="field">
-      <label for="fstate">State</label>
-      <select id="fstate" name="state"><option value="">Any</option></select>
-    </div>
-    <div class="field">
-      <label for="fvariant">Variant</label>
-      <select id="fvariant" name="variant"><option value="">Any</option></select>
-    </div>
-    <div class="toggles">
-      <label><input type="checkbox" name="flagged" value="1"> Flagged</label>
-      <label><input type="checkbox" name="due" value="1"> At interval</label>
-      <label><input type="checkbox" name="stale" value="1"> No recent contact</label>
-    </div>
-  </form>
-
-  <div class="dash-secline mt-2">
-    <h2>Legs <span class="muted mono small" data-count></span></h2>
-    <p>A leg is looked up in the field from whichever number is legible &mdash; the search takes either serial.</p>
-  </div>
-  <div data-legs><p class="muted">Loading the fleet&hellip;</p></div>
-
-  <section class="panel mt-2" data-orphans hidden aria-labelledby="p-orphans">
-    <header class="panel__head">
-      <h2 id="p-orphans">Field requests with no record</h2>
-      <span class="panel__meta mono">unmatched</span>
-    </header>
-    <div class="panel__body" data-orphan-body></div>
-    <footer class="panel__foot">
-      <span class="small muted">A flag or dispatch was filed against a serial the registry does not hold.
-      That is a bookkeeping gap, not a lost message &mdash; enter the leg and the request has somewhere to land.</span>
-    </footer>
-  </section>
-
-  <div class="panels mt-3">
-    <section class="panel" aria-labelledby="p-dist">
+  <div class="panels">
+    <section class="panel panel--span2" aria-labelledby="p-batches">
       <header class="panel__head">
-        <h2 id="p-dist">Where the fleet is</h2>
-        <span class="panel__meta mono">by state</span>
+        <h2 id="p-batches">All batches</h2>
+        <span class="panel__meta mono" data-count></span>
       </header>
-      <div class="panel__body" data-distribution>
-        <p class="muted small">Counted from the registry, not typed here.</p>
-      </div>
+      <div data-batches><p class="muted small panel__body">Loading&hellip;</p></div>
       <footer class="panel__foot">
-        <span class="legend"><i class="swatch swatch--self"></i>Working</span>
-        <span class="legend"><i class="swatch swatch--flag"></i>Held or moving</span>
-        <span class="legend"><i class="swatch swatch--dispatch"></i>Out of the fleet</span>
+        <span class="small muted">Stages move forward one at a time. A batch is not released until its QA
+        result is recorded, so first-pass yield never has a hole in it.</span>
       </footer>
     </section>
 
-    <section class="panel" aria-labelledby="p-act">
-      <header class="panel__head">
-        <h2 id="p-act">Latest activity</h2>
-        <span class="panel__meta mono">append-only</span>
-      </header>
-      <div class="panel__body" data-activity>
-        <p class="muted small">Every state change is an event on a leg, and events are never rewritten.</p>
-      </div>
-      <footer class="panel__foot">
-        <a class="small" href="/api/registry/export">Export the fleet as CSV &rarr;</a>
-      </footer>
+    <section class="panel" aria-labelledby="p-new">
+      <header class="panel__head"><h2 id="p-new">Log a batch</h2></header>
+      <form class="panel__body form" data-batch-form>
+        <div class="field">
+          <label for="bnum" class="required">Batch number</label>
+          <input type="text" id="bnum" name="batch_number" class="mono" required placeholder="B-2609-A"
+                 autocomplete="off" autocapitalize="characters" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="bvar" class="required">Variant</label>
+          <select id="bvar" name="variant" required><option value="">Select&hellip;</option></select>
+        </div>
+        <div class="grid grid--2 grid--tight">
+          <div class="field">
+            <label for="bfirst" class="required">First serial</label>
+            <input type="text" id="bfirst" name="first_serial" class="mono" required placeholder="MX-24-08237"
+                   autocomplete="off" autocapitalize="characters" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="bcount" class="required">Frames</label>
+            <input type="number" id="bcount" name="frame_count" class="mono" required min="1" max="200" step="1"
+                   inputmode="numeric">
+          </div>
+        </div>
+        <p class="field__hint" data-range aria-live="polite">Give the first serial and the frame count to see the range.</p>
+        <div class="field">
+          <label for="blots">Material lots used</label>
+          <input type="text" id="blots" name="lots" placeholder="Extrusion lot, bracket lot" autocomplete="off">
+          <p class="field__hint">Lets a field failure be traced to a lot, not just a batch.</p>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn--primary">Log batch and enter its frames</button>
+        </div>
+        <div data-result hidden></div>
+      </form>
     </section>
   </div>
 </section>
@@ -187,5 +167,6 @@
   </div>
 </footer>
 <script src="../assets/js/registry.js" defer></script>
+<script src="../assets/js/manufacturing.js" defer></script>
 </body>
 </html>

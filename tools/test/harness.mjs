@@ -11,7 +11,10 @@ import { makeD1 } from './d1.mjs';
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 export const env = {
-  REGISTRY: makeD1(join(ROOT, 'migrations', '0001_registry.sql')),
+  REGISTRY: makeD1(
+    join(ROOT, 'migrations', '0001_registry.sql'),
+    join(ROOT, 'migrations', '0002_manufacturing.sql')
+  ),
   ASSETS: {
     async fetch(input) {
       const href = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
@@ -24,7 +27,9 @@ export const env = {
   REGISTRY_SECRET: 'test-only-secret',
   REGISTRY_ACCESS: JSON.stringify([
     { code: 'admincode', id: 'em', name: 'E Mellon', role: 'admin' },
-    { code: 'readonly', id: 'ro', name: 'Reader', role: 'viewer' }
+    { code: 'readonly', id: 'ro', name: 'Reader', role: 'viewer' },
+    { code: 'opcode', id: 'op', name: 'Floor Operator', role: 'operator' },
+    { code: 'leadcode', id: 'lead', name: 'Shift Lead', role: 'admin' }
   ])
 };
 
