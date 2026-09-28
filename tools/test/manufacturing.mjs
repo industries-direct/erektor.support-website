@@ -42,6 +42,20 @@ ok('a duplicate part number is refused', r.status === 409, r.body);
 r = await mfg('PATCH', '/materials/CC-1', { on_hand: 999 });
 ok('the count cannot be edited directly', r.status === 422, r.body);
 
+r = await mfg('PATCH', '/materials/GLOVE', { name: 'Nitrile gloves, L', unit: 'box', reorder_at: 3, supplier: 'Uline' });
+r = await mfg('GET', '/materials');
+let glove = r.body.materials.find((m) => m.sku === 'GLOVE');
+ok('a material is edited in place', glove.name === 'Nitrile gloves, L' && glove.reorder_at === 3 &&
+   glove.supplier === 'Uline' && glove.on_hand === 10, glove);
+await mfg('PATCH', '/materials/GLOVE', { supplier: '' });
+r = await mfg('GET', '/materials');
+glove = r.body.materials.find((m) => m.sku === 'GLOVE');
+ok('clearing a field clears it', glove.supplier === null, glove.supplier);
+r = await mfg('PATCH', '/materials/GLOVE', { name: '' });
+ok('a material cannot lose its name', r.status === 422, r.body);
+r = await mfg('PATCH', '/materials/NOPE', { name: 'x' });
+ok('editing an unlisted part is a 404', r.status === 404, r.body);
+
 group('— logging a batch —');
 r = await mfg('POST', '/batches', {
   batch_number: 'b-2609-a', variant: 'LEG-S', first_serial: 'MX-24-08201', frame_count: 24, lots: 'EXT-114'

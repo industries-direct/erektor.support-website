@@ -207,11 +207,14 @@
     var errEl = root.querySelector('[data-error]');
     var orderForm = root.querySelector('[data-order-form]');
     var moveForm = root.querySelector('[data-move-form]');
+    var bySku = {};
 
     function load() {
       return Promise.all([api('/materials'), api('/orders')]).then(function (d) {
         var mats = d[0].materials;
         var orders = d[1].orders;
+        bySku = {};
+        mats.forEach(function (m) { bySku[m.sku] = m; });
 
         stat(document, 'parts', mats.length);
         stat(document, 'order', mats.filter(function (m) { return m.status !== 'stocked'; }).length);
@@ -219,7 +222,7 @@
         stat(document, 'approved', orders.filter(function (o) { return o.status === 'approved'; }).length);
 
         set(root, '[data-materials]', table(
-          ['Part', 'On hand', 'Reorder at', 'Per leg', 'Daily draw', 'Days of cover', 'Supplier', 'Status'],
+          ['Part', 'On hand', 'Reorder at', 'Per leg', 'Daily draw', 'Days of cover', 'Supplier', 'Status', ''],
           mats.map(function (m) {
             var st = STOCK[m.status];
             return '<tr>' +
@@ -230,7 +233,9 @@
               '<td class="mono num">' + (m.per_day ? num(m.per_day, 2) : '—') + '</td>' +
               '<td class="mono num">' + (m.days_of_cover === null ? '—' : num(m.days_of_cover, 0) + ' d') + '</td>' +
               '<td>' + esc(m.supplier || '—') + '</td>' +
-              '<td>' + pill(st.kind, st.label) + '</td></tr>';
+              '<td>' + pill(st.kind, st.label) + '</td>' +
+              '<td><button type="button" class="btn btn--sm" data-edit="' + esc(m.sku) + '" ' +
+                'aria-label="Edit ' + esc(m.name) + '">Edit</button></td></tr>';
           }),
           'No materials listed yet. Add the parts on the leg bill of materials first.'));
 
@@ -309,12 +314,53 @@
       load();
     });
 
+    /* One form adds and edits. Editing locks the part number (it is the key
+       every stock move and order line points at) and hides opening stock,
+       because the count only moves through the log. */
     var addForm = root.querySelector('[data-material-form]');
-    wire(addForm, function (body) {
-      return api('/materials', { method: 'POST', body: body });
-    }, function (d, out) {
-      REG.note(out, 'ok', d.sku + ' added', '');
+    var editing = null;
+    var title = root.querySelector('[data-material-title]');
+    var submit = addForm.querySelector('[data-material-submit]');
+    var cancel = addForm.querySelector('[data-material-cancel]');
+
+    function mode(m) {
+      editing = m ? m.sku : null;
       addForm.reset();
+      addForm.sku.readOnly = !!m;
+      addForm.querySelectorAll('[data-when-new]').forEach(function (el) { el.hidden = !!m; });
+      addForm.querySelectorAll('[data-when-edit]').forEach(function (el) { el.hidden = !m; });
+      cancel.hidden = !m;
+      title.textContent = m ? 'Edit ' + m.sku : 'Add a material';
+      submit.textContent = m ? 'Save changes' : 'Add material';
+      if (m) {
+        ['sku', 'name', 'unit', 'per_leg', 'reorder_at', 'supplier'].forEach(function (k) {
+          addForm[k].value = m[k] === null || m[k] === undefined ? '' : m[k];
+        });
+      }
+    }
+
+    root.querySelector('[data-materials]').addEventListener('click', function (ev) {
+      var btn = ev.target.closest('[data-edit]');
+      if (!btn || !bySku[btn.getAttribute('data-edit')]) return;
+      mode(bySku[btn.getAttribute('data-edit')]);
+      addForm.querySelector('[data-result]').hidden = true;
+      addForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      addForm.name.focus({ preventScroll: true });
+    });
+    cancel.addEventListener('click', function () { mode(null); });
+
+    wire(addForm, function (body) {
+      if (!editing) return api('/materials', { method: 'POST', body: body });
+      // Every field is sent, so clearing one (a supplier) clears it.
+      var change = {};
+      ['name', 'unit', 'per_leg', 'reorder_at', 'supplier'].forEach(function (k) {
+        change[k] = addForm[k].value;
+      });
+      return api('/materials/' + encodeURIComponent(editing), { method: 'PATCH', body: change });
+    }, function (d, out) {
+      var was = editing;
+      mode(null);
+      REG.note(out, 'ok', d.sku + (was ? ' saved' : ' added'), '');
       load();
     });
 
