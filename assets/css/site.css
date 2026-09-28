@@ -1,12 +1,23 @@
 /* ==========================================================================
    EREKTOR Support — design system
 
-   Carries the EREKTOR brand tokens (ground, red accent, local system sans,
-   tight tracking) so the portal reads as one family with erektor.systems,
+   Carries the EREKTOR brand tokens (ground, red accent, Oswald caps
+   headings, Inter body) so the portal reads as one family with erektor.systems,
    tuned
    for the job it actually does: technicians on tablets, in daylight, in
    gloves, reading serials back over a radio.
    ========================================================================== */
+
+/* Brand type, self-hosted so the CSP (font-src 'self') holds: Oswald caps for
+   headings, buttons and the wordmark; Inter for body. Variable, latin subset. */
+@font-face {
+  font-family: "Oswald"; font-style: normal; font-weight: 400 700; font-display: swap;
+  src: url("../fonts/oswald-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter"; font-style: normal; font-weight: 400 800; font-display: swap;
+  src: url("../fonts/inter-latin.woff2") format("woff2");
+}
 
 :root {
   color-scheme: dark light;
@@ -38,7 +49,8 @@
   --gap: 1rem;
   --measure: 68ch;
 
-  --sans: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --display: "Oswald", "Arial Narrow", sans-serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
 }
 
@@ -120,7 +132,8 @@ main { padding: 2.5rem 0 5rem; }
 .topbar-in { display: flex; align-items: center; gap: 1.2rem; min-height: 60px; }
 .brand {
   display: flex; align-items: baseline; gap: .55rem;
-  font-weight: 800; font-size: 1.02rem; text-decoration: none; color: inherit;
+  font-family: var(--display); font-weight: 700; font-size: 1.2rem; letter-spacing: .02em;
+  text-transform: uppercase; text-decoration: none; color: inherit;
   white-space: nowrap;
 }
 .brand b { color: var(--ink); }
@@ -158,12 +171,13 @@ main { padding: 2.5rem 0 5rem; }
 
 /* -------------------------------------------------------------- typography */
 h1, h2, h3, h4 {
-  margin: 0 0 .5em; line-height: 1.15; font-weight: 800;
-  letter-spacing: -0.02em; text-wrap: balance;
+  margin: 0 0 .5em; line-height: 1.05; font-weight: 700;
+  font-family: var(--display); text-transform: uppercase;
+  letter-spacing: -0.005em; text-wrap: balance;
 }
 h1 { font-size: clamp(1.9rem, 1.3rem + 2.4vw, 2.7rem); }
 h2 { font-size: clamp(1.35rem, 1.1rem + 1.1vw, 1.75rem); margin-top: 2.4em; }
-h3 { font-size: 1.15rem; margin-top: 1.9em; font-weight: 700; }
+h3 { font-size: 1.2rem; margin-top: 1.9em; font-weight: 600; }
 h2:first-child, h3:first-child { margin-top: 0; }
 .eyebrow + h1, .eyebrow + h2, .eyebrow + h3 { margin-top: .15em; }
 p, ul, ol { margin: 0 0 1em; }
@@ -454,13 +468,14 @@ a.card:hover {
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: .5em;
   min-height: 48px; padding: .68em 1.25em;
-  font: inherit; font-weight: 600; letter-spacing: -.02em; text-decoration: none;
+  font: inherit; font-family: var(--display); font-weight: 500; letter-spacing: .04em;
+  text-transform: uppercase; text-decoration: none;
   border: 1px solid var(--line-strong); border-radius: var(--radius);
   background: var(--surface-2); color: var(--ink); cursor: pointer;
   transition: border-color .16s ease, background .16s ease, transform .16s ease;
 }
 .btn:hover { border-color: var(--accent-deep); color: var(--ink); transform: translateY(-1px); }
-.btn--primary { background: var(--accent); border-color: transparent; color: #fff; font-weight: 700; }
+.btn--primary { background: var(--accent); border-color: transparent; color: #fff; font-weight: 600; }
 .btn--primary:hover { background: var(--accent-deep); color: #fff; }
 .btn[disabled] { opacity: .55; cursor: not-allowed; transform: none; }
 .btn-row { display: flex; gap: .7rem; flex-wrap: wrap; }
