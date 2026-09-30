@@ -193,14 +193,31 @@ and validates the serial that route is filed against. Two optional bindings:
 | `INTAKE_WEBHOOK` | secret | URL forwarded to for ticketing and paging |
 | `REGISTRY` | D1 database | the leg registry, so a request lands on the leg's own record |
 
-All three are optional and the endpoint degrades instead of failing — an unbound deployment still
-accepts, validates and acknowledges requests, reporting `received-unstored`. **Neither is
-bound yet**, so today a submitted request reaches nobody: the operator gets a reference
-number and a copyable summary, and that is all. Bind them before this carries real traffic:
+All three are optional, and the endpoint degrades rather than refusing the request: with none
+bound it still accepts, validates and acknowledges, and the operator gets a reference number and
+a copyable summary that reaches nobody on its own.
+
+**Do not trust this file for whether a given deployment is bound** — ask the endpoint. It
+reports its own state in every response: `status` comes back as `received-unstored` when the
+KV store did not take the record, and `received` when it did.
+
+The three bindings are not bound the same way:
+
+- `INTAKE_WEBHOOK` is a secret, so it needs no change here. `wrangler secret put` is the whole
+  of it and the forward starts on the next request.
+- `REQUESTS` is a KV namespace, and creating one does nothing until its id is in
+  `wrangler.jsonc`. **There is no `kv_namespaces` block in that file**, so `env.REQUESTS` is
+  undefined in every deployment built from this repo, whatever exists in the account. That
+  sentence stops being true the moment someone adds the block — which is the point of stating
+  it about the repo rather than about today.
+- `REGISTRY` is a D1 database, bound the same way as KV: by id in `wrangler.jsonc`. That file
+  has a `d1_databases` block for `erektor-registry`, so every deployment built from this repo
+  gets `env.REGISTRY`. Without it the intake skips reconciliation and `/api/registry/*` answers
+  503.
 
 ```sh
-wrangler kv namespace create REQUESTS   # then add the id to wrangler.jsonc
 wrangler secret put INTAKE_WEBHOOK
+wrangler kv namespace create REQUESTS   # then add the id to wrangler.jsonc, per above
 ```
 
 ---
