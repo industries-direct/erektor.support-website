@@ -19,8 +19,8 @@
 -- swap, which is the one mistake this schema exists to make impossible.
 
 CREATE TABLE IF NOT EXISTS legs (
-  mechanical_serial   TEXT PRIMARY KEY,          -- MX-24-08192 — identity
-  electronics_serial  TEXT,                      -- EL-25-014873 — current binding, may be NULL
+  mechanical_serial   TEXT PRIMARY KEY,          -- L-V3BE123 — identity
+  electronics_serial  TEXT,                      -- 305419896 — current binding, may be NULL
   variant             TEXT NOT NULL,             -- LEG-S | LEG-SH | LEG-E  (data/hardware.json)
   controller          TEXT,                      -- CC-0 | CC-1
   firmware            TEXT,                      -- version currently on the bound ClearCore

@@ -116,7 +116,7 @@ page("internal/index.html", 1, "Fleet",
   <form class="filters" data-filters role="search" aria-label="Filter the fleet">
     <div class="field field--grow">
       <label for="q">Find a leg</label>
-      <input type="search" id="q" name="q" class="mono" placeholder="MX-24-08192, EL-25-014873, a facility…"
+      <input type="search" id="q" name="q" class="mono" placeholder="L-V3BE123, 305419896, a facility…"
              autocomplete="off">
     </div>
     <div class="field">
@@ -375,7 +375,7 @@ page("internal/intake.html", 1, "Enter legs",
     <div class="grid grid--2">
       <div class="field">
         <label for="bfirst" class="required">First mechanical serial</label>
-        <input type="text" id="bfirst" name="first" class="mono" placeholder="MX-26-00101"
+        <input type="text" id="bfirst" name="first" class="mono" placeholder="L-V3BE101"
                autocomplete="off" autocapitalize="characters" spellcheck="false">
       </div>
       <div class="field">
@@ -402,7 +402,7 @@ page("internal/intake.html", 1, "Enter legs",
     <div class="field">
       <label for="imx" class="required">Mechanical serial</label>
       <input type="text" id="imx" name="mechanical_serial" class="mono" data-serial="mechanical" required autocomplete="off">
-      <p class="field__hint">Stamped into the frame above the bracket face. This is the registry key.</p>
+      <p class="field__hint">Stamped on the leg frame, for example <span class="mono">L-V3BE123</span>. This is the registry key.</p>
       <p class="field__err" data-serial-err hidden></p>
     </div>
     <div class="field">
@@ -495,7 +495,7 @@ page("internal/batches.html", 1, "Batches",
         <div class="grid grid--2 grid--tight">
           <div class="field">
             <label for="bfirst" class="required">First serial</label>
-            <input type="text" id="bfirst" name="first_serial" class="mono" required placeholder="MX-24-08237"
+            <input type="text" id="bfirst" name="first_serial" class="mono" required placeholder="L-V3BE201"
                    autocomplete="off" autocapitalize="characters" spellcheck="false">
           </div>
           <div class="field">

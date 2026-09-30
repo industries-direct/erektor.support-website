@@ -14,7 +14,7 @@
  *   - Stock is a projection of an append-only log. `materials.on_hand` only
  *     ever moves together with a `material_moves` row.
  */
-import { SERIAL, normalise } from './serials.js';
+import { SERIAL, EXAMPLE, normalise } from './serials.js';
 import { isAdmin } from './auth.js';
 import { prepareLegs } from './registry.js';
 
@@ -57,11 +57,17 @@ function reference(prefix) {
   return `${prefix}-${d}-${rand}`;
 }
 
-/** MX-24-08237 + 3 → MX-24-08240, or null past the end of the range. */
+/**
+ * Legs are built as modules: the number is the module's place in build
+ * order, and its left and right legs share it. So frames run L-V3BE001,
+ * R-V3BE001, L-V3BE002, R-V3BE002 ..., and frame `offset` of a batch is that
+ * many legs on from the first. Null past module 999.
+ */
 function serialAt(first, offset) {
-  const m = /^MX-(\d{2})-(\d{5})$/.exec(first);
-  const n = Number(m[2]) + offset;
-  return n > 99999 ? null : `MX-${m[1]}-${String(n).padStart(5, '0')}`;
+  const m = /^([LR])-(.*?)(\d{3})$/.exec(first);
+  const position = Number(m[3]) * 2 + (m[1] === 'R' ? 1 : 0) + offset;
+  const n = Math.floor(position / 2);
+  return n > 999 ? null : `${position % 2 ? 'R' : 'L'}-${m[2]}${String(n).padStart(3, '0')}`;
 }
 
 /** An action (approve, clock out) carries no body; that is not malformed. */
@@ -89,11 +95,11 @@ async function createBatch(env, doc, input, actor) {
   const problems = [];
   if (!BATCH_NUMBER.test(number)) problems.push('A batch number is letters, digits and dashes, like B-2609-A.');
   if (!variant) problems.push('A batch needs a variant.');
-  if (!SERIAL.mechanical.test(first)) problems.push(`${first || 'The first serial'} is not a mechanical serial (MX-24-08192).`);
+  if (!SERIAL.mechanical.test(first)) problems.push(`${first || 'The first serial'} is not a leg serial (${EXAMPLE.mechanical}).`);
   if (!Number.isInteger(count) || count < 1 || count > MAX_FRAMES) {
     problems.push(`A batch is 1 to ${MAX_FRAMES} frames.`);
   }
-  if (!problems.length && !serialAt(first, count - 1)) problems.push('That range runs past MX-··-99999.');
+  if (!problems.length && !serialAt(first, count - 1)) problems.push('That range runs past module 999.');
   if (problems.length) return json({ error: 'Nothing was logged.', problems }, 422);
 
   if (await env.REGISTRY.prepare('SELECT 1 FROM batches WHERE batch_number = ?').bind(number).first()) {

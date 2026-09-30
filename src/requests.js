@@ -18,7 +18,7 @@
  *   REGISTRY        D1 database    the internal leg registry, if provisioned
  */
 
-import { SERIAL } from './serials.js';
+import { SERIAL, EXAMPLE, valid } from './serials.js';
 import { reconcileIntake } from './registry.js';
 
 const KINDS = new Set(['flag', 'dispatch']);
@@ -61,15 +61,15 @@ function validate(body) {
 
   if (body._kind === 'dispatch') {
     const serial = req('electronics_serial', 'Electronics serial').toUpperCase();
-    if (serial && !SERIAL.electronics.test(serial)) {
-      problems.push('Electronics serial should look like EL-25-014873.');
+    if (serial && !valid('electronics', serial)) {
+      problems.push(`The electronics serial is the controller's number, for example ${EXAMPLE.electronics}.`);
     }
     req('site_address', 'Site address');
     req('symptom', 'What the leg is doing');
   } else {
     const serial = req('mechanical_serial', 'Mechanical serial').toUpperCase();
     if (serial && !SERIAL.mechanical.test(serial)) {
-      problems.push('Mechanical serial should look like MX-24-08192. Service history follows the frame, not the electronics.');
+      problems.push(`The leg serial is stamped on the frame, for example ${EXAMPLE.mechanical}. Service history follows the frame, not the electronics.`);
     }
     req('reason', 'Reason for the flag');
   }

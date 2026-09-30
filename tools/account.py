@@ -159,8 +159,9 @@ page("account/maintenance.html", 1, "Schedule maintenance",
       <legend>Where and which leg</legend>""" + FACILITY_FIELD + """
       <div class="field">
         <label for="serial" class="required">Mechanical serial</label>
-        <input type="text" id="serial" name="serial" class="mono" required autocomplete="off" placeholder="MX-24-08192">
-        <p class="field__hint">The frame number, starting MX. Not the number on the ClearCore screen.
+        <input type="text" id="serial" name="serial" class="mono" required autocomplete="off" placeholder="L-V3BE123">
+        <p class="field__hint">Stamped on the leg frame: side, version, product and manufacture order, as in
+        <span class="mono">L-V3BE123</span>. Not the controller&rsquo;s number.
         <a href="../docs/leg.html#identity">Why there are two serials</a>.</p>
       </div>
     </fieldset>
@@ -213,8 +214,8 @@ page("account/emergency.html", 1, "Emergency replacement",
       <legend>Where and which leg</legend>""" + FACILITY_FIELD + """
       <div class="field">
         <label for="serial" class="required">Electronics serial</label>
-        <input type="text" id="serial" name="serial" class="mono" required autocomplete="off" placeholder="EL-25-014873">
-        <p class="field__hint">From the ClearCore About screen or the session controller roster, starting EL.</p>
+        <input type="text" id="serial" name="serial" class="mono" required autocomplete="off" placeholder="305419896">
+        <p class="field__hint">The controller&rsquo;s number: the ERS tablet shows it when the controller is connected, and so does the session controller roster.</p>
       </div>
     </fieldset>
     <fieldset>

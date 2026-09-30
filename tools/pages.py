@@ -205,15 +205,15 @@ page("dispatch.html", 0, "Request a replacement leg",
       <div class="field">
         <label for="el" class="required">Electronics serial</label>
         <input type="text" id="el" name="electronics_serial" class="mono" data-serial="electronics" required autocomplete="off">
-        <p class="field__hint">From the ClearCore About screen, or the session controller roster. A dispatch
+        <p class="field__hint">The controller&rsquo;s number: the ERS tablet shows it when the controller is connected, and so does the session controller roster. A dispatch
         is filed against the electronics serial because that is what has to come out of tonight&rsquo;s roster.</p>
         <p class="field__err" data-serial-err hidden></p>
       </div>
       <div class="field">
         <label for="mx">Mechanical serial <span class="muted">(if you can reach it)</span></label>
         <input type="text" id="mx" name="mechanical_serial" class="mono" data-serial="mechanical" autocomplete="off">
-        <p class="field__hint">Stamped on the frame above the bracket face. Helps us close the wear record,
-        but do not climb for it.</p>
+        <p class="field__hint">Stamped on the leg frame, for example <span class="mono">L-V3BE123</span>. Helps us
+        close the wear record, but do not climb for it.</p>
         <p class="field__err" data-serial-err hidden></p>
       </div>
       <div class="field">
@@ -336,8 +336,8 @@ page("maintenance.html", 0, "Flag a leg for ERS",
       <div class="field">
         <label for="mx" class="required">Mechanical serial</label>
         <input type="text" id="mx" name="mechanical_serial" class="mono" data-serial="mechanical" required autocomplete="off">
-        <p class="field__hint">Stamped on the frame above the bracket face. Not the number on the
-        ClearCore screen.</p>
+        <p class="field__hint">Stamped on the leg frame, for example <span class="mono">L-V3BE123</span>: side,
+        version, product and manufacture order. Not the controller&rsquo;s number.</p>
         <p class="field__err" data-serial-err hidden></p>
       </div>
       <div class="field">

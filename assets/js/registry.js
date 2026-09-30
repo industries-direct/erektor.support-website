@@ -537,13 +537,17 @@
       var f = new FormData(batch);
       var first = String(f.get('first') || '').trim().toUpperCase();
       var count = Math.min(Math.max(parseInt(f.get('count'), 10) || 0, 0), 200);
-      var m = /^MX-(\d{2})-(\d{5})$/.exec(first);
+      // Frames run L-V3BE001, R-V3BE001, L-V3BE002 ...: a module's two legs
+      // share its number, and the number is its place in build order.
+      var m = /^([LR])-(V\d{1,2}[A-Z]{1,3})(\d{3})$/.exec(first);
       if (!m || !count) return [];
       var out = [];
+      var start = parseInt(m[3], 10) * 2 + (m[1] === 'R' ? 1 : 0);
       for (var i = 0; i < count; i++) {
-        var n = parseInt(m[2], 10) + i;
-        if (n > 99999) break;
-        out.push('MX-' + m[1] + '-' + String(n).padStart(5, '0'));
+        var pos = start + i;
+        var n = Math.floor(pos / 2);
+        if (n > 999) break;
+        out.push((pos % 2 ? 'R' : 'L') + '-' + m[2] + String(n).padStart(3, '0'));
       }
       return out;
     }

@@ -44,106 +44,117 @@ ok('the session reads the fleet', r.status === 200 && r.body.total === 0, r.body
 group('— entering a work order —');
 r = await call('POST', '/api/registry/legs', {
   legs: Array.from({ length: 4 }, (_, i) => ({
-    mechanical_serial: 'MX-26-0010' + (i + 1), variant: 'LEG-S', batch: 'WO-2026-014', state: 'built'
+    mechanical_serial: 'L-V3BE10' + (i + 1), variant: 'LEG-S', batch: 'WO-2026-014', state: 'built'
   }))
 });
 ok('four frames enter as built', r.status === 201 && r.entered !== 0 && r.body.entered === 4, r.body);
 
-r = await call('POST', '/api/registry/legs', { mechanical_serial: 'MX-26-00101', variant: 'LEG-S' });
+r = await call('POST', '/api/registry/legs', { mechanical_serial: 'L-V3BE101', variant: 'LEG-S' });
 ok('a duplicate mechanical serial is refused', r.status === 409, r.body);
 
-r = await call('POST', '/api/registry/legs', { mechanical_serial: 'EL-25-014873', variant: 'LEG-S' });
+r = await call('POST', '/api/registry/legs', { mechanical_serial: '25014873', variant: 'LEG-S' });
 ok('an electronics serial cannot be used as the key', r.status === 422, r.body);
 
+group('— serial formats —');
+for (const [serial, why] of [['X-V3BE123', 'a side other than L or R'], ['L-V3BE12', 'a two-digit order number'],
+                             ['L-V3BE1234', 'a four-digit order number'], ['L-3BE123', 'no version']]) {
+  r = await call('POST', '/api/registry/legs', { mechanical_serial: serial, variant: 'LEG-S' });
+  ok(`a leg serial with ${why} is refused`, r.status === 422, r.body);
+}
 r = await call('POST', '/api/registry/legs', {
-  mechanical_serial: 'MX-26-00200', variant: 'LEG-S', state: 'pool'
+  mechanical_serial: 'L-V3BE322', electronics_serial: '4294967296', variant: 'LEG-S'
+});
+ok('a controller number past 32 bits is refused', r.status === 422, r.body);
+
+r = await call('POST', '/api/registry/legs', {
+  mechanical_serial: 'L-V3BE200', variant: 'LEG-S', state: 'pool'
 });
 ok('a frame with no ClearCore cannot enter the pool', r.status === 422 &&
    /no electronics serial/.test(r.body.problems.join(' ')), r.body);
 
 group('— the state machine —');
-r = await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'released' });
+r = await call('POST', '/api/registry/legs/L-V3BE101/events', { type: 'released' });
 ok('built cannot jump straight to the pool', r.status === 422 &&
    /cannot go from "built" to "pool"/.test(r.body.problems.join(' ')), r.body);
 
-r = await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'commissioned' });
+r = await call('POST', '/api/registry/legs/L-V3BE101/events', { type: 'commissioned' });
 ok('commissioning without a serial is refused', r.status === 422, r.body);
 
-r = await call('POST', '/api/registry/legs/MX-26-00101/events',
-  { type: 'commissioned', electronics_serial: 'EL-26-000501', controller: 'CC-1', firmware: '3.4.1' });
+r = await call('POST', '/api/registry/legs/L-V3BE101/events',
+  { type: 'commissioned', electronics_serial: '26000501', controller: 'CC-1', firmware: '3.4.1' });
 ok('commissioning binds the ClearCore', r.status === 201 &&
-   r.body.leg.state === 'commissioned' && r.body.leg.electronics_serial === 'EL-26-000501', r.body.leg);
+   r.body.leg.state === 'commissioned' && r.body.leg.electronics_serial === '26000501', r.body.leg);
 
-r = await call('POST', '/api/registry/legs/MX-26-00102/events',
-  { type: 'commissioned', electronics_serial: 'EL-26-000501' });
+r = await call('POST', '/api/registry/legs/L-V3BE102/events',
+  { type: 'commissioned', electronics_serial: '26000501' });
 ok('the same ClearCore cannot be bound twice', r.status === 422 &&
-   /already bound to MX-26-00101/.test(r.body.problems.join(' ')), r.body);
+   /already bound to L-V3BE101/.test(r.body.problems.join(' ')), r.body);
 
-await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'released' });
-r = await call('POST', '/api/registry/legs/MX-26-00101/events',
+await call('POST', '/api/registry/legs/L-V3BE101/events', { type: 'released' });
+r = await call('POST', '/api/registry/legs/L-V3BE101/events',
   { type: 'assigned', holder: 'Cedar Rapids', motor_hours: 40 });
 ok('assigning moves it into transit and records hours', r.status === 201 &&
    r.body.leg.state === 'transit' && r.body.leg.motor_hours === 40, r.body.leg);
 
-r = await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'hours', motor_hours: 12 });
+r = await call('POST', '/api/registry/legs/L-V3BE101/events', { type: 'hours', motor_hours: 12 });
 ok('motor-hours cannot fall', r.status === 422 && /cannot fall/.test(r.body.problems.join(' ')), r.body);
 
 group('— identity survives an electronics swap —');
-await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'delivered', holder: 'Cedar Rapids' });
-await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'hours', motor_hours: 2600 });
-r = await call('GET', '/api/registry/legs/MX-26-00101');
+await call('POST', '/api/registry/legs/L-V3BE101/events', { type: 'delivered', holder: 'Cedar Rapids' });
+await call('POST', '/api/registry/legs/L-V3BE101/events', { type: 'hours', motor_hours: 2600 });
+r = await call('GET', '/api/registry/legs/L-V3BE101');
 ok('2600 h with no closed record reads as due', r.body.leg.due === true, r.body.leg.hours_since_service);
 
-await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'return-start' });
-await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'check-in' });
-r = await call('POST', '/api/registry/legs/MX-26-00101/events',
-  { type: 'electronics-swap', electronics_serial: 'EL-26-000900' });
-ok('the swap rolls the binding over', r.body.leg.electronics_serial === 'EL-26-000900', r.body.leg);
+await call('POST', '/api/registry/legs/L-V3BE101/events', { type: 'return-start' });
+await call('POST', '/api/registry/legs/L-V3BE101/events', { type: 'check-in' });
+r = await call('POST', '/api/registry/legs/L-V3BE101/events',
+  { type: 'electronics-swap', electronics_serial: '26000900' });
+ok('the swap rolls the binding over', r.body.leg.electronics_serial === '26000900', r.body.leg);
 ok('...and does NOT reset the service interval', r.body.leg.due === true, r.body.leg.hours_since_service);
 
-r = await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'divert' });
-r = await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'service-closed', motor_hours: 2605 });
+r = await call('POST', '/api/registry/legs/L-V3BE101/events', { type: 'divert' });
+r = await call('POST', '/api/registry/legs/L-V3BE101/events', { type: 'service-closed', motor_hours: 2605 });
 ok('a closed service record resets the interval', r.body.leg.due === false &&
    r.body.leg.hours_since_service === 0, r.body.leg);
 ok('...and the frame keeps its lifetime hours', r.body.leg.motor_hours === 2605, r.body.leg.motor_hours);
 
-r = await call('GET', '/api/registry/legs/MX-26-00101');
+r = await call('GET', '/api/registry/legs/L-V3BE101');
 const types = r.body.events.map((e) => e.type);
 ok('the history is append-only and complete', r.body.events.length === 11 &&
    types.includes('electronics-swap') && types.includes('service-closed'), types);
 ok('the old binding is preserved on the old events',
-   r.body.events.some((e) => e.electronics_serial === 'EL-26-000501'), 'lost the old serial');
+   r.body.events.some((e) => e.electronics_serial === '26000501'), 'lost the old serial');
 
 group('— the field intake lands on the leg —');
 r = await call('POST', '/api/requests', {
-  _kind: 'flag', mechanical_serial: 'MX-26-00102', fault_code: 'DRV-21',
+  _kind: 'flag', mechanical_serial: 'L-V3BE102', fault_code: 'DRV-21',
   reason: 'Drive current climbing', contact_name: 'Ops', facility: 'Cedar Rapids',
   contact_email: 'ops@example.com'
 }, { anon: true });
 ok('a public flag is accepted', r.status === 201, r.body);
 
-r = await call('GET', '/api/registry/legs/MX-26-00102');
+r = await call('GET', '/api/registry/legs/L-V3BE102');
 ok('...and shows on the leg as an open flag', r.body.leg.flag_code === 'DRV-21' &&
    r.body.events[0].type === 'flag-raised' && r.body.events[0].actor === 'portal', r.body.leg);
 
 r = await call('POST', '/api/requests', {
-  _kind: 'dispatch', electronics_serial: 'EL-99-999999', symptom: 'Will not drive',
+  _kind: 'dispatch', electronics_serial: '99999999', symptom: 'Will not drive',
   site_address: 'Somewhere', contact_name: 'Ops', facility: 'Elsewhere', contact_phone: '555'
 }, { anon: true });
 ok('a dispatch against an unknown leg still succeeds', r.status === 201, r.body);
 
 r = await call('GET', '/api/registry/orphans');
 ok('...and is held as unmatched rather than dropped',
-   r.body.orphans.length === 1 && r.body.orphans[0].serial === 'EL-99-999999', r.body.orphans);
+   r.body.orphans.length === 1 && r.body.orphans[0].serial === '99999999', r.body.orphans);
 
 group('— summary and export —');
 r = await call('GET', '/api/registry/summary');
 ok('the summary counts the fleet', r.body.fleet === 4 && r.body.flagged === 1 &&
    r.body.unmatchedIntake === 1, r.body);
 
-r = await call('GET', '/api/registry/legs?q=EL-26-000900');
+r = await call('GET', '/api/registry/legs?q=26000900');
 ok('a leg is findable by its electronics serial', r.body.total === 1 &&
-   r.body.legs[0].mechanical_serial === 'MX-26-00101', r.body.total);
+   r.body.legs[0].mechanical_serial === 'L-V3BE101', r.body.total);
 
 r = await call('GET', '/api/registry/legs?flagged=1');
 ok('the flagged filter works', r.body.total === 1, r.body.total);
@@ -157,9 +168,9 @@ clearCookie();
 await call('POST', '/api/registry/session', { code: 'readonly' });
 r = await call('GET', '/api/registry/legs');
 ok('a viewer reads', r.status === 200, r.status);
-r = await call('POST', '/api/registry/legs', { mechanical_serial: 'MX-26-00900', variant: 'LEG-S' });
+r = await call('POST', '/api/registry/legs', { mechanical_serial: 'L-V3BE900', variant: 'LEG-S' });
 ok('a viewer cannot write', r.status === 403, r.body);
-r = await call('DELETE', '/api/registry/legs/MX-26-00101');
+r = await call('DELETE', '/api/registry/legs/L-V3BE101');
 ok('a viewer cannot delete', r.status === 403, r.body);
 
 group('— forged and stale sessions —');
@@ -177,12 +188,12 @@ r = await call('POST', '/api/registry/session', { code: 'readonly' });
 const good = r.headers.get('set-cookie').split(';')[0].split('=')[1];
 const tampered = claims({ sub: 'ro', name: 'Reader', role: 'admin', exp: 2e9 }) + '.' + good.split('.')[1];
 r = await raw('POST', '/api/registry/legs', { cookie: 'ers_reg=' + tampered },
-  { mechanical_serial: 'MX-26-00777', variant: 'LEG-S' });
+  { mechanical_serial: 'L-V3BE777', variant: 'LEG-S' });
 ok('a viewer cannot promote itself by editing the cookie', r.status === 401, r.body);
 
 r = await raw('POST', '/api/registry/legs',
   { cookie: 'ers_reg=' + good, origin: 'https://evil.example' },
-  { mechanical_serial: 'MX-26-00778', variant: 'LEG-S' });
+  { mechanical_serial: 'L-V3BE778', variant: 'LEG-S' });
 ok('a cross-site write is refused', r.status === 403, r.body);
 
 group('— sign-in throttle —');
