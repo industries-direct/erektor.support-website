@@ -116,7 +116,7 @@ export async function currentUser(db, request, site, cookieName) {
   if (!token) return null;
   const row = await db.prepare(
     `SELECT u.id, u.email, u.name, u.role, u.company_id, u.must_change_password,
-            u.setup_completed_at, u.pw_hash, u.pw_salt, u.pw_iter,
+            u.setup_completed_at, u.tour_completed_at, u.pw_hash, u.pw_salt, u.pw_iter,
             c.name AS company_name, s.token_hash
        FROM sessions s
        JOIN users u ON u.id = s.user_id
