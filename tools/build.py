@@ -97,7 +97,7 @@ def shell(depth, title, description, body, page=None, head_extra="", foot_extra=
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{title} — EREKTOR Support</title>
+<title>ESC | {title}</title>
 <meta name="description" content="{description}">{head_extra}
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">

@@ -13,7 +13,7 @@ import diagrams as D  # noqa: E402
 # ===========================================================================
 # Home — the hub, and the explanation of how the three routes relate
 # ===========================================================================
-page("index.html", 0, "Service console",
+page("index.html", 0, "Erektor Support",
      "Service console for Erektor legs: route a fault code, flag a leg for ERS, dispatch a replacement "
      "to a site, and read the current fault table, firmware manifest and fleet catalog.",
      """

@@ -334,7 +334,7 @@
       current = d.leg;
       var leg = d.leg;
       root.querySelectorAll('[data-leg-serial]').forEach(function (el) { el.textContent = leg.mechanical_serial; });
-      document.title = leg.mechanical_serial + ' — EREKTOR Registry';
+      document.title = 'ESC | ' + leg.mechanical_serial;
 
       set('[data-f=state]', statePill(leg.state) + (leg.stage ? ' <span class="muted small">' + esc(leg.stage) + '</span>' : ''));
       set('[data-f=electronics]', leg.electronics_serial
