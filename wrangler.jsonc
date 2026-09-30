@@ -43,6 +43,13 @@
   //   wrangler secret put REGISTRY_SECRET   # HMAC key for session cookies
   //   wrangler secret put REGISTRY_ACCESS   # JSON array of operators
   //
+  // Account-portal requests are emailed to the service desk. Cloudflare only
+  // delivers to verified Email Routing destinations, and this binding is
+  // locked to this one.
+  "send_email": [
+    { "name": "NOTIFY", "destination_address": "erektobot@erektor.systems" }
+  ],
+
   "d1_databases": [
     {
       "binding": "REGISTRY",

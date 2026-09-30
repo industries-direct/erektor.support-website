@@ -20,6 +20,12 @@ const COOKIE = 'ers_portal';
 const SETUP_URL = 'https://erektor-return.systems/';
 const OPEN_PAGE = /^\/account\/signin(\.html)?$/;
 
+// Every request filed here is emailed to the service desk through the
+// NOTIFY send_email binding, which Cloudflare locks to one verified
+// destination (wrangler.jsonc). Nothing is ever sent to the customer.
+const NOTIFY_FROM = 'portal@erektor.support';
+const NOTIFY_TO = 'erektobot@erektor.systems';
+
 const HEADERS = {
   'content-type': 'application/json; charset=utf-8',
   'cache-control': 'no-store',
@@ -53,6 +59,59 @@ function reference(prefix) {
   const tail = [...crypto.getRandomValues(new Uint8Array(3))]
     .map((b) => b.toString(16).padStart(2, '0')).join('').toUpperCase();
   return `${prefix}-${day}-${tail}`;
+}
+
+/** RFC 2047 encoding, so a company or facility name outside ASCII survives the subject line. */
+function header(value) {
+  return /^[\x20-\x7e]*$/.test(value)
+    ? value
+    : '=?UTF-8?B?' + btoa(String.fromCharCode(...new TextEncoder().encode(value))) + '?=';
+}
+
+/**
+ * Email the service desk. A failure is logged, never raised: the request is
+ * already on the account, and the customer must not see an error for it.
+ */
+async function notify(env, r) {
+  if (!env.NOTIFY) return;
+  const urgent = r.kind === 'emergency';
+  const lines = [
+    urgent ? 'EMERGENCY REPLACEMENT REQUESTED' : 'Maintenance scheduled',
+    '',
+    `Reference:   ${r.reference}`,
+    `Company:     ${r.company}`,
+    `Facility:    ${r.facility} (${r.facilityLocation || 'no location'}) - ERS ${r.ersStatus === 'live' ? 'live' : 'coming soon'}`,
+    `${urgent ? 'Electronics' : 'Mechanical'} serial: ${r.serial}`,
+    r.neededBy ? `Preferred date: ${r.neededBy}` : null,
+    r.contact ? `On-site contact: ${r.contact}` : null,
+    `Filed by:    ${r.filedBy}`,
+    `Filed at:    ${new Date().toISOString()}`,
+    '',
+    r.details,
+    ''
+  ].filter((l) => l !== null);
+  const subject = `${urgent ? '[EMERGENCY] ' : '[Maintenance] '}${r.reference} - ${r.company} - ${r.facility}`;
+  const raw = [
+    `From: Erektor account portal <${NOTIFY_FROM}>`,
+    `To: <${NOTIFY_TO}>`,
+    `Subject: ${header(subject)}`,
+    `Date: ${new Date().toUTCString()}`,
+    `Message-ID: <${r.reference.toLowerCase()}.${Date.now()}@erektor.support>`,
+    urgent ? 'X-Priority: 1' : null,
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=utf-8',
+    'Content-Transfer-Encoding: 8bit',
+    '',
+    lines.join('\r\n')
+  ].filter((l) => l !== null).join('\r\n');
+  try {
+    // Imported here rather than at the top so the Node test harness, which
+    // has no cloudflare:email, can still load this module.
+    const { EmailMessage } = await import('cloudflare:email');
+    await env.NOTIFY.send(new EmailMessage(NOTIFY_FROM, NOTIFY_TO, raw));
+  } catch (err) {
+    console.error('request notification failed', r.reference, err);
+  }
 }
 
 function pending(user) {
@@ -131,7 +190,7 @@ export async function handleAccountApi(request, env) {
     const kind = KINDS[input.kind];
     if (!kind) return json({ error: 'Choose maintenance or an emergency replacement.' }, 400);
 
-    const facility = await db.prepare('SELECT id FROM facilities WHERE id = ? AND company_id = ?')
+    const facility = await db.prepare('SELECT id, name, location, ers_status FROM facilities WHERE id = ? AND company_id = ?')
       .bind(Number(input.facility_id), user.company_id).first();
     if (!facility) return json({ error: 'Choose one of your facilities.' }, 400);
 
@@ -155,6 +214,19 @@ export async function handleAccountApi(request, env) {
          (reference, company_id, facility_id, user_id, kind, serial, needed_by, contact, details)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(ref, user.company_id, facility.id, user.id, input.kind, serial, neededBy || null, contact, details).run();
+    await notify(env, {
+      reference: ref,
+      kind: input.kind,
+      company: user.company_name,
+      facility: facility.name,
+      facilityLocation: facility.location,
+      ersStatus: facility.ers_status,
+      serial,
+      neededBy,
+      contact,
+      details,
+      filedBy: user.email
+    });
     return json({ reference: ref }, 201);
   }
 
