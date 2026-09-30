@@ -114,11 +114,10 @@
     { "id": "note",             "label": "Note" }
   ],
   "intervals": {
-    "motorHours": 1200,
-    "months": 12,
+    "motorHours": 2500,
     "warnAtFraction": 0.85,
     "raises": "SES-30",
-    "note": "Whichever comes first, accrued against the mechanical serial and reset only by a closed service record. Reaching one is a flag, not a dispatch - a leg at its interval is not a leg in trouble."
+    "note": "Motor-hours only - there is no calendar trigger. Accrued against the mechanical serial and reset only by a closed service record. Reaching one is a flag, not a dispatch - a leg at its interval is not a leg in trouble."
   },
   "reconciliation": {
     "staleDays": 45,

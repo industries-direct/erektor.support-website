@@ -78,9 +78,6 @@ function decorate(row, doc, now) {
   if (!row) return row;
   const iv = doc.intervals;
   const since = (row.motor_hours || 0) - (row.hours_at_service || 0);
-  const dueMonths = row.last_service_at
-    ? Date.parse(row.last_service_at) + iv.months * 30.44 * 864e5 <= now
-    : false;
   const stale = row.last_seen_at
     ? Date.parse(row.last_seen_at) + doc.reconciliation.staleDays * 864e5 <= now
     : true;
@@ -88,8 +85,8 @@ function decorate(row, doc, now) {
     ...row,
     hours_since_service: Math.round(since * 10) / 10,
     interval_fraction: iv.motorHours ? Math.round((since / iv.motorHours) * 100) / 100 : 0,
-    due: since >= iv.motorHours || dueMonths,
-    due_soon: !dueMonths && since >= iv.motorHours * iv.warnAtFraction && since < iv.motorHours,
+    due: since >= iv.motorHours,
+    due_soon: since >= iv.motorHours * iv.warnAtFraction && since < iv.motorHours,
     stale
   };
 }
@@ -244,9 +241,8 @@ async function listLegs(env, url, doc) {
   if (url.searchParams.get('flagged') === '1') where.push('flag_code IS NOT NULL');
 
   if (url.searchParams.get('due') === '1') {
-    where.push('((motor_hours - hours_at_service) >= ? OR (last_service_at IS NOT NULL AND last_service_at < ?))');
-    bind.push(doc.intervals.motorHours,
-      new Date(now - doc.intervals.months * 30.44 * 864e5).toISOString());
+    where.push('(motor_hours - hours_at_service) >= ?');
+    bind.push(doc.intervals.motorHours);
   }
 
   if (url.searchParams.get('stale') === '1') {
@@ -287,7 +283,6 @@ async function listLegs(env, url, doc) {
 async function summary(env, doc) {
   const now = Date.now();
   const hoursCut = doc.intervals.motorHours;
-  const monthCut = new Date(now - doc.intervals.months * 30.44 * 864e5).toISOString();
   const staleCut = new Date(now - doc.reconciliation.staleDays * 864e5).toISOString();
 
   const [states, variants, totals, recent] = await env.REGISTRY.batch([
@@ -297,12 +292,11 @@ async function summary(env, doc) {
       `SELECT COUNT(*) AS fleet,
               SUM(CASE WHEN flag_code IS NOT NULL THEN 1 ELSE 0 END) AS flagged,
               SUM(CASE WHEN (motor_hours - hours_at_service) >= ?1
-                         OR (last_service_at IS NOT NULL AND last_service_at < ?2)
                        THEN 1 ELSE 0 END) AS due,
-              SUM(CASE WHEN last_seen_at IS NULL OR last_seen_at < ?3 THEN 1 ELSE 0 END) AS stale,
+              SUM(CASE WHEN last_seen_at IS NULL OR last_seen_at < ?2 THEN 1 ELSE 0 END) AS stale,
               SUM(motor_hours) AS hours
          FROM legs`
-    ).bind(hoursCut, monthCut, staleCut),
+    ).bind(hoursCut, staleCut),
     env.REGISTRY.prepare(
       `SELECT e.at, e.type, e.mechanical_serial, e.actor, e.to_state, e.fault_code, e.detail
          FROM leg_events e ORDER BY e.id DESC LIMIT 12`

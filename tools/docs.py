@@ -59,8 +59,7 @@ page("docs/index.html", 1, "Documentation",
     <table>
       <thead><tr><th>Trigger</th><th>Accrues against</th><th>Route</th></tr></thead>
       <tbody>
-        <tr><td>Motor-hours interval reached</td><td class="mono">MX &mdash; mechanical</td><td>Flag for ERS</td></tr>
-        <tr><td>Twelve months since last closed service</td><td class="mono">MX &mdash; mechanical</td><td>Flag for ERS</td></tr>
+        <tr><td>2,500 motor-hours reached</td><td class="mono">MX &mdash; mechanical</td><td>Flag for ERS</td></tr>
         <tr><td>Drive current trending high</td><td class="mono">MX &mdash; mechanical</td><td>Flag for ERS</td></tr>
         <tr><td>Firmware behind the fleet</td><td class="mono">EL &mdash; electronics</td><td>Automatic at next dock</td></tr>
         <tr><td>Leg cannot finish its session</td><td class="mono">EL &mdash; electronics</td><td>Dispatch a replacement</td></tr>
@@ -384,8 +383,8 @@ page("docs/ers.html", 1, "The return line",
   on first boot and must not do so at a site.</p>
 
   <h2 id="intervals">Service intervals</h2>
-  <p>Intervals accrue against the mechanical serial: motor-hours, or twelve months since the last closed
-  service record, whichever comes first. Reaching one raises <code>SES-30</code>, which routes to a
+  <p>Intervals accrue against the mechanical serial on motor-hours alone: every 2,500 motor-hours since
+  the last closed service record. There is no calendar trigger. Reaching it raises <code>SES-30</code>, which routes to a
   <a href="../maintenance.html">flag</a> rather than a dispatch &mdash; a leg at its interval is not a leg in
   trouble.</p>
   <p>The code clears when ERS closes the service record against the frame. It does not clear on a
