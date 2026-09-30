@@ -476,4 +476,5 @@ page("404.html", "/", "Page not found",
 if __name__ == "__main__":
     import docs      # noqa: F401  registers the documentation and firmware pages
     import internal  # noqa: F401  registers the gated registry pages
+    import account   # noqa: F401  registers the customer account portal
     write()

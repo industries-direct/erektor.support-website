@@ -28,7 +28,7 @@
     // leg registry straight off the CDN to anyone who guessed the path. This
     // entry is what puts src/auth.js in front of them. Removing it publishes
     // the fleet, silently and with no error anywhere.
-    "run_worker_first": ["/api/*", "/internal/*"]
+    "run_worker_first": ["/api/*", "/internal/*", "/account", "/account/*"]
   },
 
   // The internal leg registry (src/registry.js). Create it with
@@ -49,6 +49,13 @@
       "database_name": "erektor-registry",
       "database_id": "691397ac-8ca2-4c24-a7c1-7851f568700f",
       "migrations_dir": "migrations"
+    },
+    {
+      // Customer accounts, shared with erektor-return.systems, which owns
+      // the schema (its migrations/ directory). src/portal.js reads it.
+      "binding": "ACCOUNTS",
+      "database_name": "ers-accounts",
+      "database_id": "5df46a8a-9445-40f8-b351-c6c4f47062ae"
     }
   ]
 }

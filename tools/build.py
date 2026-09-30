@@ -24,6 +24,7 @@ NAV = [
     ("docs/", "Documentation", ""),
     ("docs/faults.html", "Fault codes", ""),
     ("firmware/index.html", "Firmware", ""),
+    ("account/index.html", "Account", "nav--account"),
 ]
 
 FOOT_COLS = [
