@@ -122,7 +122,7 @@ page("docs/leg.html", 1, "Leg anatomy",
   </div>
 
   <h2 id="lift">Lift axis</h2>
-  <p>A ClearPath-SC servo drives the lift column. Under a module, lift is commanded collectively: the
+  <p>A ClearPath-SC servo drives the lift column. Across a deployment, lift is commanded collectively: the
   session controller holds the target height and each leg closes its own loop against it, which is how
   the structure levels on uneven ground without any leg knowing about the others.</p>
   <p>Disagreement between commanded and reported height is graded. Four to ten millimetres on one leg is
@@ -247,7 +247,9 @@ page("docs/operating.html", 1, "Operating procedures",
 
   <h2 id="pairing">4. Pair into modules</h2>
   <p>A module is one left leg and one right leg, paired in software only. Nothing physical joins them &mdash;
-  the pairing is a fact the session controller holds, and it is re-formed from scratch every session.</p>
+  the pairing is a fact the session controller holds, and it is re-formed from scratch every session.
+  Every module and unpaired leg one session controller claims for the task at hand is its
+  <b>deployment</b>.</p>
   <ol class="steps">
     <li><b>Confirm the pairing on the roster.</b> Which leg pairs with which is arbitrary; do not try to
     keep historical pairs together.</li>
@@ -261,7 +263,7 @@ page("docs/operating.html", 1, "Operating procedures",
   <p>Once every claimed leg has attached, the station&rsquo;s rail is the robot&rsquo;s chassis and the whole
   assembly behaves as one rigid body. Levelling establishes the shared height reference.</p>
   <ol class="steps">
-    <li><b>Run module levelling from the session controller.</b> Each leg closes its own loop against the
+    <li><b>Run levelling from the session controller.</b> Each leg closes its own loop against the
     commanded height.</li>
     <li><b>A 4&ndash;10&nbsp;mm disagreement on one leg</b> (<code>LFT-15</code>) means re-run levelling. If it
     returns within ten cycles, <a href="../maintenance.html">flag the leg</a>.</li>
@@ -276,7 +278,7 @@ page("docs/operating.html", 1, "Operating procedures",
 
   <h2 id="selfload">7. Self-load onto the trailer</h2>
   <ol class="steps">
-    <li><b>Confirm every leg is still in session</b> before commanding drive. A module that has silently
+    <li><b>Confirm every leg is still in session</b> before commanding drive. A deployment that has silently
     lost a leg (<code>NET-20</code>) will inhibit part-way up the ramp, which is the worst place for it.</li>
     <li><b>Drive the full structure and payload onto the low-deck trailer</b> under collective command.</li>
     <li><b>Self-secure to FMCSA cargo standards</b> (&sect;393.100&ndash;136). Securement is checked before the
@@ -471,9 +473,9 @@ page("docs/safety.html", 1, "Safety",
 
   <h2 id="before">Before any work near a claimed leg</h2>
   <ul class="checklist">
-    <li><input type="checkbox" id="c1"><label for="c1">Every leg in the module is in session and reporting.</label></li>
+    <li><input type="checkbox" id="c1"><label for="c1">Every leg in the deployment is in session and reporting.</label></li>
     <li><input type="checkbox" id="c2"><label for="c2">The session controller is within radio range and attended.</label></li>
-    <li><input type="checkbox" id="c3"><label for="c3">No leg in the module carries an unresolved <code>LFT</code> code.</label></li>
+    <li><input type="checkbox" id="c3"><label for="c3">No leg in the deployment carries an unresolved <code>LFT</code> code.</label></li>
     <li><input type="checkbox" id="c4"><label for="c4">Approach lanes are clear &mdash; a converging leg is under its own command.</label></li>
     <li><input type="checkbox" id="c5"><label for="c5">Everyone in the area knows the structure is live.</label></li>
   </ul>
@@ -485,7 +487,7 @@ page("docs/safety.html", 1, "Safety",
     the structure down on its own supports before releasing anyone into the work area, then
     <a href="../dispatch.html">request a replacement</a>.</p>
   </div>
-  <p>A module distributes load across its legs, and each leg closes its own loop. That is a strength while
+  <p>A deployment distributes load across its legs, and each leg closes its own loop. That is a strength while
   every leg is reporting, and a hazard the moment one is not: the remaining legs do not know what share
   the silent leg is still carrying. This is why a lost leg stops the whole deployment
   (<code>NET-20</code>) rather than redistributing, and why a manual override on an out-of-session leg is
@@ -496,7 +498,7 @@ page("docs/safety.html", 1, "Safety",
   entire design. It is the highest-risk stability event in the cycle and the case the frame is engineered
   against.</p>
   <ol class="steps">
-    <li><b>Confirm the full roster before commanding drive.</b> A module that loses a leg part-way over the
+    <li><b>Confirm the full roster before commanding drive.</b> A deployment that loses a leg part-way over the
     lip is the scenario every other rule here exists to prevent.</li>
     <li><b>Exclude restricted legs.</b> Any leg carrying an <code>LFT-22</code> holding-drift flag, or
     running a beta firmware build, is excluded from walk-off sessions. The session controller enforces
