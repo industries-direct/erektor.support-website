@@ -91,10 +91,10 @@
       "code": "LFT-15",
       "severity": "warning",
       "title": "Lift height disagreement",
-      "meaning": "One leg in the module reports 4-10 mm off the module's commanded height.",
+      "meaning": "One leg in the deployment reports 4-10 mm off the commanded height.",
       "route": "self",
       "doc": "docs/operating.html#levelling",
-      "remedy": "Re-run module levelling. If it returns within ten cycles, raise it to a flag."
+      "remedy": "Re-run levelling. If it returns within ten cycles, raise it to a flag."
     },
     {
       "code": "LFT-22",

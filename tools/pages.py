@@ -231,7 +231,7 @@ page("dispatch.html", 0, "Request a replacement leg",
       </div>
       <div class="field">
         <label for="symptom" class="required">What the leg is doing</label>
-        <textarea id="symptom" name="symptom" required placeholder="Will not turn under drive command. Lift holds fine. Module levelled before the fault."></textarea>
+        <textarea id="symptom" name="symptom" required placeholder="Will not turn under drive command. Lift holds fine. Deployment levelled before the fault."></textarea>
         <p class="field__hint">What it does, what it will not do, and what you had it doing when it stopped.</p>
       </div>
     </fieldset>
@@ -261,7 +261,7 @@ page("dispatch.html", 0, "Request a replacement leg",
           <option>Walked off, station not yet placed</option>
           <option>Station placed, legs releasing</option>
         </select>
-        <p class="field__hint">This sets the priority. A module part-way through a walk-off outranks
+        <p class="field__hint">This sets the priority. A deployment part-way through a walk-off outranks
         everything else in the queue.</p>
       </div>
     </fieldset>
@@ -295,7 +295,7 @@ page("dispatch.html", 0, "Request a replacement leg",
   <ol class="steps">
     <li><b>We confirm by your contact method.</b> Reference number first, then an ETA once a pool leg is
     assigned.</li>
-    <li><b>Take the failed leg out of session.</b> Release it on the session controller so the module
+    <li><b>Take the failed leg out of session.</b> Release it on the session controller so the deployment
     re-forms without it. Do not leave it claimed.</li>
     <li><b>Leave it standing.</b> A leg is stable on its own tripod. Do not lay it down and do not strap it
     to the station.</li>
@@ -363,7 +363,7 @@ page("maintenance.html", 0, "Flag a leg for ERS",
       </div>
       <div class="field">
         <label for="reason" class="required">What you observed</label>
-        <textarea id="reason" name="reason" required placeholder="Drive current climbing over the last few sessions. Still completes convergence, but slower than the other legs in the module."></textarea>
+        <textarea id="reason" name="reason" required placeholder="Drive current climbing over the last few sessions. Still completes convergence, but slower than the other legs in the deployment."></textarea>
       </div>
       <div class="field">
         <label for="urgency">How long it can stay in rotation</label>

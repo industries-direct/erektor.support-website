@@ -13,7 +13,8 @@ deployed from `main` by GitHub Actions.
 
 There is no persistent Erektor. The durable entities are **legs**, **controllers** and
 **sessions**; a module is a left-plus-right leg pairing that exists only in software and is
-re-formed every session. Three consequences shape this entire site:
+re-formed every session, and a deployment is every module and unpaired leg one session
+controller claims for the task at hand. Three consequences shape this entire site:
 
 1. **Field service is replacement, not repair.** Legs share no wiring, no bus and no
    rigidity, so the unit of service is the whole leg, swapped from the pool.
