@@ -537,13 +537,14 @@
       var f = new FormData(batch);
       var first = String(f.get('first') || '').trim().toUpperCase();
       var count = Math.min(Math.max(parseInt(f.get('count'), 10) || 0, 0), 200);
-      var m = /^MX-(\d{2})-(\d{5})$/.exec(first);
+      // (side)-(version)(product)(manufacture order #): the order number counts up.
+      var m = /^([LR]-V\d{1,2}[A-Z]{1,3})(\d{3})$/.exec(first);
       if (!m || !count) return [];
       var out = [];
       for (var i = 0; i < count; i++) {
         var n = parseInt(m[2], 10) + i;
-        if (n > 99999) break;
-        out.push('MX-' + m[1] + '-' + String(n).padStart(5, '0'));
+        if (n > 999) break;
+        out.push(m[1] + String(n).padStart(3, '0'));
       }
       return out;
     }

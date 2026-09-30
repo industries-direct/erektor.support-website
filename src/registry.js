@@ -20,7 +20,7 @@
  * fails closed: an unprovisioned deployment answers 503 rather than pretending.
  */
 
-import { SERIAL, normalise } from './serials.js';
+import { SERIAL, EXAMPLE, normalise, valid } from './serials.js';
 import { sessionFor, canWrite, isAdmin, crossSite } from './auth.js';
 import { handleManufacturing } from './manufacturing.js';
 
@@ -97,10 +97,10 @@ function checkNewLeg(leg, doc) {
   const problems = [];
   const mx = normalise(leg.mechanical_serial);
   if (!mx) problems.push('Mechanical serial is required — it is the leg’s identity.');
-  else if (!SERIAL.mechanical.test(mx)) problems.push(`${mx} is not a mechanical serial (MX-24-08192).`);
+  else if (!SERIAL.mechanical.test(mx)) problems.push(`${mx} is not a leg serial (${EXAMPLE.mechanical}).`);
 
   const el = normalise(leg.electronics_serial);
-  if (el && !SERIAL.electronics.test(el)) problems.push(`${el} is not an electronics serial (EL-25-014873).`);
+  if (el && !valid('electronics', el)) problems.push(`${el} is not a controller serial (${EXAMPLE.electronics}).`);
 
   if (!text(leg.variant)) problems.push(`${mx || 'A leg'} needs a variant.`);
 
@@ -143,8 +143,8 @@ async function record(env, life, leg, ev, actor) {
   // history; that is the whole reason the key is the mechanical serial.
   if (spec.binds) {
     const el = normalise(ev.electronics_serial);
-    if (!el || !SERIAL.electronics.test(el)) {
-      return { problems: ['This event binds a ClearCore, so it needs an electronics serial (EL-25-014873).'] };
+    if (!el || !valid('electronics', el)) {
+      return { problems: [`This event binds a ClearCore, so it needs its controller serial (${EXAMPLE.electronics}).`] };
     }
     if (el !== leg.electronics_serial) {
       const held = await env.REGISTRY

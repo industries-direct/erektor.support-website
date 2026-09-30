@@ -13,7 +13,7 @@
  */
 
 import * as A from './accounts.js';
-import { SERIAL, EXAMPLE, normalise } from './serials.js';
+import { EXAMPLE, normalise, valid } from './serials.js';
 
 const SITE = 'support';
 const COOKIE = 'ers_portal';
@@ -195,7 +195,7 @@ export async function handleAccountApi(request, env) {
     if (!facility) return json({ error: 'Choose one of your facilities.' }, 400);
 
     const serial = normalise(input.serial);
-    if (!SERIAL[kind.identity].test(serial)) {
+    if (!valid(kind.identity, serial)) {
       return json({ error: `Enter the ${kind.identity} serial, for example ${EXAMPLE[kind.identity]}.` }, 400);
     }
 

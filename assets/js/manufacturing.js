@@ -101,16 +101,17 @@
     function preview() {
       var first = form.first_serial.value.trim().toUpperCase();
       var n = parseInt(form.frame_count.value, 10);
-      var m = /^MX-(\d{2})-(\d{5})$/.exec(first);
+      // (side)-(version)(product)(manufacture order #): the order number counts up.
+      var m = /^([LR]-V\d{1,2}[A-Z]{1,3})(\d{3})$/.exec(first);
       if (!m || !(n >= 1)) {
         rangeEl.textContent = 'Give the first serial and the frame count to see the range.';
         return;
       }
       var last = Number(m[2]) + n - 1;
-      rangeEl.innerHTML = last > 99999
-        ? 'That range runs past MX-' + esc(m[1]) + '-99999.'
-        : 'Covers <b class="mono">' + esc(first) + ' → MX-' + esc(m[1]) + '-' +
-          String(last).padStart(5, '0') + '</b>, ' + n + ' frame' + (n === 1 ? '' : 's') + '.';
+      rangeEl.innerHTML = last > 999
+        ? 'That range runs past manufacture order 999.'
+        : 'Covers <b class="mono">' + esc(first) + ' → ' + esc(m[1]) +
+          String(last).padStart(3, '0') + '</b>, ' + n + ' frame' + (n === 1 ? '' : 's') + '.';
     }
     form.addEventListener('input', preview);
 

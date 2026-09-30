@@ -58,11 +58,11 @@ ok('editing an unlisted part is a 404', r.status === 404, r.body);
 
 group('— logging a batch —');
 r = await mfg('POST', '/batches', {
-  batch_number: 'b-2609-a', variant: 'LEG-S', first_serial: 'MX-24-08201', frame_count: 24, lots: 'EXT-114'
+  batch_number: 'b-2609-a', variant: 'LEG-S', first_serial: 'L-V3BE201', frame_count: 24, lots: 'EXT-114'
 });
-ok('a 24-frame batch is logged', r.status === 201 && r.body.last_serial === 'MX-24-08224', r.body);
+ok('a 24-frame batch is logged', r.status === 201 && r.body.last_serial === 'L-V3BE224', r.body);
 
-r = await call('GET', '/api/registry/legs?q=MX-24-082&limit=500');
+r = await call('GET', '/api/registry/legs?q=L-V3BE2&limit=500');
 const built = r.body.legs.filter((l) => l.batch === 'B-2609-A');
 ok('its frames are in the registry, built, carrying the batch',
    built.length === 24 && built.every((l) => l.state === 'built'), built.length);
@@ -76,7 +76,7 @@ ok('a part under its reorder point says so', stock['CC-1'].status === 'order', s
 ok('days of cover follow from the draw', stock['CC-1'].days_of_cover === 8, stock['CC-1']);
 
 r = await mfg('POST', '/batches', {
-  batch_number: 'B-2609-B', variant: 'LEG-SH', first_serial: 'MX-24-08220', frame_count: 12
+  batch_number: 'B-2609-B', variant: 'LEG-SH', first_serial: 'L-V3BE220', frame_count: 12
 });
 ok('a batch overlapping existing frames is refused', r.status === 409, r.body);
 r = await mfg('GET', '/batches');
@@ -84,9 +84,9 @@ const after = await mfg('GET', '/materials');
 ok('...and changed nothing: no batch, no stock drawn',
    r.body.batches.length === 1 && after.body.materials.find((m) => m.sku === 'CC-1').on_hand === 6);
 
-r = await mfg('POST', '/batches', { batch_number: 'B-2609-A', variant: 'LEG-S', first_serial: 'MX-24-09000', frame_count: 1 });
+r = await mfg('POST', '/batches', { batch_number: 'B-2609-A', variant: 'LEG-S', first_serial: 'L-V3BE000', frame_count: 1 });
 ok('a batch number is used once', r.status === 409, r.body);
-r = await mfg('POST', '/batches', { batch_number: 'B-X', variant: 'LEG-S', first_serial: 'EL-25-014873', frame_count: 2 });
+r = await mfg('POST', '/batches', { batch_number: 'B-X', variant: 'LEG-S', first_serial: '25014873', frame_count: 2 });
 ok('an electronics serial cannot start a batch', r.status === 422, r.body);
 
 group('— stages —');
@@ -166,11 +166,11 @@ ok('an administrator enters a correction', r.status === 201, r.body);
 
 group('— metrics —');
 // Two of the batch's legs are commissioned; one comes back from the field.
-for (const [mx, el] of [['MX-24-08201', 'EL-26-000101'], ['MX-24-08202', 'EL-26-000102']]) {
+for (const [mx, el] of [['L-V3BE201', '26000101'], ['L-V3BE202', '26000102']]) {
   await call('POST', `/api/registry/legs/${mx}/events`, { type: 'commissioned', electronics_serial: el });
 }
-await call('POST', '/api/registry/legs/MX-24-08202/events', { type: 'flag-raised', fault_code: 'DRV-40' });
-await call('POST', '/api/registry/legs/MX-24-08202/events', { type: 'flag-raised', fault_code: 'DRV-41' });
+await call('POST', '/api/registry/legs/L-V3BE202/events', { type: 'flag-raised', fault_code: 'DRV-40' });
+await call('POST', '/api/registry/legs/L-V3BE202/events', { type: 'flag-raised', fault_code: 'DRV-41' });
 
 r = await mfg('GET', '/metrics?days=90');
 const m = r.body;

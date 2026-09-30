@@ -15,7 +15,7 @@
 CREATE TABLE IF NOT EXISTS batches (
   batch_number    TEXT PRIMARY KEY,              -- B-2609-A — also legs.batch on every frame it built
   variant         TEXT NOT NULL,                 -- LEG-S | LEG-SH | LEG-E  (data/hardware.json)
-  first_serial    TEXT NOT NULL,                 -- MX-24-08237
+  first_serial    TEXT NOT NULL,                 -- L-V3BE201
   frame_count     INTEGER NOT NULL,
   stage           TEXT NOT NULL,                 -- assembly | qa | commissioning | released
   lots            TEXT,                          -- material lots used, free text
