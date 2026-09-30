@@ -245,12 +245,12 @@
   <p>The ClearCore runs the leg and holds its operational identity. The XBee node gives it 300&nbsp;m or more
   to the session controller. The leg has no internet path of its own &mdash; everything it learns about the
   fleet, including firmware, arrives through a paired session controller.</p>
-  <p>When the session controller stops hearing a claimed leg (<code>NET-20</code>), motion inhibits across
-  the entire module by design. This is the behaviour you want: a leg that cannot be commanded must not be
+  <p>When the session controller stops hearing a claimed leg (<code>NET-20</code>), motion stops across
+  the entire deployment by design. This is the behaviour you want: a leg that cannot be commanded must not be
   holding a load that other legs think is shared.</p>
   <div class="note note--crit">
     <p class="note__title">Never manually override a leg that is out of session</p>
-    <p>The inhibit is not a nuisance lock. A module that has lost a leg does not know what that leg is
+    <p>The inhibit is not a nuisance lock. A deployment that has lost a leg does not know what that leg is
     doing with its share of the load.</p>
   </div>
 

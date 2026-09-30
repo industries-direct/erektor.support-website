@@ -244,7 +244,7 @@ page("dispatch.html", 0, "Request a replacement leg",
       </div>
       <div class="field">
         <label for="site" class="required">Site address</label>
-        <textarea id="site" name="site_address" required placeholder="Street, city, and how a flatbed gets in."></textarea>
+        <textarea id="site" name="site_address" required placeholder="Street, city, and how a low-deck trailer (50 ft+) gets in and where the slab is."></textarea>
         <p class="field__hint">Include access notes. A replacement leg arrives on a truck and walks itself off.</p>
       </div>
       <div class="field">

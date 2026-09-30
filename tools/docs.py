@@ -142,12 +142,12 @@ page("docs/leg.html", 1, "Leg anatomy",
   <p>The ClearCore runs the leg and holds its operational identity. The XBee node gives it 300&nbsp;m or more
   to the session controller. The leg has no internet path of its own &mdash; everything it learns about the
   fleet, including firmware, arrives through a paired session controller.</p>
-  <p>When the session controller stops hearing a claimed leg (<code>NET-20</code>), motion inhibits across
-  the entire module by design. This is the behaviour you want: a leg that cannot be commanded must not be
+  <p>When the session controller stops hearing a claimed leg (<code>NET-20</code>), motion stops across
+  the entire deployment by design. This is the behaviour you want: a leg that cannot be commanded must not be
   holding a load that other legs think is shared.</p>
   <div class="note note--crit">
     <p class="note__title">Never manually override a leg that is out of session</p>
-    <p>The inhibit is not a nuisance lock. A module that has lost a leg does not know what that leg is
+    <p>The inhibit is not a nuisance lock. A deployment that has lost a leg does not know what that leg is
     doing with its share of the load.</p>
   </div>
 
@@ -278,7 +278,7 @@ page("docs/operating.html", 1, "Operating procedures",
   <ol class="steps">
     <li><b>Confirm every leg is still in session</b> before commanding drive. A module that has silently
     lost a leg (<code>NET-20</code>) will inhibit part-way up the ramp, which is the worst place for it.</li>
-    <li><b>Drive the full structure and payload onto the flatbed</b> under collective command.</li>
+    <li><b>Drive the full structure and payload onto the low-deck trailer</b> under collective command.</li>
     <li><b>Self-secure to FMCSA cargo standards</b> (&sect;393.100&ndash;136). Securement is checked before the
     session controller will release the drive lock.</li>
   </ol>
@@ -316,7 +316,7 @@ page("docs/operating.html", 1, "Operating procedures",
   <ul>
     <li><b>Move the session controller, not the leg.</b> Line of sight and the range budget are almost
     always the issue.</li>
-    <li><b>A lost leg inhibits its whole module</b> (<code>NET-20</code>). Re-establish the link; never
+    <li><b>A lost leg stops its whole deployment</b> (<code>NET-20</code>). Re-establish the link; never
     override.</li>
     <li><b>The uplink is separate from the radio.</b> Losing the uplink (<code>NET-25</code>) means no
     portal, no firmware and no fleet sync &mdash; but sessions run offline normally and reconcile when it
@@ -487,7 +487,7 @@ page("docs/safety.html", 1, "Safety",
   </div>
   <p>A module distributes load across its legs, and each leg closes its own loop. That is a strength while
   every leg is reporting, and a hazard the moment one is not: the remaining legs do not know what share
-  the silent leg is still carrying. This is why a lost leg inhibits its whole module
+  the silent leg is still carrying. This is why a lost leg stops the whole deployment
   (<code>NET-20</code>) rather than redistributing, and why a manual override on an out-of-session leg is
   never acceptable.</p>
 
