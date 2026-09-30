@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fault codes — EREKTOR Support</title>
-<meta name="description" content="Every Erektor fault code, what it means, and which of the three service routes it puts you on.">
+<title>Emergency replacement — EREKTOR Support</title>
+<meta name="description" content="Request an emergency replacement leg.">
+<meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
@@ -27,7 +28,7 @@
         <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
         <a href="../maintenance.html" class="">Maintenance</a>
         <a href="../docs/" class="">Documentation</a>
-        <a href="../docs/faults.html" aria-current="page" class="">Fault codes</a>
+        <a href="../docs/faults.html" class="">Fault codes</a>
         <a href="../firmware/index.html" class="">Firmware</a>
         <a href="../account/index.html" class="nav--account">Account</a>
       <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
@@ -41,54 +42,65 @@
 </header>
 
 <main id="main">
-<p class="crumbs"><a href="../index.html">Support</a><span>/</span><a href="../docs/">Documentation</a><span>/</span>Fault codes</p>
-<section class="wrap" data-triage>
-  <span class="eyebrow">Triage</span>
-  <h1>Fault codes</h1>
-  <p class="lede">Each code resolves to one of three routes: fix it on the floor, flag the leg so ERS
-  diverts it on return, or dispatch a replacement because the leg cannot finish its session.</p>
 
-  <div class="field limit-input mt-2" >
-    <label for="triage">Look up a code</label>
-    <input type="search" id="triage" class="mono" data-triage-input placeholder="LFT-45" autocomplete="off">
-    <p class="field__hint">Or pick one from the index below.</p>
+<div class="wrap">
+  <div class="regbar">
+    <span class="regbar__id" data-company>Account</span>
+      <a href="index.html">Overview</a>
+      <a href="maintenance.html">Schedule maintenance</a>
+      <a href="emergency.html" aria-current="page">Emergency replacement</a>
+    <span class="regbar__end">
+      <span class="small muted" data-email></span>
+      <button type="button" class="btn btn--sm" data-signout>Sign out</button>
+    </span>
   </div>
-  <div data-triage-out hidden class="mt-1 limit"></div>
+</div>
 
-  <h2>Index</h2>
-  <div data-triage-list>
-    <p class="muted">Loading the fault table&hellip;</p>
-  </div>
+<section class="wrap wrap--narrow">
+  <span class="eyebrow">Urgent</span>
+  <h1>Emergency replacement</h1>
+  <p class="lede">A leg cannot finish its session. A replacement is sent to the site; the failed leg comes
+  back through ERS. Filed against the electronics serial, because that is how tonight&rsquo;s roster knows
+  the leg.</p>
 
-  <noscript>
-    <p class="note note--warn">The code index is rendered from
-    <code>/data/faults.json</code> and needs JavaScript. The raw table is readable directly at
-    <a href="../data/faults.json">/data/faults.json</a>, and both service routes work without it:
-    <a href="../dispatch.html">dispatch</a> and <a href="../maintenance.html">maintenance</a>.</p>
-  </noscript>
-
-  <h2>Reading a code</h2>
-  <p>Codes are <code>SUB-nn</code>, where the prefix names the subsystem:</p>
-  <div class="table-scroll">
-    <table>
-      <thead><tr><th>Prefix</th><th>Subsystem</th></tr></thead>
-      <tbody>
-        <tr><td class="mono">PWR</td><td>Power &mdash; 56&nbsp;V motor bus and 24&nbsp;V logic</td></tr>
-        <tr><td class="mono">DRV</td><td>Drive axis &mdash; ClearPath-SC servo and driven caster</td></tr>
-        <tr><td class="mono">LFT</td><td>Lift axis &mdash; ClearPath-SC servo and lift column</td></tr>
-        <tr><td class="mono">CTL</td><td>ClearCore controller</td></tr>
-        <tr><td class="mono">NET</td><td>XBee radio and session network</td></tr>
-        <tr><td class="mono">DCK</td><td>Rail bracket and dock</td></tr>
-        <tr><td class="mono">SES</td><td>Session and module pairing</td></tr>
-      </tbody>
-    </table>
+  <div class="note note--crit">
+    <p class="note__title">Take the failed leg out of session first</p>
+    <p>Release it on the session controller so the deployment re-forms without it, and never manually
+    override a leg that is out of session.</p>
   </div>
 
-  <div class="note note--info">
-    <p class="note__title">No code is not a blocker</p>
-    <p>If a leg cannot finish its session, <a href="../dispatch.html">request a replacement</a> without
-    waiting for a code. Describe what it does and what it will not do.</p>
-  </div>
+  <form class="form mt-2" data-account-request="emergency">
+    <fieldset>
+      <legend>Where and which leg</legend>
+      <div class="field">
+        <label for="facility" class="required">Facility</label>
+        <select id="facility" name="facility_id" required data-facilities></select>
+        <p class="field__hint">Facilities marked <em>ERS coming soon</em> are recorded but do not have an
+        ERS line yet.</p>
+      </div>
+      <div class="field">
+        <label for="serial" class="required">Electronics serial</label>
+        <input type="text" id="serial" name="serial" class="mono" required autocomplete="off" placeholder="EL-25-014873">
+        <p class="field__hint">From the ClearCore About screen or the session controller roster, starting EL.</p>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>What happened</legend>
+      <div class="field">
+        <label for="details" class="required">What the leg is doing</label>
+        <textarea id="details" name="details" required maxlength="2000" placeholder="Will not turn under drive command. Lift holds fine. NET-20 on the controller."></textarea>
+      </div>
+      <div class="field limit-input">
+        <label for="contact" class="required">Phone on site</label>
+        <input type="tel" id="contact" name="contact" required maxlength="120" autocomplete="tel">
+        <p class="field__hint">The dispatcher calls this number with an ETA.</p>
+      </div>
+    </fieldset>
+    <div class="btn-row">
+      <button type="submit" class="btn btn--primary">Request replacement</button>
+    </div>
+  </form>
+  <div id="result" hidden class="mt-1"></div>
 </section>
 
 </main>
@@ -128,5 +140,6 @@
     </div>
   </div>
 </footer>
+<script src="../assets/js/account.js" defer></script>
 </body>
 </html>
