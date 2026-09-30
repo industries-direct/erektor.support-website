@@ -52,109 +52,111 @@
   
 <figure>
   <div class="diagram">
-    <svg viewBox="0 0 760 470" role="img" aria-labelledby="dlegT dlegD">
+    <svg viewBox="0 0 760 520" role="img" aria-labelledby="dlegT dlegD">
       <title id="dlegT">Leg elevation</title>
-      <desc id="dlegD">One leg seen from the side. The bracket face meets the station rail at the top. Below it the lift column carries a ClearPath-SC lift servo. The controller enclosure and battery sit on the spine. The base spreads to three casters, of which the right-hand one is driven.</desc>
+      <desc id="dlegD">One leg seen from its outboard side. Two struts and a base rail form an A-frame. A square mast stands at its centre, from the base rail up through the apex, and the inner mast rises out of it on a lead screw. The lift servo and gearbox sit at the foot of the mast. The battery and ClearCore box hangs outboard at the rear, and the leg rolls on three casters, of which the rear one is driven.</desc>
 
-      <!-- station rail -->
-      <rect x="150" y="46" width="440" height="18" rx="2" class="d-fill"/>
-      <line x1="150" y1="55" x2="590" y2="55" class="d-thin" stroke-dasharray="5 5"/>
-      <text x="370" y="34" text-anchor="middle" class="d-note">STATION RAIL — BRACKET SEATS AT ANY MOUNTING POINT</text>
+      <!-- rear and front struts -->
+      <polygon points="238.8,400.3 370.8,124.2 390.6,133.8 258.6,409.9" class="d-fill" stroke-width="2"/>
+      <polygon points="522.6,400.3 390.6,124.2 370.8,133.8 502.8,409.9" class="d-fill" stroke-width="2"/>
 
-      <!-- bracket face -->
-      <rect x="330" y="64" width="80" height="28" rx="2" class="d-fill" stroke-width="2"/>
-      <line x1="348" y1="64" x2="348" y2="92" class="d-thin"/>
-      <line x1="392" y1="64" x2="392" y2="92" class="d-thin"/>
+      <!-- outer mast, apex to base rail -->
+      <rect x="368.2" y="129" width="25" height="297" class="d-fill" stroke-width="2"/>
+      <!-- lead screw inside the mast -->
+      <line x1="380.7" y1="423" x2="380.7" y2="203" class="d-accent" stroke-width="1.5" stroke-dasharray="4 3"/>
 
-      <!-- lift column -->
-      <rect x="352" y="92" width="36" height="158" rx="2" class="d-fill"/>
-      <rect x="360" y="150" width="20" height="100" class="d-fill"/>
+      <!-- inner mast, shown raised -->
+      <rect x="370.8" y="36.6" width="19.8" height="92.4" class="d-fill" stroke-width="2"/>
 
-      <!-- lift servo -->
-      <rect x="326" y="104" width="88" height="44" rx="3" class="d-fill" stroke-width="2"/>
-      <text x="370" y="131" text-anchor="middle" class="d-key">LIFT SERVO</text>
+      <!-- apex joint -->
+      <rect x="361" y="127" width="39.6" height="17.6" rx="1" class="d-fill" stroke-width="2"/>
 
-      <!-- lift travel arrow -->
-      <line x1="306" y1="106" x2="306" y2="246" class="d-accent" stroke-width="1.5"/>
-      <path d="M306 102 l-5 9 h10 z" class="d-accent-f"/>
-      <path d="M306 250 l-5 -9 h10 z" class="d-accent-f"/>
+      <!-- lift travel -->
+      <line x1="414" y1="44" x2="414" y2="122" class="d-accent" stroke-width="1.5"/>
+      <path d="M414 38 l-5 9 h10 z" class="d-accent-f"/>
+      <path d="M414 128 l-5 -9 h10 z" class="d-accent-f"/>
 
-      <!-- battery -->
-      <rect x="176" y="176" width="104" height="58" rx="3" class="d-fill" stroke-width="2"/>
-      <text x="228" y="200" text-anchor="middle" class="d-key">PACK</text>
-      <text x="228" y="216" text-anchor="middle" class="d-note">56 V / 24 V</text>
-      <line x1="280" y1="205" x2="360" y2="205" class="d-thin"/>
+      <!-- tie-down D-rings on the mast -->
+      <path d="M374.5 150 a6.2 6.2 0 0 0 12.4 0 z" class="d-accent" stroke-width="1.5"/>
+      <path d="M374.5 340 a6.2 6.2 0 0 0 12.4 0 z" class="d-accent" stroke-width="1.5"/>
 
-      <!-- controller enclosure -->
-      <rect x="460" y="176" width="118" height="58" rx="3" class="d-fill" stroke-width="2"/>
-      <text x="519" y="200" text-anchor="middle" class="d-key">CLEARCORE</text>
-      <text x="519" y="216" text-anchor="middle" class="d-note">+ XBee radio</text>
-      <line x1="388" y1="205" x2="460" y2="205" class="d-thin"/>
+      <!-- XBee antenna on the front strut -->
+      <line x1="467.6" y1="226" x2="467.6" y2="259" class="d-stroke" stroke-width="2"/>
+      <circle cx="467.6" cy="226" r="2" class="d-ink"/>
 
-      <!-- base spine -->
-      <rect x="264" y="250" width="212" height="20" rx="2" class="d-fill" stroke-width="2"/>
+      <!-- base rail -->
+      <rect x="230" y="405.1" width="298.1" height="20.9" rx="1" class="d-fill" stroke-width="2"/>
 
       <!-- caster stems -->
-      <line x1="286" y1="270" x2="212" y2="316" class="d-stroke" stroke-width="2"/>
-      <line x1="370" y1="270" x2="370" y2="316" class="d-stroke" stroke-width="2"/>
-      <line x1="454" y1="270" x2="528" y2="316" class="d-accent" stroke-width="2"/>
+      <line x1="246.5" y1="426" x2="246.5" y2="440" class="d-accent" stroke-width="2"/>
+      <line x1="370.8" y1="426" x2="370.8" y2="440" class="d-stroke" stroke-width="2"/>
+      <line x1="503.5" y1="426" x2="503.5" y2="440" class="d-stroke" stroke-width="2"/>
 
-      <!-- casters -->
-      <circle cx="212" cy="334" r="18" class="d-fill" stroke-width="2"/>
-      <circle cx="370" cy="334" r="18" class="d-fill" stroke-width="2"/>
-      <circle cx="528" cy="334" r="18" class="d-accent" stroke-width="2.5" fill="none"/>
-      <circle cx="528" cy="334" r="5" class="d-accent-f"/>
+      <!-- outboard box: pack and ClearCore -->
+      <rect x="233.3" y="426" width="116.6" height="37.4" rx="2" class="d-fill" stroke-width="2"/>
+      <text x="306" y="441" text-anchor="middle" class="d-key">PACK +</text>
+      <text x="306" y="455" text-anchor="middle" class="d-key">CLEARCORE</text>
 
-      <!-- drive servo on the driven caster -->
-      <rect x="556" y="292" width="70" height="34" rx="3" class="d-fill" stroke-width="2"/>
-      <text x="591" y="313" text-anchor="middle" class="d-key">DRIVE</text>
-      <line x1="556" y1="309" x2="536" y2="322" class="d-thin"/>
+      <!-- casters: rear driven, mid outboard, front -->
+      <circle cx="246.5" cy="453.5" r="16.5" class="d-accent" stroke-width="2.5" fill="none"/>
+      <circle cx="246.5" cy="453.5" r="4.5" class="d-accent-f"/>
+      <circle cx="370.8" cy="453.5" r="16.5" class="d-fill" stroke-width="2"/>
+      <circle cx="503.5" cy="453.5" r="16.5" class="d-fill" stroke-width="2"/>
+
+      <!-- lift servo and gearbox at the mast foot, behind the outboard caster -->
+      <rect x="357.6" y="426" width="35.6" height="37.4" rx="2" class="d-stroke" stroke-width="1.5" stroke-dasharray="4 3"/>
 
       <!-- floor -->
-      <line x1="130" y1="356" x2="640" y2="356" class="d-stroke" stroke-width="2"/>
+      <line x1="190" y1="470" x2="570" y2="470" class="d-stroke" stroke-width="2"/>
       <g class="d-thin">
-        <line x1="140" y1="356" x2="128" y2="368"/><line x1="176" y1="356" x2="164" y2="368"/>
-        <line x1="212" y1="356" x2="200" y2="368"/><line x1="248" y1="356" x2="236" y2="368"/>
-        <line x1="284" y1="356" x2="272" y2="368"/><line x1="320" y1="356" x2="308" y2="368"/>
-        <line x1="356" y1="356" x2="344" y2="368"/><line x1="392" y1="356" x2="380" y2="368"/>
-        <line x1="428" y1="356" x2="416" y2="368"/><line x1="464" y1="356" x2="452" y2="368"/>
-        <line x1="500" y1="356" x2="488" y2="368"/><line x1="536" y1="356" x2="524" y2="368"/>
-        <line x1="572" y1="356" x2="560" y2="368"/><line x1="608" y1="356" x2="596" y2="368"/>
+        <line x1="200" y1="470" x2="188" y2="482"/><line x1="236" y1="470" x2="224" y2="482"/>
+        <line x1="272" y1="470" x2="260" y2="482"/><line x1="308" y1="470" x2="296" y2="482"/>
+        <line x1="344" y1="470" x2="332" y2="482"/><line x1="380" y1="470" x2="368" y2="482"/>
+        <line x1="416" y1="470" x2="404" y2="482"/><line x1="452" y1="470" x2="440" y2="482"/>
+        <line x1="488" y1="470" x2="476" y2="482"/><line x1="524" y1="470" x2="512" y2="482"/>
+        <line x1="560" y1="470" x2="548" y2="482"/>
       </g>
 
       <!-- callouts -->
       <g class="d-label">
-        <text x="640" y="82">Bracket face</text>
-        <text x="640" y="212">Controller</text>
-        <text x="640" y="340">Driven caster</text>
-        <text x="120" y="212" text-anchor="end">Battery</text>
-        <text x="120" y="180" text-anchor="end">Lift travel</text>
-        <text x="120" y="340" text-anchor="end">Free casters</text>
+        <text x="560" y="60">Inner mast</text>
+        <text x="560" y="88">Lift travel</text>
+        <text x="560" y="140">Apex</text>
+        <text x="560" y="246">XBee antenna</text>
+        <text x="560" y="420">Base rail</text>
+        <text x="560" y="446">Lift servo, 40:1 gearbox</text>
+        <text x="560" y="466">Free caster</text>
+        <text x="200" y="194" text-anchor="end">Mast + lead screw</text>
+        <text x="200" y="344" text-anchor="end">Tie-down D-rings</text>
+        <text x="200" y="440" text-anchor="end">Outboard box</text>
+        <text x="200" y="462" text-anchor="end">Driven caster</text>
       </g>
       <g class="d-thin">
-        <polyline points="636,78 412,78"/>
-        <polyline points="636,208 582,208"/>
-        <polyline points="636,336 552,336"/>
-        <polyline points="124,208 172,208"/>
-        <polyline points="124,176 306,176"/>
-        <polyline points="124,336 194,336"/>
-        <polyline points="194,336 352,336"/>
+        <polyline points="556,56 392,56"/>
+        <polyline points="556,84 418,84"/>
+        <polyline points="556,136 402,136"/>
+        <polyline points="556,242 470,242"/>
+        <polyline points="556,416 529,416"/>
+        <polyline points="556,442 394,442"/>
+        <polyline points="556,462 520,462"/>
+        <polyline points="204,190 368,190"/>
+        <polyline points="204,340 374,340"/>
+        <polyline points="204,436 233,436"/>
+        <polyline points="204,458 230,458"/>
       </g>
 
-      <!-- serial stamp callout -->
-      <text x="370" y="400" text-anchor="middle" class="d-note">MECHANICAL SERIAL (MX) STAMPED ON THE FRAME ABOVE THE BRACKET FACE</text>
-      <text x="370" y="418" text-anchor="middle" class="d-note">ELECTRONICS SERIAL (EL) READS FROM THE CLEARCORE — IT CHANGES WHEN THE CONTROLLER DOES</text>
-      <line x1="370" y1="382" x2="370" y2="96" class="d-thin" stroke-dasharray="3 4"/>
+      <text x="380" y="505" text-anchor="middle" class="d-note">FROM THE V3 CAD · ≈1.36 M LONG · APEX ≈1.55 M · MAST SHOWN RAISED ≈1.97 M</text>
     </svg>
   </div>
-  <figcaption>A leg is self-contained: its own 56&nbsp;V motor bus and 24&nbsp;V logic, its own ClearCore and XBee radio, two ClearPath-SC servos on the lift and drive axes, and three casters of which one is driven. Nothing crosses to a neighbouring leg — no wiring, no bus, no shared rigidity.</figcaption>
+  <figcaption>The leg from its outboard side. Two struts and a base rail make the A-frame; the square mast stands at its centre, and the inner mast rises out of it on a lead screw turned by the lift servo and its 40:1 planetary gearbox at the mast foot. The pack and ClearCore ride in the outboard box over the rear caster, which is the driven one. A leg carries its own 56&nbsp;V motor bus and 24&nbsp;V logic, its own ClearCore and XBee radio, and two ClearPath-SC servos. Nothing crosses to a neighbouring leg — no wiring, no bus, no shared rigidity.</figcaption>
 </figure>
 
 
   <ul class="spec-list limit" >
     <li><span>Motors per leg</span><span>2 &mdash; drive axis + lift axis</span></li>
     <li><span>Servo</span><span>Teknic ClearPath-SC</span></li>
-    <li><span>Casters per leg</span><span>3 &mdash; 1 driven, 2 free</span></li>
+    <li><span>Lift</span><span>Lead screw in the mast &middot; 40:1 planetary</span></li>
+    <li><span>Casters per leg</span><span>3 &mdash; rear driven, 2 free &middot; 6 in</span></li>
     <li><span>Control</span><span>ClearCore &middot; 24 V logic</span></li>
     <li><span>Motor bus</span><span>56 V direct</span></li>
     <li><span>Comms</span><span>XBee radio node &middot; 300 m+ to controller</span></li>
@@ -166,41 +168,66 @@
   
 <figure>
   <div class="diagram">
-    <svg viewBox="0 0 480 380" role="img" aria-labelledby="dplanT dplanD">
+    <svg viewBox="-107 0 760 450" role="img" aria-labelledby="dplanT dplanD">
       <title id="dplanT">Leg plan view</title>
-      <desc id="dplanD">The leg seen from above. Three casters sit at the corners of a triangle around the central lift column. One caster is driven; the other two swivel freely.</desc>
+      <desc id="dplanD">The leg seen from above. The A-frame and mast run along the inner edge, facing the partner leg. An outrigger carries the battery and ClearCore box and a third caster on the outboard side. The three casters form a triangle: front and rear on the A-frame line, one outboard beside the mast. The rear caster is driven by a servo lying across the leg.</desc>
 
-      <!-- tripod outline -->
-      <polygon points="240,88 388,300 92,300" class="d-fill" stroke-width="2"/>
+      <!-- A-frame line: base rail and struts from above -->
+      <rect x="268" y="61.25" width="25.75" height="338.75" rx="1" class="d-fill" stroke-width="2"/>
 
-      <!-- centre column -->
-      <circle cx="240" cy="230" r="30" class="d-fill" stroke-width="2"/>
-      <circle cx="240" cy="230" r="12" class="d-thin"/>
-      <text x="240" y="234" text-anchor="middle" class="d-key">COLUMN</text>
+      <!-- outrigger cross-member and outboard strut -->
+      <rect x="190" y="215" width="78" height="25" rx="1" class="d-fill" stroke-width="2"/>
+
+      <!-- outboard box -->
+      <rect x="192" y="245" width="76" height="155" rx="2" class="d-fill" stroke-width="2"/>
+      <text x="218" y="316" text-anchor="middle" class="d-key">PACK +</text>
+      <text x="218" y="330" text-anchor="middle" class="d-key">CLEARCORE</text>
+
+      <!-- mast, inner mast, lead screw -->
+      <rect x="268" y="214.5" width="25.75" height="28.5" class="d-fill" stroke-width="2"/>
+      <rect x="270.9" y="217.4" width="20" height="22.7" class="d-thin"/>
+      <circle cx="280.9" cy="228.7" r="3" class="d-accent-f"/>
 
       <!-- casters -->
-      <circle cx="240" cy="88" r="22" class="d-accent" stroke-width="2.5" fill="none"/>
-      <circle cx="240" cy="88" r="6" class="d-accent-f"/>
-      <circle cx="388" cy="300" r="22" class="d-fill" stroke-width="2"/>
-      <circle cx="92" cy="300" r="22" class="d-fill" stroke-width="2"/>
+      <circle cx="280.75" cy="89.25" r="13" class="d-fill" stroke-width="2"/>
+      <circle cx="205" cy="235" r="13" class="d-fill" stroke-width="2"/>
+      <circle cx="280.75" cy="381.25" r="13" class="d-accent" stroke-width="2.5" fill="none"/>
+      <circle cx="280.75" cy="381.25" r="4" class="d-accent-f"/>
 
-      <!-- swivel indication on free casters -->
-      <path d="M368 284 a26 26 0 0 1 34 30" class="d-thin"/>
-      <path d="M112 284 a26 26 0 0 0 -34 30" class="d-thin"/>
+      <!-- drive servo across the rear of the leg -->
+      <rect x="202.5" y="371.25" width="47.5" height="20" rx="2" class="d-fill" stroke-width="2"/>
+      <text x="226.25" y="385" text-anchor="middle" class="d-key">DRIVE</text>
+      <line x1="250" y1="381.25" x2="267.75" y2="381.25" class="d-accent" stroke-width="1.5"/>
 
-      <!-- drive direction -->
-      <line x1="240" y1="58" x2="240" y2="24" class="d-accent" stroke-width="1.5"/>
-      <path d="M240 18 l-6 11 h12 z" class="d-accent-f"/>
+      <!-- stance triangle through the three casters -->
+      <polygon points="280.75,89.25 280.75,381.25 205,235" class="d-accent" stroke-width="1" stroke-dasharray="5 4"/>
+
+      <!-- toward the partner leg -->
+      <line x1="304" y1="262" x2="350" y2="262" class="d-accent" stroke-width="1.5"/>
+      <path d="M356 262 l-10 -5 v10 z" class="d-accent-f"/>
 
       <g class="d-label">
-        <text x="240" y="12" text-anchor="middle">Drive</text>
-        <text x="420" y="340" text-anchor="end">Free swivel</text>
-        <text x="60" y="340">Free swivel</text>
+        <text x="310" y="93">Front caster — free</text>
+        <text x="310" y="150">A-frame line</text>
+        <text x="310" y="210">Mast, lead screw at centre</text>
+        <text x="362" y="266">Partner leg</text>
+        <text x="310" y="385">Driven caster</text>
+        <text x="176" y="239" text-anchor="end">Outboard caster</text>
+        <text x="176" y="253" text-anchor="end" class="d-note">free</text>
+        <text x="176" y="324" text-anchor="end">Outboard box</text>
+        <text x="176" y="385" text-anchor="end">Drive servo</text>
       </g>
-      <text x="240" y="356" text-anchor="middle" class="d-note">A LEG STANDS UNSUPPORTED ON THIS TRIPOD — NO PROP, NO NEIGHBOUR</text>
+      <g class="d-thin">
+        <polyline points="306,146 294,146"/>
+        <polyline points="306,206 294,218"/>
+        <polyline points="180,320 192,320"/>
+        <polyline points="180,381 202,381"/>
+      </g>
+
+      <text x="273" y="428" text-anchor="middle" class="d-note">LEFT AND RIGHT LEGS ARE MIRROR IMAGES — THE OUTRIGGER FACES AWAY FROM THE PARTNER</text>
     </svg>
   </div>
-  <figcaption>One driven caster and two free swivels. The tripod is why a leg is stable on its own on the floor, in transit, and on the ERS belt — and why a single leg can be handled as an independent asset rather than half of a fixed machine.</figcaption>
+  <figcaption>From above. The mast is on the A-frame line, not at the centre of the footprint: the outrigger carries the pack, the ClearCore and the third caster outboard, so the three casters stand in a triangle — front and rear on the A-frame line, one outboard beside the mast. That triangle is why a leg is stable on its own on the floor, in transit and on the ERS belt, and why a single leg can be handled as an independent asset rather than half of a fixed machine. A module pairs a left leg with its mirror-image right leg, outriggers facing out.</figcaption>
 </figure>
 
 </section>
@@ -225,7 +252,8 @@
   </div>
 
   <h2 id="lift">Lift axis</h2>
-  <p>A ClearPath-SC servo drives the lift column. Across a deployment, lift is commanded collectively: the
+  <p>A ClearPath-SC servo stands at the foot of the mast and turns a lead screw through a 40:1 planetary
+  gearbox, raising the inner mast out of the outer one. Across a deployment, lift is commanded collectively: the
   session controller holds the target height and each leg closes its own loop against it, which is how
   the structure levels on uneven ground without any leg knowing about the others.</p>
   <p>Disagreement between commanded and reported height is graded. Four to ten millimetres on one leg is
@@ -234,7 +262,8 @@
   under load (<code>LFT-45</code>) is a safety event, not a fault report.</p>
 
   <h2 id="drive">Drive axis</h2>
-  <p>One caster is driven by the second ClearPath-SC; the other two swivel freely. That is enough to
+  <p>The rear caster, under the outboard box, is driven by the second ClearPath-SC, which lies across the
+  leg beside it; the front and outboard casters swivel freely. That is enough to
   converge a leg on its assigned mounting point, and enough for the unified structure to drive onto and
   off a trailer.</p>
   <p>Drive current is the fleet&rsquo;s best early-wear signal. A leg whose current climbs above its envelope
