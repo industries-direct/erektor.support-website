@@ -199,7 +199,7 @@
       "code": "SES-30",
       "severity": "info",
       "title": "Service interval reached",
-      "meaning": "Motor-hours against the mechanical serial crossed the interval, or twelve months elapsed since the last closed service record.",
+      "meaning": "Motor-hours against the mechanical serial crossed the 2,500-hour service interval.",
       "route": "flag",
       "doc": "docs/ers.html#intervals",
       "remedy": "Flag it. The code clears when ERS closes the service record against the mechanical serial."

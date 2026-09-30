@@ -90,9 +90,9 @@ ok('motor-hours cannot fall', r.status === 422 && /cannot fall/.test(r.body.prob
 
 group('— identity survives an electronics swap —');
 await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'delivered', holder: 'Cedar Rapids' });
-await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'hours', motor_hours: 1300 });
+await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'hours', motor_hours: 2600 });
 r = await call('GET', '/api/registry/legs/MX-26-00101');
-ok('1300 h with no closed record reads as due', r.body.leg.due === true, r.body.leg.hours_since_service);
+ok('2600 h with no closed record reads as due', r.body.leg.due === true, r.body.leg.hours_since_service);
 
 await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'return-start' });
 await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'check-in' });
@@ -102,10 +102,10 @@ ok('the swap rolls the binding over', r.body.leg.electronics_serial === 'EL-26-0
 ok('...and does NOT reset the service interval', r.body.leg.due === true, r.body.leg.hours_since_service);
 
 r = await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'divert' });
-r = await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'service-closed', motor_hours: 1305 });
+r = await call('POST', '/api/registry/legs/MX-26-00101/events', { type: 'service-closed', motor_hours: 2605 });
 ok('a closed service record resets the interval', r.body.leg.due === false &&
    r.body.leg.hours_since_service === 0, r.body.leg);
-ok('...and the frame keeps its lifetime hours', r.body.leg.motor_hours === 1305, r.body.leg.motor_hours);
+ok('...and the frame keeps its lifetime hours', r.body.leg.motor_hours === 2605, r.body.leg.motor_hours);
 
 r = await call('GET', '/api/registry/legs/MX-26-00101');
 const types = r.body.events.map((e) => e.type);
