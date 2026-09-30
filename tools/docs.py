@@ -90,7 +90,8 @@ page("docs/leg.html", 1, "Leg anatomy",
   <ul class="spec-list limit" >
     <li><span>Motors per leg</span><span>2 &mdash; drive axis + lift axis</span></li>
     <li><span>Servo</span><span>Teknic ClearPath-SC</span></li>
-    <li><span>Casters per leg</span><span>3 &mdash; 1 driven, 2 free</span></li>
+    <li><span>Lift</span><span>Lead screw in the mast &middot; 40:1 planetary</span></li>
+    <li><span>Casters per leg</span><span>3 &mdash; rear driven, 2 free &middot; 6 in</span></li>
     <li><span>Control</span><span>ClearCore &middot; 24 V logic</span></li>
     <li><span>Motor bus</span><span>56 V direct</span></li>
     <li><span>Comms</span><span>XBee radio node &middot; 300 m+ to controller</span></li>
@@ -122,7 +123,8 @@ page("docs/leg.html", 1, "Leg anatomy",
   </div>
 
   <h2 id="lift">Lift axis</h2>
-  <p>A ClearPath-SC servo drives the lift column. Across a deployment, lift is commanded collectively: the
+  <p>A ClearPath-SC servo stands at the foot of the mast and turns a lead screw through a 40:1 planetary
+  gearbox, raising the inner mast out of the outer one. Across a deployment, lift is commanded collectively: the
   session controller holds the target height and each leg closes its own loop against it, which is how
   the structure levels on uneven ground without any leg knowing about the others.</p>
   <p>Disagreement between commanded and reported height is graded. Four to ten millimetres on one leg is
@@ -131,7 +133,8 @@ page("docs/leg.html", 1, "Leg anatomy",
   under load (<code>LFT-45</code>) is a safety event, not a fault report.</p>
 
   <h2 id="drive">Drive axis</h2>
-  <p>One caster is driven by the second ClearPath-SC; the other two swivel freely. That is enough to
+  <p>The rear caster, under the outboard box, is driven by the second ClearPath-SC, which lies across the
+  leg beside it; the front and outboard casters swivel freely. That is enough to
   converge a leg on its assigned mounting point, and enough for the unified structure to drive onto and
   off a trailer.</p>
   <p>Drive current is the fleet&rsquo;s best early-wear signal. A leg whose current climbs above its envelope
