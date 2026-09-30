@@ -157,7 +157,7 @@
       "meaning": "The session controller stopped hearing a claimed leg entirely.",
       "route": "dispatch",
       "doc": "docs/operating.html#radio",
-      "remedy": "Motion inhibits across the whole module by design. Never attempt a manual override on a leg that is out of session."
+      "remedy": "Motion stops across the whole deployment by design. Never attempt a manual override on a leg that is out of session."
     },
     {
       "code": "NET-25",
