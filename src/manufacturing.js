@@ -58,13 +58,16 @@ function reference(prefix) {
 }
 
 /**
- * L-V3BE123 + 3 → L-V3BE126: the manufacture order number counts up and the
- * side, version and product stay put. Null past order 999.
+ * Legs are built as modules: the number is the module's place in build
+ * order, and its left and right legs share it. So frames run L-V3BE001,
+ * R-V3BE001, L-V3BE002, R-V3BE002 ..., and frame `offset` of a batch is that
+ * many legs on from the first. Null past module 999.
  */
 function serialAt(first, offset) {
-  const m = /^(.*?)(\d{3})$/.exec(first);
-  const n = Number(m[2]) + offset;
-  return n > 999 ? null : `${m[1]}${String(n).padStart(3, '0')}`;
+  const m = /^([LR])-(.*?)(\d{3})$/.exec(first);
+  const position = Number(m[3]) * 2 + (m[1] === 'R' ? 1 : 0) + offset;
+  const n = Math.floor(position / 2);
+  return n > 999 ? null : `${position % 2 ? 'R' : 'L'}-${m[2]}${String(n).padStart(3, '0')}`;
 }
 
 /** An action (approve, clock out) carries no body; that is not malformed. */
@@ -96,7 +99,7 @@ async function createBatch(env, doc, input, actor) {
   if (!Number.isInteger(count) || count < 1 || count > MAX_FRAMES) {
     problems.push(`A batch is 1 to ${MAX_FRAMES} frames.`);
   }
-  if (!problems.length && !serialAt(first, count - 1)) problems.push('That range runs past manufacture order 999.');
+  if (!problems.length && !serialAt(first, count - 1)) problems.push('That range runs past module 999.');
   if (problems.length) return json({ error: 'Nothing was logged.', problems }, 422);
 
   if (await env.REGISTRY.prepare('SELECT 1 FROM batches WHERE batch_number = ?').bind(number).first()) {

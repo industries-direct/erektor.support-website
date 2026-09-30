@@ -60,12 +60,16 @@ group('— logging a batch —');
 r = await mfg('POST', '/batches', {
   batch_number: 'b-2609-a', variant: 'LEG-S', first_serial: 'L-V3BE201', frame_count: 24, lots: 'EXT-114'
 });
-ok('a 24-frame batch is logged', r.status === 201 && r.body.last_serial === 'L-V3BE224', r.body);
+ok('a 24-frame batch is logged', r.status === 201 && r.body.last_serial === 'R-V3BE212', r.body);
 
-r = await call('GET', '/api/registry/legs?q=L-V3BE2&limit=500');
+r = await call('GET', '/api/registry/legs?q=V3BE2&limit=500');
 const built = r.body.legs.filter((l) => l.batch === 'B-2609-A');
 ok('its frames are in the registry, built, carrying the batch',
    built.length === 24 && built.every((l) => l.state === 'built'), built.length);
+const serials = new Set(built.map((l) => l.mechanical_serial));
+ok('frames pair into modules: L-201, R-201, L-202 ... R-212',
+   ['L-V3BE201', 'R-V3BE201', 'L-V3BE202', 'R-V3BE212'].every((s) => serials.has(s)) && !serials.has('L-V3BE213'),
+   [...serials].sort());
 
 r = await mfg('GET', '/materials');
 const stock = Object.fromEntries(r.body.materials.map((m) => [m.sku, m]));
@@ -76,7 +80,7 @@ ok('a part under its reorder point says so', stock['CC-1'].status === 'order', s
 ok('days of cover follow from the draw', stock['CC-1'].days_of_cover === 8, stock['CC-1']);
 
 r = await mfg('POST', '/batches', {
-  batch_number: 'B-2609-B', variant: 'LEG-SH', first_serial: 'L-V3BE220', frame_count: 12
+  batch_number: 'B-2609-B', variant: 'LEG-SH', first_serial: 'L-V3BE210', frame_count: 12
 });
 ok('a batch overlapping existing frames is refused', r.status === 409, r.body);
 r = await mfg('GET', '/batches');
