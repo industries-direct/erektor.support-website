@@ -46,6 +46,35 @@
     return out;
   };
 
+  /* ---------------------------------------------------------- account */
+  // Pages are served from the CDN cache, so who is signed in is asked for
+  // here rather than written into the page.
+  var acctLink = document.querySelector('.nav a.nav--account');
+  if (acctLink) {
+    fetch('/api/account/session', { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (s) {
+        if (!s) return;
+        if (!s.signedIn) {
+          acctLink.textContent = 'Sign in';
+          acctLink.href = '/account/signin.html?next=' + encodeURIComponent(location.pathname + location.search);
+          return;
+        }
+        acctLink.textContent = s.company.name;
+        acctLink.title = 'Signed in as ' + s.user.email;
+        var out = document.createElement('button');
+        out.type = 'button';
+        out.className = 'nav__signout';
+        out.textContent = 'Sign out';
+        out.addEventListener('click', function () {
+          fetch('/api/account/session', { method: 'DELETE', credentials: 'same-origin' })
+            .finally(function () { location.href = '/'; });
+        });
+        acctLink.after(out);
+      })
+      .catch(function () { /* the link still goes to the account */ });
+  }
+
   /* ------------------------------------------------------------ theme */
   var root = document.documentElement;
   function currentTheme() {

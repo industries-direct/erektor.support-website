@@ -149,6 +149,12 @@ main { padding: 2.5rem 0 5rem; }
 .nav a:hover { color: var(--ink); }
 .nav a[aria-current="page"] { color: var(--ink); }
 .nav a.nav--urgent { color: var(--accent); font-weight: 600; }
+.nav a.nav--account { color: var(--ink); }
+.nav__signout {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  color: var(--ink-faint); font: inherit; font-size: .8125rem;
+}
+.nav__signout:hover { color: var(--ink); }
 
 .themebtn {
   border: 1px solid var(--line); background: transparent; color: var(--ink-muted);

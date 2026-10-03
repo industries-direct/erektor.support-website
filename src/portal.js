@@ -7,6 +7,9 @@
  * erektor-return.systems, and an account that has not finished first-time
  * setup there is sent back to finish it.
  *
+ * The same session gates the documentation and firmware pages (isMemberPage),
+ * and the old public request forms redirect into it (accountForm).
+ *
  * Like /internal/, it fails closed: no ACCOUNTS binding answers 503, no
  * session redirects to sign-in, and every query is scoped to the signed-in
  * user's company.
@@ -19,6 +22,24 @@ const SITE = 'support';
 const COOKIE = 'ers_portal';
 const SETUP_URL = 'https://erektor-return.systems/';
 const OPEN_PAGE = /^\/account\/signin(\.html)?$/;
+
+// Outside /account/, the documentation and firmware are for customers too.
+// The fault code index stays public: it is what an operator reaches from the
+// controller screen, before anyone has signed in to anything.
+const MEMBER_PAGES = /^\/(docs|firmware)(\/|$)/;
+const PUBLIC_DOCS = /^\/docs\/faults(\.html)?$/;
+export const isMemberPage = (path) => MEMBER_PAGES.test(path) && !PUBLIC_DOCS.test(path);
+
+// The public request forms have been folded into the account's own. The query
+// string rides along so a fault code routed from the triage still arrives.
+const FORMS = { dispatch: '/account/emergency.html', maintenance: '/account/maintenance.html' };
+export function accountForm(url) {
+  const m = /^\/(dispatch|maintenance)(\.html)?$/.exec(url.pathname);
+  return m && new Response(null, {
+    status: 302,
+    headers: { location: FORMS[m[1]] + url.search, 'cache-control': 'no-store' }
+  });
+}
 
 // Every request filed here is emailed to the service desk through the
 // NOTIFY send_email binding, which Cloudflare locks to one verified
@@ -153,6 +174,14 @@ export async function handleAccountApi(request, env) {
   }
 
   if (path === '/api/account/session') {
+    // Who is signed in, for the nav on every page. Unlike /me this never
+    // touches the account's records.
+    if (method === 'GET') {
+      const user = await A.currentUser(db, request, SITE, COOKIE);
+      return json(user
+        ? { signedIn: true, user: { email: user.email, name: user.name }, company: { name: user.company_name } }
+        : { signedIn: false });
+    }
     if (method === 'DELETE') {
       await A.closeSession(db, request, COOKIE);
       return json({ ok: true }, 200, { 'set-cookie': A.clearCookie(COOKIE) });
@@ -249,7 +278,7 @@ export async function serveAccount(request, env) {
     return new Response(null, {
       status: 302,
       headers: {
-        location: '/account/signin.html?next=' + encodeURIComponent(url.pathname),
+        location: '/account/signin.html?next=' + encodeURIComponent(url.pathname + url.search),
         'cache-control': 'no-store'
       }
     });

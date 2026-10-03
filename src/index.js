@@ -10,6 +10,10 @@
  *               would otherwise answer with 404.html.
  *   /account/*  the customer account portal (src/portal.js), gated the same
  *               way as /internal/ and for the same reason.
+ *   /docs/*,    behind the same customer sign-in, except the fault code
+ *   /firmware/* index, which stays public.
+ *   /dispatch,  redirect into the account's request forms.
+ *   /maintenance
  *   /internal/* also listed in `run_worker_first`, and for a sharper reason:
  *               without it the asset layer would serve the registry pages
  *               straight off the CDN and the gate below would never run. That
@@ -26,7 +30,7 @@
 import { handleServiceRequest } from './requests.js';
 import { handleRegistry } from './registry.js';
 import { gateConfig, sessionFor, signIn, signOut } from './auth.js';
-import { handleAccountApi, serveAccount } from './portal.js';
+import { accountForm, handleAccountApi, isMemberPage, serveAccount } from './portal.js';
 
 /** Mirrors the non-CSP entries of _headers, which only cover asset responses. */
 const API_HEADERS = {
@@ -158,7 +162,10 @@ export default {
       return json({ error: 'No such endpoint.' }, 404);
     }
 
-    if (pathname === '/account' || pathname.startsWith('/account/')) {
+    const form = accountForm(new URL(request.url));
+    if (form) return form;
+
+    if (pathname === '/account' || pathname.startsWith('/account/') || isMemberPage(pathname)) {
       return serveAccount(request, env);
     }
 
