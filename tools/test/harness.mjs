@@ -13,7 +13,8 @@ export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const env = {
   REGISTRY: makeD1(
     join(ROOT, 'migrations', '0001_registry.sql'),
-    join(ROOT, 'migrations', '0002_manufacturing.sql')
+    join(ROOT, 'migrations', '0002_manufacturing.sql'),
+    join(ROOT, 'migrations', '0003_leg_facility.sql')
   ),
   ASSETS: {
     async fetch(input) {

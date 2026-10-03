@@ -40,7 +40,7 @@ const PAGE = 100;
 // asset layer rather than duplicated here so the console, the docs and the
 // Worker cannot disagree about what a state means.
 let lifecycle = null;
-async function rules(env, request) {
+export async function rules(env, request) {
   if (!lifecycle) {
     const res = await env.ASSETS.fetch(new URL('/data/lifecycle.json', request.url));
     if (!res.ok) throw new Error('lifecycle.json unavailable: HTTP ' + res.status);
@@ -61,7 +61,7 @@ const COLUMNS = [
   'state', 'stage', 'holder', 'location', 'flag_code', 'flag_reference',
   'flag_raised_at', 'motor_hours', 'hours_at_service', 'built_at',
   'commissioned_at', 'last_service_at', 'last_seen_at', 'batch', 'notes',
-  'created_at', 'updated_at'
+  'facility_id', 'created_at', 'updated_at'
 ];
 
 // Fields an operator edits directly. State is deliberately absent: it moves
@@ -74,7 +74,7 @@ const text = (v) => {
 };
 
 /** Derived fields the console needs and the database should not store. */
-function decorate(row, doc, now) {
+export function decorate(row, doc, now) {
   if (!row) return row;
   const iv = doc.intervals;
   const since = (row.motor_hours || 0) - (row.hours_at_service || 0);
@@ -484,6 +484,18 @@ export async function handleRegistry(request, env) {
 
   if (parts[0] === 'lifecycle' && method === 'GET') return json(doc);
 
+  // Customer facilities a leg can be assigned to. They live in ers-accounts;
+  // a deployment without that binding simply has none to offer.
+  if (parts[0] === 'facilities' && method === 'GET') {
+    if (!env.ACCOUNTS) return json({ facilities: [] });
+    const rows = await env.ACCOUNTS.prepare(
+      `SELECT f.id, f.name, f.location, c.name AS company
+         FROM facilities f JOIN companies c ON c.id = f.company_id
+        ORDER BY c.name, f.name`
+    ).all();
+    return json({ facilities: rows.results });
+  }
+
   if (parts[0] === 'export' && method === 'GET') {
     const rows = await env.REGISTRY.prepare(
       `SELECT ${COLUMNS.join(', ')} FROM legs ORDER BY mechanical_serial`
@@ -549,8 +561,14 @@ export async function handleRegistry(request, env) {
       try { body = await request.json(); } catch { return json({ error: 'Malformed JSON.' }, 400); }
       const set = {};
       for (const k of EDITABLE) if (body[k] !== undefined) set[k] = text(body[k]);
+      // The customer facility, from ers-accounts. Empty unassigns the leg.
+      if (body.facility_id !== undefined) {
+        const id = body.facility_id === '' || body.facility_id === null ? null : Number(body.facility_id);
+        if (id !== null && !(Number.isInteger(id) && id > 0)) return json({ error: 'facility_id must be a facility id.' }, 422);
+        set.facility_id = id;
+      }
       if (!Object.keys(set).length) {
-        return json({ error: `Editable here: ${EDITABLE.join(', ')}. State moves by recording an event.` }, 422);
+        return json({ error: `Editable here: ${EDITABLE.join(', ')}, facility_id. State moves by recording an event.` }, 422);
       }
       set.updated_at = new Date().toISOString();
       const keys = Object.keys(set);

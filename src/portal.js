@@ -17,6 +17,7 @@
 
 import * as A from './accounts.js';
 import { EXAMPLE, normalise, valid } from './serials.js';
+import { decorate, rules } from './registry.js';
 
 const SITE = 'support';
 const COOKIE = 'ers_portal';
@@ -139,7 +140,40 @@ function pending(user) {
   return !!user.must_change_password || !user.setup_completed_at;
 }
 
-async function overview(db, user) {
+// What a customer sees of a leg. Registry notes, custody text and work orders
+// are the facility's own bookkeeping and stay internal.
+const LEG_FIELDS = [
+  'mechanical_serial', 'electronics_serial', 'variant', 'firmware', 'state', 'stage',
+  'facility_id', 'location', 'flag_code', 'flag_raised_at', 'motor_hours',
+  'hours_at_service', 'last_service_at', 'last_seen_at'
+];
+
+/**
+ * The legs assigned to these facilities, with the registry's interval and
+ * staleness math applied. They live in a different database from the
+ * facilities, so this is a second query rather than a join; an unbound
+ * registry just means no legs yet, not a broken dashboard.
+ */
+async function legsFor(env, request, facilityIds) {
+  if (!env.REGISTRY || !facilityIds.length) return { legs: [], intervalHours: null };
+  const { doc, states } = await rules(env, request);
+  const rows = await env.REGISTRY.prepare(
+    `SELECT ${LEG_FIELDS.join(', ')} FROM legs
+      WHERE facility_id IN (${facilityIds.map(() => '?').join(', ')}) AND state != 'retired'
+      ORDER BY mechanical_serial`
+  ).bind(...facilityIds).all();
+  const now = Date.now();
+  return {
+    intervalHours: doc.intervals.motorHours,
+    legs: rows.results.map((r) => {
+      const s = states.get(r.state) || {};
+      return { ...decorate(r, doc, now), state_label: s.label || r.state, state_kind: s.kind || 'flat' };
+    })
+  };
+}
+
+async function overview(env, request, user) {
+  const db = env.ACCOUNTS;
   const [facilities, requests] = await db.batch([
     db.prepare(
       `SELECT id, name, location, description, ers_status, ers_phase
@@ -153,11 +187,14 @@ async function overview(db, user) {
         ORDER BY r.created_at DESC LIMIT 50`
     ).bind(user.company_id)
   ]);
+  const fleet = await legsFor(env, request, facilities.results.map((f) => f.id));
   return {
     user: { email: user.email, name: user.name, role: user.role },
     company: { name: user.company_name },
     facilities: facilities.results,
-    requests: requests.results
+    requests: requests.results,
+    legs: fleet.legs,
+    intervalHours: fleet.intervalHours
   };
 }
 
@@ -211,7 +248,7 @@ export async function handleAccountApi(request, env) {
   if (!user) return json({ error: 'Sign in first.' }, 401);
 
   if (path === '/api/account/me' && method === 'GET') {
-    return json(await overview(db, user));
+    return json(await overview(env, request, user));
   }
 
   if (path === '/api/account/requests' && method === 'POST') {
