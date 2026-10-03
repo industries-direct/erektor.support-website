@@ -24,21 +24,31 @@
     <a class="brand" href="../index.html">
       <b>EREKTOR</b><span class="tag">Support</span>
     </a>
-    <nav class="nav" aria-label="Main">
-        <a href="../dispatch.html" class="nav--urgent">Dispatch</a>
-        <a href="../maintenance.html" class="">Maintenance</a>
-        <a href="../docs/" class="">Documentation</a>
+    <nav class="nav" aria-label="Main" data-public>
         <a href="../docs/faults.html" class="">Fault codes</a>
-        <a href="../firmware/index.html" class="">Firmware</a>
-        <a href="../account/index.html" class="nav--account">Account</a>
-      <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
+        <a href="/account/signin.html" class="btn btn--sm btn--primary" data-signin>Sign in</a>
+    </nav>
+    <div class="acct" data-members hidden>
+      <span class="acct__who"><strong data-acct-company>Your account</strong><span data-acct-email></span></span>
+      <button type="button" class="btn btn--sm" data-acct-signout>Sign out</button>
+    </div>
+    <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
         <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
           <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
           <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
         </svg>
-      </button>
-    </nav>
+    </button>
   </div>
+  <nav class="subnav" aria-label="Your account" data-members hidden>
+    <div class="wrap subnav-in">
+      <a href="../account/index.html" class="">Overview</a>
+      <a href="../account/emergency.html" class="nav--urgent">Emergency replacement</a>
+      <a href="../account/maintenance.html" class="">Schedule maintenance</a>
+      <a href="../docs/" class="">Documentation</a>
+      <a href="../docs/faults.html" class="">Fault codes</a>
+      <a href="../firmware/index.html" class="">Firmware</a>
+    </div>
+  </nav>
 </header>
 
 <main id="main">
@@ -157,15 +167,15 @@
     <div class="foot-cols">
         <div>
           <h4>Service</h4>
-          <ul><li><a href="../dispatch.html">Request a replacement leg</a></li><li><a href="../maintenance.html">Flag a leg for ERS</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
+          <ul><li data-members hidden><a href="../account/emergency.html">Request a replacement leg</a></li><li data-members hidden><a href="../account/maintenance.html">Schedule maintenance</a></li><li><a href="../docs/faults.html">Fault code index</a></li></ul>
         </div>
-        <div>
+        <div data-members hidden>
           <h4>Documentation</h4>
-          <ul><li><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="../docs/operating.html">Operating procedures</a></li><li><a href="../docs/ers.html">The return line</a></li><li><a href="../docs/safety.html">Safety</a></li></ul>
+          <ul><li data-members hidden><a href="../docs/leg.html">Leg anatomy and diagrams</a></li><li data-members hidden><a href="../docs/operating.html">Operating procedures</a></li><li data-members hidden><a href="../docs/ers.html">The return line</a></li><li data-members hidden><a href="../docs/safety.html">Safety</a></li></ul>
         </div>
-        <div>
+        <div data-members hidden>
           <h4>Fleet</h4>
-          <ul><li><a href="../firmware/index.html">Controller firmware</a></li><li><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
+          <ul><li data-members hidden><a href="../firmware/index.html">Controller firmware</a></li><li data-members hidden><a href="../docs/leg.html#identity">Serials and identity</a></li></ul>
         </div>
         <div>
           <h4>Contact</h4>

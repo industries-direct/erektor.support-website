@@ -48,32 +48,49 @@
 
   /* ---------------------------------------------------------- account */
   // Pages are served from the CDN cache, so who is signed in is asked for
-  // here rather than written into the page.
-  var acctLink = document.querySelector('.nav a.nav--account');
-  if (acctLink) {
-    fetch('/api/account/session', { credentials: 'same-origin' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (s) {
-        if (!s) return;
-        if (!s.signedIn) {
-          acctLink.textContent = 'Sign in';
-          acctLink.href = '/account/signin.html?next=' + encodeURIComponent(location.pathname + location.search);
-          return;
+  // here rather than written into the page. Anything behind the sign-in ships
+  // [data-members][hidden]; this reveals it and hides the [data-public] bits.
+  // The last answer is kept for the tab so a signed-in page does not flash
+  // the signed-out header on every navigation.
+  var SESSION_KEY = 'esc.session';
+
+  ERS.signedIn = false;
+  ERS.signIn = function (next) { return '/account/signin.html?next=' + encodeURIComponent(next); };
+
+  function showSession(s) {
+    var inside = !!(s && s.signedIn);
+    ERS.signedIn = inside;
+    document.querySelectorAll('[data-members]').forEach(function (n) { n.hidden = !inside; });
+    document.querySelectorAll('[data-public]').forEach(function (n) { n.hidden = inside; });
+    if (!inside) {
+      document.querySelectorAll('[data-signin]').forEach(function (a) {
+        if (!/^\/account\/signin/.test(location.pathname)) {
+          a.href = ERS.signIn(location.pathname + location.search);
         }
-        acctLink.textContent = s.company.name;
-        acctLink.title = 'Signed in as ' + s.user.email;
-        var out = document.createElement('button');
-        out.type = 'button';
-        out.className = 'nav__signout';
-        out.textContent = 'Sign out';
-        out.addEventListener('click', function () {
-          fetch('/api/account/session', { method: 'DELETE', credentials: 'same-origin' })
-            .finally(function () { location.href = '/'; });
-        });
-        acctLink.after(out);
-      })
-      .catch(function () { /* the link still goes to the account */ });
+      });
+      return;
+    }
+    document.querySelectorAll('[data-acct-company]').forEach(function (n) { n.textContent = s.company.name; });
+    document.querySelectorAll('[data-acct-email]').forEach(function (n) { n.textContent = s.user.email; });
   }
+
+  try { showSession(JSON.parse(sessionStorage.getItem(SESSION_KEY))); } catch (e) { /* private mode */ }
+
+  fetch('/api/account/session', { credentials: 'same-origin' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (s) {
+      if (!s) return;
+      try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (e) { /* private mode */ }
+      showSession(s);
+    })
+    .catch(function () { /* the cached answer, or the signed-out header, stands */ });
+
+  document.addEventListener('click', function (ev) {
+    if (!ev.target.closest('[data-acct-signout]')) return;
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) { /* private mode */ }
+    fetch('/api/account/session', { method: 'DELETE', credentials: 'same-origin' })
+      .finally(function () { location.href = '/'; });
+  });
 
   /* ------------------------------------------------------------ theme */
   var root = document.documentElement;
@@ -242,7 +259,10 @@
           ? hits.map(function (c) { return card(f, c); }).join('')
           : '<div class="note note--info"><p class="note__title">No match for <code>' + ERS.esc(q) + '</code></p>' +
             '<p>Check the code on the session controller. If the leg cannot finish its session, ' +
-            '<a href="' + ERS.url('dispatch.html') + '">request a replacement</a> without waiting for a code.</p></div>';
+            (ERS.signedIn
+              ? '<a href="' + ERS.url('account/emergency.html') + '">request a replacement</a>'
+              : '<a href="' + ERS.signIn('/account/emergency.html') + '">sign in to request a replacement</a>') +
+            ' without waiting for a code.</p></div>';
       };
       input.addEventListener('input', run);
 
@@ -260,6 +280,14 @@
 
     function routeAction(f, c) {
       var r = f.routes[c.route];
+      // The forms and procedures are behind the sign-in, so signed out the
+      // lookup says where the code leads and offers the sign-in that gets there.
+      if (!ERS.signedIn) {
+        var next = c.route === 'self' ? '/' + c.doc : '/' + r.target + '?code=' + encodeURIComponent(c.code);
+        var verb = c.route === 'self' ? 'open the procedure'
+          : c.route === 'dispatch' ? 'request a replacement leg' : 'flag this leg for ERS';
+        return '<a class="btn btn--primary" href="' + ERS.signIn(next) + '">Sign in to ' + verb + '</a>';
+      }
       if (c.route === 'self') {
         return '<a class="btn" href="' + ERS.url(c.doc) + '">Open the procedure</a>';
       }

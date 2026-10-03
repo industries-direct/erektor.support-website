@@ -148,13 +148,30 @@ main { padding: 2.5rem 0 5rem; }
 }
 .nav a:hover { color: var(--ink); }
 .nav a[aria-current="page"] { color: var(--ink); }
-.nav a.nav--urgent { color: var(--accent); font-weight: 600; }
-.nav a.nav--account { color: var(--ink); }
-.nav__signout {
-  border: 0; background: none; padding: 0; cursor: pointer;
-  color: var(--ink-faint); font: inherit; font-size: .8125rem;
+.nav a.btn--primary { color: #fff; }
+
+/* Signed in: who is here, then a second row with everything the sign-in
+   opens, the same shape as the erektor-return.systems masthead. */
+.acct {
+  margin-left: auto; display: flex; align-items: center; gap: .9rem;
+  padding-left: 1.2rem; border-left: 1px solid var(--line);
 }
-.nav__signout:hover { color: var(--ink); }
+.acct__who { display: flex; flex-direction: column; text-align: right; line-height: 1.25; min-width: 0; }
+.acct__who strong { font-size: .92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.acct__who span { font-size: .75rem; color: var(--ink-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.subnav { border-top: 1px solid var(--line); }
+.subnav-in {
+  display: flex; gap: 1.5rem; overflow-x: auto; scrollbar-width: none; white-space: nowrap;
+}
+.subnav-in::-webkit-scrollbar { display: none; }
+.subnav a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  color: var(--ink-muted); text-decoration: none; font-size: .875rem; font-weight: 500;
+  border-bottom: 2px solid transparent;
+}
+.subnav a:hover { color: var(--ink); }
+.subnav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+.subnav a.nav--urgent { color: var(--accent); font-weight: 600; }
 
 .themebtn {
   border: 1px solid var(--line); background: transparent; color: var(--ink-muted);
@@ -173,6 +190,8 @@ main { padding: 2.5rem 0 5rem; }
   }
   .nav::-webkit-scrollbar { display: none; }
   .themebtn { position: absolute; top: .45rem; right: 0; }
+  .acct { width: 100%; margin-left: 0; padding-left: 0; border-left: 0; justify-content: space-between; }
+  .acct__who { text-align: left; }
 }
 
 /* -------------------------------------------------------------- typography */

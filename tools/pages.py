@@ -62,7 +62,7 @@ page("index.html", 0, "Erektor Support",
   </noscript>
 </section>
 
-<section class="wrap mt-2" aria-labelledby="routes-title">
+<section class="wrap mt-2" aria-labelledby="routes-title" data-members hidden>
   <div class="dash-secline">
     <h2 id="routes-title">Three routes</h2>
     <p>Sending a technician is the exception. Counts are live from the fault table.</p>
@@ -77,7 +77,7 @@ page("index.html", 0, "Erektor Support",
       <p>Operator-serviceable. Follow the procedure on the code &mdash; no ticket, no record change.</p>
       <span class="routetile__cta">Open the procedures &rarr;</span>
     </a>
-    <a class="routetile routetile--flag" href="maintenance.html">
+    <a class="routetile routetile--flag" href="account/maintenance.html">
       <span class="routetile__top">
         <span class="routetile__k">Finishes the session</span>
         <span class="routetile__n mono"><b data-dash-count="flag">&mdash;</b><small>codes</small></span>
@@ -86,7 +86,7 @@ page("index.html", 0, "Erektor Support",
       <p>No truck. The flag rides on the leg&rsquo;s record and ERS diverts it at inspection when it comes home.</p>
       <span class="routetile__cta">Flag a leg &rarr;</span>
     </a>
-    <a class="routetile routetile--dispatch" href="dispatch.html">
+    <a class="routetile routetile--dispatch" href="account/emergency.html">
       <span class="routetile__top">
         <span class="routetile__k">Cannot finish the session</span>
         <span class="routetile__n mono"><b data-dash-count="dispatch">&mdash;</b><small>codes</small></span>
@@ -116,7 +116,7 @@ page("index.html", 0, "Erektor Support",
     </footer>
   </section>
 
-  <section class="panel" aria-labelledby="p-fw">
+  <section class="panel" aria-labelledby="p-fw" data-members hidden>
     <header class="panel__head">
       <h2 id="p-fw">Controller firmware</h2>
       <span class="panel__meta mono" data-dash-meta="firmware">&mdash;</span>
@@ -138,7 +138,7 @@ page("index.html", 0, "Erektor Support",
     <div class="panel__body" data-dash-fleet>
       <p class="muted small">Leg variants in the pool, the controller each one carries, and which are legacy.</p>
     </div>
-    <footer class="panel__foot">
+    <footer class="panel__foot" data-members hidden>
       <a href="docs/leg.html">Leg anatomy and diagrams &rarr;</a>
     </footer>
   </section>
@@ -152,7 +152,7 @@ page("index.html", 0, "Erektor Support",
       <p class="muted small">A leg carries two serial numbers. Firmware and pairing follow the electronics
       serial; wear, intervals and warranty follow the stamped mechanical serial.</p>
     </div>
-    <footer class="panel__foot">
+    <footer class="panel__foot" data-members hidden>
       <a href="docs/leg.html#identity">Read this before filing anything &rarr;</a>
     </footer>
   </section>
@@ -439,17 +439,17 @@ page("404.html", "/", "Page not found",
   <h1>That page is not here.</h1>
   <p class="lede">The link may be from an older generation of this site, or a label may have been
   mis-keyed. Nothing you were trying to file has been lost &mdash; nothing is submitted until you send
-  it from one of the two forms below.</p>
+  it.</p>
 </section>
 
-<section class="wrap">
+<section class="wrap" data-members hidden>
   <div class="grid grid--3">
-    <a class="card card--urgent" href="/dispatch.html">
+    <a class="card card--urgent" href="/account/emergency.html">
       <h3>Request a replacement leg</h3>
       <p>A leg cannot finish its session and you need a healthy one from the pool today.</p>
       <div class="card__meta">Emergency &middot; 24/7</div>
     </a>
-    <a class="card card--plan" href="/maintenance.html">
+    <a class="card card--plan" href="/account/maintenance.html">
       <h3>Flag a leg for ERS</h3>
       <p>The leg can finish the job. The flag rides on its record and diverts it at inspection.</p>
       <div class="card__meta">Planned &middot; no site visit</div>

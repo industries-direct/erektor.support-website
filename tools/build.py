@@ -18,30 +18,43 @@ import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-NAV = [
-    ("dispatch.html", "Dispatch", "nav--urgent"),
-    ("maintenance.html", "Maintenance", ""),
+# Signed out, the header offers only what is public and a way to sign in.
+# Signed in, it names the account and lays out everything the sign-in opens
+# in a second row, the way erektor-return.systems does. Anything behind the
+# sign-in carries data-members and ships hidden; assets/js/app.js reveals it
+# once /api/account/session says who is there. The Worker is still the gate:
+# this only decides what is shown.
+PUBLIC_NAV = [
+    ("docs/faults.html", "Fault codes", ""),
+]
+
+MEMBER_NAV = [
+    ("account/index.html", "Overview", ""),
+    ("account/emergency.html", "Emergency replacement", "nav--urgent"),
+    ("account/maintenance.html", "Schedule maintenance", ""),
     ("docs/", "Documentation", ""),
     ("docs/faults.html", "Fault codes", ""),
     ("firmware/index.html", "Firmware", ""),
-    ("account/index.html", "Account", "nav--account"),
 ]
 
+MEMBERS = ' data-members hidden'
+
+# (href, label, needs sign-in)
 FOOT_COLS = [
     ("Service", [
-        ("dispatch.html", "Request a replacement leg"),
-        ("maintenance.html", "Flag a leg for ERS"),
-        ("docs/faults.html", "Fault code index"),
+        ("account/emergency.html", "Request a replacement leg", True),
+        ("account/maintenance.html", "Schedule maintenance", True),
+        ("docs/faults.html", "Fault code index", False),
     ]),
     ("Documentation", [
-        ("docs/leg.html", "Leg anatomy and diagrams"),
-        ("docs/operating.html", "Operating procedures"),
-        ("docs/ers.html", "The return line"),
-        ("docs/safety.html", "Safety"),
+        ("docs/leg.html", "Leg anatomy and diagrams", True),
+        ("docs/operating.html", "Operating procedures", True),
+        ("docs/ers.html", "The return line", True),
+        ("docs/safety.html", "Safety", True),
     ]),
     ("Fleet", [
-        ("firmware/index.html", "Controller firmware"),
-        ("docs/leg.html#identity", "Serials and identity"),
+        ("firmware/index.html", "Controller firmware", True),
+        ("docs/leg.html#identity", "Serials and identity", True),
     ]),
 ]
 
@@ -72,22 +85,25 @@ def shell(depth, title, description, body, page=None, head_extra="", foot_extra=
         "     path, at any depth, so relative URLs would break. -->"
         if depth == "/" else ""
     )
-    nav = "\n".join(
-        '        <a href="{b}{href}"{cur} class="{cls}">{label}</a>'.format(
-            b=b,
-            href=href,
-            cls=cls,
-            cur=' aria-current="page"' if page == href else "",
-            label=label,
+    def links(entries, indent):
+        return "\n".join(
+            '{pad}<a href="{b}{href}"{cur} class="{cls}">{label}</a>'.format(
+                pad=" " * indent, b=b, href=href, cls=cls, label=label,
+                cur=' aria-current="page"' if page == href else "",
+            )
+            for href, label, cls in entries
         )
-        for href, label, cls in NAV
-    )
+    nav = links(PUBLIC_NAV, 8)
+    subnav = links(MEMBER_NAV, 6)
+    signin_cur = ' aria-current="page"' if page == "account/signin.html" else ""
     foot = "\n".join(
-        '        <div>\n          <h4>{h}</h4>\n          <ul>{items}</ul>\n        </div>'.format(
+        '        <div{m}>\n          <h4>{h}</h4>\n          <ul>{items}</ul>\n        </div>'.format(
+            m=MEMBERS if all(gated for _, _, gated in items) else "",
             h=head,
             items="".join(
-                '<li><a href="{b}{href}">{label}</a></li>'.format(b=b, href=href, label=label)
-                for href, label in items
+                '<li{m}><a href="{b}{href}">{label}</a></li>'.format(
+                    m=MEMBERS if gated else "", b=b, href=href, label=label)
+                for href, label, gated in items
             ),
         )
         for head, items in FOOT_COLS
@@ -117,16 +133,26 @@ def shell(depth, title, description, body, page=None, head_extra="", foot_extra=
     <a class="brand" href="{b}index.html">
       <b>EREKTOR</b><span class="tag">Support</span>
     </a>
-    <nav class="nav" aria-label="Main">
+    <nav class="nav" aria-label="Main" data-public>
 {nav}
-      <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
+        <a href="/account/signin.html" class="btn btn--sm btn--primary" data-signin{signin_cur}>Sign in</a>
+    </nav>
+    <div class="acct"{MEMBERS}>
+      <span class="acct__who"><strong data-acct-company>Your account</strong><span data-acct-email></span></span>
+      <button type="button" class="btn btn--sm" data-acct-signout>Sign out</button>
+    </div>
+    <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
         <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
           <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
           <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
         </svg>
-      </button>
-    </nav>
+    </button>
   </div>
+  <nav class="subnav" aria-label="Your account"{MEMBERS}>
+    <div class="wrap subnav-in">
+{subnav}
+    </div>
+  </nav>
 </header>
 
 <main id="main">
