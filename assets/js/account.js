@@ -17,7 +17,7 @@
     }
     return fetch('/api/account' + path, init).then(function (r) {
       if (r.status === 401 && !opts.noRedirect) {
-        location.href = '/account/signin.html?next=' + encodeURIComponent(location.pathname);
+        location.href = '/account/signin.html?next=' + encodeURIComponent(location.pathname + location.search);
         return new Promise(function () {});
       }
       return r.json().catch(function () { return {}; }).then(function (body) {
@@ -99,8 +99,9 @@
         noRedirect: true,
         body: { email: signin.email.value, password: signin.password.value, remember: signin.remember.checked }
       }).then(function () {
+        // Any same-site path: the docs and firmware send people here too.
         var next = new URLSearchParams(location.search).get('next');
-        location.replace(next && /^\/account\/[\w-]+(\.html)?$/.test(next) ? next : '/account/index.html');
+        location.replace(next && /^\/[^\/\\]/.test(next) ? next : '/account/index.html');
       }).catch(function (err) {
         button.disabled = false;
         signin.password.value = '';
@@ -169,6 +170,9 @@
 
   var form = document.querySelector('[data-account-request]');
   if (form) {
+    // A fault code routed here from the triage on the home page.
+    var code = new URLSearchParams(location.search).get('code');
+    if (code && /^[A-Z]{2,4}-\d{2}$/i.test(code)) form.details.value = 'Fault code ' + code.toUpperCase() + '. ';
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var button = form.querySelector('button[type=submit]');

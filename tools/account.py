@@ -1,9 +1,10 @@
 """
 The account portal at /account/.
 
-The rest of the site is public: anyone standing next to a leg can read the
-docs and file a request. These pages are one customer's own: their
-facilities, and the maintenance and emergency replacements they have filed.
+The home page and the fault code index are public. These pages are one
+customer's own: their facilities, and the maintenance and emergency
+replacements they have filed. The same sign-in also opens the docs and
+firmware, and the old public request forms redirect here (src/portal.js).
 They sign in with the same account as erektor-return.systems, and are gated in
 the Worker (src/portal.js) the same way /internal/ is.
 
@@ -61,7 +62,7 @@ page("account/signin.html", 1, "Account sign-in",
   <span class="eyebrow">Account</span>
   <h1>Sign in to your account</h1>
   <p class="lede">Your facilities, scheduled maintenance, emergency replacements and the records that go
-  with them. The rest of this site stays public; this part is yours.</p>
+  with them, plus the documentation and controller firmware.</p>
 
   <form class="form mt-2" data-account-signin>
     <div class="field limit-input">
@@ -90,8 +91,8 @@ page("account/signin.html", 1, "Account sign-in",
     <p class="note note--warn">The account portal needs JavaScript.</p>
   </noscript>
 
-  <p class="small muted mt-3">No account? Field requests do not need one: use
-  <a href="../dispatch.html">Dispatch</a> or <a href="../maintenance.html">Maintenance</a> on the public site.</p>
+  <p class="small muted mt-3">No account? Email <a href="mailto:support@erektor.systems">support@erektor.systems</a>.
+  The <a href="../docs/faults.html">fault code index</a> is open to everyone.</p>
 </section>
 """,
      head_extra=NOINDEX, foot_extra=SCRIPT)
