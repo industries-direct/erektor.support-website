@@ -163,6 +163,14 @@ r = await call('GET', '/api/registry/export');
 ok('the CSV export has a header and a row per leg',
    typeof r.body === 'string' && r.body.split('\n').length === 5, r.body && r.body.slice(0, 40));
 
+group('— customer facility —');
+r = await call('PATCH', '/api/registry/legs/L-V3BE101', { facility_id: '7' });
+ok('a leg is assigned to a customer facility', r.status === 200 && r.body.leg.facility_id === 7, r.body);
+r = await call('PATCH', '/api/registry/legs/L-V3BE101', { facility_id: 'plant 1' });
+ok('a facility that is not an id is refused', r.status === 422, r.body);
+r = await call('PATCH', '/api/registry/legs/L-V3BE101', { facility_id: '' });
+ok('an empty facility unassigns the leg', r.status === 200 && r.body.leg.facility_id === null, r.body);
+
 group('— roles —');
 clearCookie();
 await call('POST', '/api/registry/session', { code: 'readonly' });

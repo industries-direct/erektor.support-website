@@ -105,6 +105,7 @@
             <th scope="row">Built</th><td class="mono" data-f="built">&mdash;</td></tr>
         <tr><th scope="row">Last service closed</th><td class="mono" data-f="service">&mdash;</td>
             <th scope="row">Last seen</th><td class="mono" data-f="seen">&mdash;</td></tr>
+        <tr><th scope="row">Customer facility</th><td colspan="3" data-f="facility">&mdash;</td></tr>
       </tbody>
     </table>
   </div>
@@ -190,6 +191,9 @@
           <input type="text" id="mholder" name="holder"></div>
         <div class="field"><label for="mlocation">Location</label>
           <input type="text" id="mlocation" name="location"></div>
+        <div class="field"><label for="mfacility">Customer facility</label>
+          <select id="mfacility" name="facility_id"><option value="">Not assigned</option></select>
+          <p class="field__hint">Puts the leg on that customer&rsquo;s account dashboard.</p></div>
       </div>
       <div class="field">
         <label for="mnotes">Notes</label>

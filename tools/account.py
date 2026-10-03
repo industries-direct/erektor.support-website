@@ -99,45 +99,105 @@ page("account/signin.html", 1, "Account sign-in",
 
 
 # ===========================================================================
-# Overview
+# Overview - the dashboard for a customer's legs
 # ===========================================================================
 page("account/index.html", 1, "Account",
-     "Your facilities and requests.",
+     "Your legs, what they need, and the requests filed for them.",
      acctbar("index.html") + """
-<section class="wrap">
-  <span class="eyebrow">Account</span>
-  <h1 data-company>Your account</h1>
-  <p class="lede">Every facility on your account and every request filed from it. ERS rolls out one
-  facility at a time; a facility shows <em>ERS coming soon</em> until its line is online.</p>
-
-  <div class="grid grid--2 mt-2">
-    <a class="card" href="maintenance.html">
-      <span class="eyebrow eyebrow--plain">Planned</span>
-      <h3>Schedule maintenance</h3>
-      <p class="muted">Book service for a leg against its frame, on a date that suits the facility.</p>
-    </a>
-    <a class="card card--urgent" href="emergency.html">
-      <span class="eyebrow eyebrow--plain">Urgent</span>
-      <h3>Emergency replacement</h3>
-      <p class="muted">A leg cannot finish its session. Request a replacement to the site now.</p>
-    </a>
+<section class="wrap dash-head">
+  <div class="dash-head__id">
+    <span class="eyebrow">Account</span>
+    <h1 data-company>Your account</h1>
+    <p class="lede">Every leg assigned to your facilities, what each one needs, and every request filed for
+    them. Intervals run on motor-hours against the stamped frame serial.</p>
   </div>
+  <dl class="statbar statbar--kpi" aria-label="Fleet health">
+    <div><dt>Legs on account</dt><dd class="mono" data-stat="legs">&mdash;</dd></div>
+    <div><dt>At your facilities</dt><dd class="mono" data-stat="deployed">&mdash;</dd></div>
+    <div><dt>Need attention</dt><dd class="mono" data-stat="attention">&mdash;</dd></div>
+    <div><dt>Open requests</dt><dd class="mono" data-stat="open">&mdash;</dd></div>
+  </dl>
+</section>
 
-  <h2 class="mt-4">Facilities</h2>
-  <div class="table-scroll">
-    <table class="tbl">
-      <thead><tr><th>Facility</th><th>Location</th><th>ERS</th></tr></thead>
-      <tbody data-facility-rows><tr><td colspan="3" class="muted">Loading&hellip;</td></tr></tbody>
-    </table>
+<section class="wrap mt-2">
+  <div class="btn-row">
+    <a class="btn btn--primary" href="emergency.html">Emergency replacement</a>
+    <a class="btn" href="maintenance.html">Schedule maintenance</a>
   </div>
+</section>
 
-  <h2 class="mt-4">Requests</h2>
-  <div class="table-scroll">
-    <table class="tbl">
-      <thead><tr><th>Reference</th><th>Type</th><th>Facility</th><th>Serial</th><th>Needed by</th><th>Status</th><th>Filed</th></tr></thead>
-      <tbody data-request-rows><tr><td colspan="7" class="muted">Loading&hellip;</td></tr></tbody>
-    </table>
-  </div>
+<section class="wrap mt-3 panels" aria-label="Dashboard">
+
+  <section class="panel panel--span2" aria-labelledby="p-attn">
+    <header class="panel__head">
+      <h2 id="p-attn">Needs attention</h2>
+      <span class="panel__meta mono" data-meta="attention">&mdash;</span>
+    </header>
+    <div class="table-scroll">
+      <table class="tbl">
+        <thead><tr><th>Leg</th><th>Facility</th><th>Why</th><th></th></tr></thead>
+        <tbody data-attention-rows><tr><td colspan="4" class="muted">Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="p-open">
+    <header class="panel__head">
+      <h2 id="p-open">In progress</h2>
+      <span class="panel__meta mono" data-meta="open">&mdash;</span>
+    </header>
+    <div class="table-scroll">
+      <table class="tbl">
+        <thead><tr><th>Request</th><th>Status</th></tr></thead>
+        <tbody data-open-rows><tr><td colspan="2" class="muted">Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel panel--wide" aria-labelledby="p-legs">
+    <header class="panel__head">
+      <h2 id="p-legs">Legs</h2>
+      <span class="panel__meta mono" data-meta="legs">&mdash;</span>
+    </header>
+    <div class="table-scroll">
+      <table class="tbl">
+        <thead><tr><th>Leg</th><th>Variant</th><th>Facility</th><th>State</th><th>Since service</th><th>Last seen</th><th></th></tr></thead>
+        <tbody data-leg-rows><tr><td colspan="7" class="muted">Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+    <footer class="panel__foot">
+      <span class="legend"><i class="swatch swatch--self"></i>Room to run</span>
+      <span class="legend"><i class="swatch swatch--flag"></i>Due soon</span>
+      <span class="legend"><i class="swatch swatch--dispatch"></i>Due</span>
+    </footer>
+  </section>
+
+  <section class="panel panel--wide" aria-labelledby="p-fac">
+    <header class="panel__head">
+      <h2 id="p-fac">Facilities</h2>
+      <span class="panel__meta mono" data-meta="facilities">&mdash;</span>
+    </header>
+    <div class="table-scroll">
+      <table class="tbl">
+        <thead><tr><th>Facility</th><th>Location</th><th>ERS</th><th class="num">Legs</th><th class="num">Need attention</th><th class="num">Open requests</th></tr></thead>
+        <tbody data-facility-rows><tr><td colspan="6" class="muted">Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel panel--wide" aria-labelledby="p-hist">
+    <header class="panel__head">
+      <h2 id="p-hist">Request history</h2>
+      <span class="panel__meta mono" data-meta="requests">&mdash;</span>
+    </header>
+    <div class="table-scroll">
+      <table class="tbl">
+        <thead><tr><th>Reference</th><th>Type</th><th>Facility</th><th>Serial</th><th>Needed by</th><th>Status</th><th>Filed</th></tr></thead>
+        <tbody data-request-rows><tr><td colspan="7" class="muted">Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
 </section>
 """,
      head_extra=NOINDEX, foot_extra=SCRIPT)
