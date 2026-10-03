@@ -23,21 +23,31 @@
     <a class="brand" href="index.html">
       <b>EREKTOR</b><span class="tag">Support</span>
     </a>
-    <nav class="nav" aria-label="Main">
-        <a href="dispatch.html" class="nav--urgent">Dispatch</a>
-        <a href="maintenance.html" class="">Maintenance</a>
-        <a href="docs/" class="">Documentation</a>
+    <nav class="nav" aria-label="Main" data-public>
         <a href="docs/faults.html" class="">Fault codes</a>
-        <a href="firmware/index.html" class="">Firmware</a>
-        <a href="account/index.html" class="nav--account">Account</a>
-      <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
+        <a href="/account/signin.html" class="btn btn--sm btn--primary" data-signin>Sign in</a>
+    </nav>
+    <div class="acct" data-members hidden>
+      <span class="acct__who"><strong data-acct-company>Your account</strong><span data-acct-email></span></span>
+      <button type="button" class="btn btn--sm" data-acct-signout>Sign out</button>
+    </div>
+    <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
         <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
           <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
           <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
         </svg>
-      </button>
-    </nav>
+    </button>
   </div>
+  <nav class="subnav" aria-label="Your account" data-members hidden>
+    <div class="wrap subnav-in">
+      <a href="account/index.html" class="">Overview</a>
+      <a href="account/emergency.html" class="nav--urgent">Emergency replacement</a>
+      <a href="account/maintenance.html" class="">Schedule maintenance</a>
+      <a href="docs/" class="">Documentation</a>
+      <a href="docs/faults.html" class="">Fault codes</a>
+      <a href="firmware/index.html" class="">Firmware</a>
+    </div>
+  </nav>
 </header>
 
 <main id="main">
@@ -87,7 +97,7 @@
   </noscript>
 </section>
 
-<section class="wrap mt-2" aria-labelledby="routes-title">
+<section class="wrap mt-2" aria-labelledby="routes-title" data-members hidden>
   <div class="dash-secline">
     <h2 id="routes-title">Three routes</h2>
     <p>Sending a technician is the exception. Counts are live from the fault table.</p>
@@ -102,7 +112,7 @@
       <p>Operator-serviceable. Follow the procedure on the code &mdash; no ticket, no record change.</p>
       <span class="routetile__cta">Open the procedures &rarr;</span>
     </a>
-    <a class="routetile routetile--flag" href="maintenance.html">
+    <a class="routetile routetile--flag" href="account/maintenance.html">
       <span class="routetile__top">
         <span class="routetile__k">Finishes the session</span>
         <span class="routetile__n mono"><b data-dash-count="flag">&mdash;</b><small>codes</small></span>
@@ -111,7 +121,7 @@
       <p>No truck. The flag rides on the leg&rsquo;s record and ERS diverts it at inspection when it comes home.</p>
       <span class="routetile__cta">Flag a leg &rarr;</span>
     </a>
-    <a class="routetile routetile--dispatch" href="dispatch.html">
+    <a class="routetile routetile--dispatch" href="account/emergency.html">
       <span class="routetile__top">
         <span class="routetile__k">Cannot finish the session</span>
         <span class="routetile__n mono"><b data-dash-count="dispatch">&mdash;</b><small>codes</small></span>
@@ -141,7 +151,7 @@
     </footer>
   </section>
 
-  <section class="panel" aria-labelledby="p-fw">
+  <section class="panel" aria-labelledby="p-fw" data-members hidden>
     <header class="panel__head">
       <h2 id="p-fw">Controller firmware</h2>
       <span class="panel__meta mono" data-dash-meta="firmware">&mdash;</span>
@@ -163,7 +173,7 @@
     <div class="panel__body" data-dash-fleet>
       <p class="muted small">Leg variants in the pool, the controller each one carries, and which are legacy.</p>
     </div>
-    <footer class="panel__foot">
+    <footer class="panel__foot" data-members hidden>
       <a href="docs/leg.html">Leg anatomy and diagrams &rarr;</a>
     </footer>
   </section>
@@ -177,7 +187,7 @@
       <p class="muted small">A leg carries two serial numbers. Firmware and pairing follow the electronics
       serial; wear, intervals and warranty follow the stamped mechanical serial.</p>
     </div>
-    <footer class="panel__foot">
+    <footer class="panel__foot" data-members hidden>
       <a href="docs/leg.html#identity">Read this before filing anything &rarr;</a>
     </footer>
   </section>
@@ -251,15 +261,15 @@
     <div class="foot-cols">
         <div>
           <h4>Service</h4>
-          <ul><li><a href="dispatch.html">Request a replacement leg</a></li><li><a href="maintenance.html">Flag a leg for ERS</a></li><li><a href="docs/faults.html">Fault code index</a></li></ul>
+          <ul><li data-members hidden><a href="account/emergency.html">Request a replacement leg</a></li><li data-members hidden><a href="account/maintenance.html">Schedule maintenance</a></li><li><a href="docs/faults.html">Fault code index</a></li></ul>
         </div>
-        <div>
+        <div data-members hidden>
           <h4>Documentation</h4>
-          <ul><li><a href="docs/leg.html">Leg anatomy and diagrams</a></li><li><a href="docs/operating.html">Operating procedures</a></li><li><a href="docs/ers.html">The return line</a></li><li><a href="docs/safety.html">Safety</a></li></ul>
+          <ul><li data-members hidden><a href="docs/leg.html">Leg anatomy and diagrams</a></li><li data-members hidden><a href="docs/operating.html">Operating procedures</a></li><li data-members hidden><a href="docs/ers.html">The return line</a></li><li data-members hidden><a href="docs/safety.html">Safety</a></li></ul>
         </div>
-        <div>
+        <div data-members hidden>
           <h4>Fleet</h4>
-          <ul><li><a href="firmware/index.html">Controller firmware</a></li><li><a href="docs/leg.html#identity">Serials and identity</a></li></ul>
+          <ul><li data-members hidden><a href="firmware/index.html">Controller firmware</a></li><li data-members hidden><a href="docs/leg.html#identity">Serials and identity</a></li></ul>
         </div>
         <div>
           <h4>Contact</h4>

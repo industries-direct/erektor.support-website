@@ -200,14 +200,6 @@
 
   /* -------------------------------------------------------- signed in */
 
-  var signout = document.querySelector('[data-signout]');
-  if (signout) {
-    signout.addEventListener('click', function () {
-      api('/session', { method: 'DELETE', noRedirect: true }).finally(function () {
-        location.href = '/account/signin.html';
-      });
-    });
-  }
 
   var board = document.querySelector('[data-dashboard]');
 
@@ -231,7 +223,6 @@
 
   function render(acct) {
     document.querySelectorAll('[data-company]').forEach(function (n) { n.textContent = acct.company.name; });
-    document.querySelectorAll('[data-email]').forEach(function (n) { n.textContent = acct.user.email; });
 
     var legs = acct.legs || [];
     var facName = {};

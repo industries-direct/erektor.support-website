@@ -18,31 +18,6 @@ NOINDEX = '\n<meta name="robots" content="noindex, nofollow">'
 SCRIPT = '\n<script src="../assets/js/account.js" defer></script>'
 
 
-def acctbar(current):
-    links = [
-        ("index.html", "Overview"),
-        ("maintenance.html", "Schedule maintenance"),
-        ("emergency.html", "Emergency replacement"),
-    ]
-    items = "".join(
-        '\n      <a href="{href}"{cur}>{label}</a>'.format(
-            href=href, label=label,
-            cur=' aria-current="page"' if href == current else "")
-        for href, label in links
-    )
-    return """
-<div class="wrap">
-  <div class="regbar">
-    <span class="regbar__id" data-company>Account</span>{items}
-    <span class="regbar__end">
-      <span class="small muted" data-email></span>
-      <button type="button" class="btn btn--sm" data-signout>Sign out</button>
-    </span>
-  </div>
-</div>
-""".format(items=items)
-
-
 FACILITY_FIELD = """
       <div class="field">
         <label for="facility" class="required">Facility</label>
@@ -103,7 +78,7 @@ page("account/signin.html", 1, "Account sign-in",
 # ===========================================================================
 page("account/index.html", 1, "Account",
      "Your legs, what they need, and the requests filed for them.",
-     acctbar("index.html") + """
+     """
 <section class="wrap dash-head">
   <div class="dash-head__id">
     <span class="eyebrow">Account</span>
@@ -209,7 +184,7 @@ page("account/index.html", 1, "Account",
 # ===========================================================================
 page("account/maintenance.html", 1, "Schedule maintenance",
      "Schedule maintenance for a leg.",
-     acctbar("maintenance.html") + """
+     """
 <section class="wrap wrap--narrow">
   <span class="eyebrow">Planned</span>
   <h1>Schedule maintenance</h1>
@@ -257,7 +232,7 @@ page("account/maintenance.html", 1, "Schedule maintenance",
 # ===========================================================================
 page("account/emergency.html", 1, "Emergency replacement",
      "Request an emergency replacement leg.",
-     acctbar("emergency.html") + """
+     """
 <section class="wrap wrap--narrow">
   <span class="eyebrow">Urgent</span>
   <h1>Emergency replacement</h1>

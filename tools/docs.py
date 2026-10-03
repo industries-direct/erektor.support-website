@@ -412,7 +412,8 @@ page("docs/ers.html", 1, "The return line",
 # ===========================================================================
 page("docs/faults.html", 1, "Fault codes",
      "Every Erektor fault code, what it means, and which of the three service routes it puts you on.",
-     CRUMB.format("Fault codes") + """
+     # Public, unlike the rest of docs/, so its trail skips the gated index.
+     '<p class="crumbs"><a href="../index.html">Support</a><span>/</span>Fault codes</p>' + """
 <section class="wrap" data-triage>
   <span class="eyebrow">Triage</span>
   <h1>Fault codes</h1>
@@ -434,8 +435,7 @@ page("docs/faults.html", 1, "Fault codes",
   <noscript>
     <p class="note note--warn">The code index is rendered from
     <code>/data/faults.json</code> and needs JavaScript. The raw table is readable directly at
-    <a href="../data/faults.json">/data/faults.json</a>, and both service routes work without it:
-    <a href="../dispatch.html">dispatch</a> and <a href="../maintenance.html">maintenance</a>.</p>
+    <a href="../data/faults.json">/data/faults.json</a>.</p>
   </noscript>
 
   <h2>Reading a code</h2>
@@ -455,7 +455,7 @@ page("docs/faults.html", 1, "Fault codes",
     </table>
   </div>
 
-  <div class="note note--info">
+  <div class="note note--info" data-members hidden>
     <p class="note__title">No code is not a blocker</p>
     <p>If a leg cannot finish its session, <a href="../dispatch.html">request a replacement</a> without
     waiting for a code. Describe what it does and what it will not do.</p>
