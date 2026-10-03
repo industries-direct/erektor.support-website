@@ -122,14 +122,16 @@
 
   function actions(l) {
     var td = el('td', 'act');
-    var a = el('a', '', 'Maintenance');
+    var wrap = el('div', 'btn-row');
+    td.appendChild(wrap);
+    var a = el('a', 'btn btn--sm', 'Maintenance');
     a.href = 'maintenance.html?serial=' + encodeURIComponent(l.mechanical_serial) + '&facility=' + l.facility_id;
-    td.appendChild(a);
+    wrap.appendChild(a);
     // A replacement goes to a site, so only a leg at one can need it.
     if (l.electronics_serial && l.state === 'deployed') {
-      var e = el('a', '', 'Emergency');
+      var e = el('a', 'btn btn--sm btn--urgent', 'Emergency');
       e.href = 'emergency.html?serial=' + encodeURIComponent(l.electronics_serial) + '&facility=' + l.facility_id;
-      td.appendChild(e);
+      wrap.appendChild(e);
     }
     return td;
   }
@@ -139,7 +141,20 @@
   }
 
   function stat(name, value) {
-    document.querySelectorAll('[data-stat="' + name + '"]').forEach(function (n) { n.textContent = value; });
+    document.querySelectorAll('[data-stat="' + name + '"]').forEach(function (n) {
+      n.textContent = value;
+      if (n.tagName === 'A') n.classList.toggle('is-hot', value > 0);
+    });
+  }
+
+  // Label each cell from its column header, for the card layout on phones.
+  function label(tbody) {
+    var heads = [].map.call(tbody.parentNode.querySelectorAll('thead th'), function (th) { return th.textContent.trim(); });
+    [].forEach.call(tbody.rows, function (tr) {
+      [].forEach.call(tr.cells, function (td, i) {
+        if (heads[i] && td.colSpan === 1) td.setAttribute('data-label', heads[i]);
+      });
+    });
   }
 
   function meta(name, value) {
@@ -194,7 +209,27 @@
     });
   }
 
-  api('/me').then(function (acct) {
+  var board = document.querySelector('[data-dashboard]');
+
+  function failed(err) {
+    if (board) board.setAttribute('aria-busy', 'false');
+    note('crit', 'Could not load your account', err.message);
+    document.querySelectorAll('tbody td.muted').forEach(function (td) {
+      if (td.textContent === 'Loading…') td.textContent = 'Not loaded.';
+    });
+    var retry = el('button', 'btn btn--sm mt-1', 'Try again');
+    retry.type = 'button';
+    retry.addEventListener('click', function () {
+      document.getElementById('result').hidden = true;
+      if (board) board.setAttribute('aria-busy', 'true');
+      load();
+    });
+    document.querySelector('#result .note').appendChild(retry);
+  }
+
+  function load() { api('/me').then(render).catch(failed); }
+
+  function render(acct) {
     document.querySelectorAll('[data-company]').forEach(function (n) { n.textContent = acct.company.name; });
     document.querySelectorAll('[data-email]').forEach(function (n) { n.textContent = acct.user.email; });
 
@@ -226,6 +261,7 @@
         tr.appendChild(actions(a.leg));
         ar.appendChild(tr);
       });
+      label(ar);
     }
 
     var or = document.querySelector('[data-open-rows]');
@@ -254,6 +290,7 @@
         tr.appendChild(actions(l));
         lr.appendChild(tr);
       });
+      label(lr);
       if (window.ERS) window.ERS.widths(lr);
     }
 
@@ -299,7 +336,11 @@
       });
       if (pick) select.value = pick;
     });
-  });
+
+    if (board) board.setAttribute('aria-busy', 'false');
+  }
+
+  load();
 
   /* ---------------------------------------------------------- requests */
 

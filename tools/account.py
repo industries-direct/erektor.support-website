@@ -114,8 +114,8 @@ page("account/index.html", 1, "Account",
   <dl class="statbar statbar--kpi" aria-label="Fleet health">
     <div><dt>Legs on account</dt><dd class="mono" data-stat="legs">&mdash;</dd></div>
     <div><dt>At your facilities</dt><dd class="mono" data-stat="deployed">&mdash;</dd></div>
-    <div><dt>Need attention</dt><dd class="mono" data-stat="attention">&mdash;</dd></div>
-    <div><dt>Open requests</dt><dd class="mono" data-stat="open">&mdash;</dd></div>
+    <div><dt>Need attention</dt><dd class="mono"><a href="#p-attn" data-stat="attention">&mdash;</a></dd></div>
+    <div><dt>Open requests</dt><dd class="mono"><a href="#p-open" data-stat="open">&mdash;</a></dd></div>
   </dl>
 </section>
 
@@ -124,9 +124,10 @@ page("account/index.html", 1, "Account",
     <a class="btn btn--primary" href="emergency.html">Emergency replacement</a>
     <a class="btn" href="maintenance.html">Schedule maintenance</a>
   </div>
+  <div id="result" hidden class="mt-2" role="alert"></div>
 </section>
 
-<section class="wrap mt-3 panels" aria-label="Dashboard">
+<section class="wrap mt-3 panels" aria-label="Dashboard" aria-busy="true" data-dashboard>
 
   <section class="panel panel--span2" aria-labelledby="p-attn">
     <header class="panel__head">
@@ -134,8 +135,8 @@ page("account/index.html", 1, "Account",
       <span class="panel__meta mono" data-meta="attention">&mdash;</span>
     </header>
     <div class="table-scroll">
-      <table class="tbl">
-        <thead><tr><th>Leg</th><th>Facility</th><th>Why</th><th></th></tr></thead>
+      <table class="tbl tbl--cards">
+        <thead><tr><th>Leg</th><th>Facility</th><th>Why</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
         <tbody data-attention-rows><tr><td colspan="4" class="muted">Loading&hellip;</td></tr></tbody>
       </table>
     </div>
@@ -160,8 +161,8 @@ page("account/index.html", 1, "Account",
       <span class="panel__meta mono" data-meta="legs">&mdash;</span>
     </header>
     <div class="table-scroll">
-      <table class="tbl">
-        <thead><tr><th>Leg</th><th>Variant</th><th>Facility</th><th>State</th><th>Since service</th><th>Last seen</th><th></th></tr></thead>
+      <table class="tbl tbl--cards">
+        <thead><tr><th>Leg</th><th>Variant</th><th>Facility</th><th>State</th><th>Since service</th><th>Last seen</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
         <tbody data-leg-rows><tr><td colspan="7" class="muted">Loading&hellip;</td></tr></tbody>
       </table>
     </div>
