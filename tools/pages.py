@@ -18,16 +18,17 @@ MARK_ERS = '<span class="hm-mark" aria-hidden="true"><i></i><i></i><i></i><i></i
 MARK_ESC = '<span class="hm-mark hm-mark--esc" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'
 
 page("index.html", 0, "Service console",
-     "The Erektor Service Console and the Erektor Return System share one record for every leg, from the "
-     "frame being stamped to its retirement. Together they show a manufacturer how its Erektor fleet ages.",
+     "The Erektor Service Console and the Erektor Return System: one account, and one stamped frame serial "
+     "that carries every leg's history from its first build to its retirement.",
      """
 <section class="wrap hm-hero">
   <div class="hm-hero__text">
     <span class="eyebrow">Erektor fleet lifecycle</span>
-    <h1>Two consoles. One record for every leg.</h1>
-    <p class="lede">The Erektor Return System runs the recovery line at your facility. The Service Console is
-    where your company looks after the fleet while it is out on builds. Both write to the same leg record,
-    keyed on the serial stamped into the frame, so every leg&rsquo;s life reads as one unbroken history.</p>
+    <h1>Two consoles. One serial for every leg.</h1>
+    <p class="lede">The Erektor Return System runs the recovery line at each of your facilities, on a dedicated
+    server installed with the line, so what the line records stays on site. The Service Console is online,
+    where your company looks after the fleet while it is out on builds. Every leg carries the serial stamped
+    into its frame through both, so its life reads as one history.</p>
     <div class="btn-row mt-1">
       <a class="btn btn--primary" href="/account/signin.html" data-signin>Sign in</a>
       <a class="btn" href="https://erektor-return.systems/" rel="noopener">Open the Return System &#8599;</a>
@@ -35,20 +36,20 @@ page("index.html", 0, "Service console",
     <p class="small muted mt-0">One account signs in to both.</p>
   </div>
 
-  <div class="hm-flow" role="img" aria-label="The Return System and the Service Console both write to one leg record, keyed on the frame serial.">
+  <div class="hm-flow" role="img" aria-label="The Return System at the facility and the Service Console online share one account and follow each leg by its frame serial.">
     <div class="hm-node">
       """ + MARK_ERS + """
-      <div><strong>Erektor Return System</strong><span>At the facility &middot; when a leg comes home</span></div>
+      <div><strong>Erektor Return System</strong><span>On a server at each facility &middot; when a leg comes home</span></div>
     </div>
     <div class="hm-link" aria-hidden="true"></div>
     <div class="hm-node hm-node--record">
       <span class="hm-node__key mono">Frame serial</span>
-      <div><strong>One leg record</strong><span>States, events, intervals, custody</span></div>
+      <div><strong>One account &middot; one serial</strong><span>Your company, facilities and the stamped frame serial</span></div>
     </div>
     <div class="hm-link" aria-hidden="true"></div>
     <div class="hm-node">
       """ + MARK_ESC + """
-      <div><strong>Service Console</strong><span>In the field &middot; while a leg is out on a build</span></div>
+      <div><strong>Service Console</strong><span>Online &middot; while a leg is out on a build</span></div>
     </div>
   </div>
 </section>
@@ -58,7 +59,8 @@ page("index.html", 0, "Service console",
     <span class="eyebrow">Side by side</span>
     <h2 id="cmp-title">Each console covers half of a leg&rsquo;s life.</h2>
     <p>A leg spends its working life going out to builds and coming home again. The Return System records
-    everything that happens when it comes home; the Service Console covers the time it is out.</p>
+    what happens when it comes home; the Service Console covers the time it is out. One account signs in to
+    both.</p>
   </div>
   <div class="table-scroll">
     <table class="hm-compare">
@@ -83,12 +85,15 @@ page("index.html", 0, "Service console",
         <tr><th scope="row">What you do there</th>
           <td>Recondition legs and keep the available pool full</td>
           <td>Request a replacement, schedule maintenance, read the procedures and the firmware manifest</td></tr>
-        <tr><th scope="row">What it adds to the record</th>
-          <td>Inspection and diagnostic results, pack swaps, motor-hours, service records</td>
-          <td>Maintenance flags and emergency replacements, filed against the right serial</td></tr>
-        <tr><th scope="row">Connectivity</th>
-          <td>Keeps running offline; the facility ledger syncs when it can</td>
-          <td>Online, and reads the same record</td></tr>
+        <tr><th scope="row">What it records</th>
+          <td>Check-ins, inspection and diagnostic results, pack swaps, service records</td>
+          <td>Maintenance flags, emergency replacements and the fleet&rsquo;s leg registry</td></tr>
+        <tr><th scope="row">Where the data lives</th>
+          <td>On a dedicated server at the facility, installed with the line</td>
+          <td>Online, in the Erektor leg registry</td></tr>
+        <tr><th scope="row">Without the internet</th>
+          <td>Keeps running; the line never waits on a connection</td>
+          <td>Needs a connection</td></tr>
       </tbody>
     </table>
   </div>
@@ -114,7 +119,7 @@ page("index.html", 0, "Service console",
           <li>Checked in</li><li>Inspected &amp; serviced</li><li>Pack swapped</li><li>Back to the pool</li>
         </ol>
       </div>
-      <span class="hm-life__repeat small muted">Repeats for every build, on the same record</span>
+      <span class="hm-life__repeat small muted">Repeats for every build, under the same frame serial</span>
     </li>
     <li class="hm-life__end"><b>Retired</b><span>Out of the fleet, with its history intact</span></li>
   </ol>
@@ -124,12 +129,13 @@ page("index.html", 0, "Service console",
   <div class="sec-head">
     <span class="eyebrow">What the manufacturer sees</span>
     <h2 id="ins-title">The lifespan of every Erektor asset, in one place.</h2>
-    <p>Because both consoles write to the same record, decisions about servicing, reconditioning and
-    retiring a leg are made from its whole history, not from whichever facility saw it last.</p>
+    <p>Every leg is followed by the serial stamped into its frame, on the line and in the field, so decisions
+    about servicing, reconditioning and retiring it rest on its whole working life, not on whichever site saw
+    it last.</p>
   </div>
   <div class="grid grid--3 hm-insights">
     <article class="card hm-insight">
-      <span class="hm-insight__fig">1 record</span>
+      <span class="hm-insight__fig">1 serial</span>
       <h3>History stays with the frame</h3>
       <p>Every leg is keyed on its stamped mechanical serial. Swap a controller and the operational identity
       rolls over, but wear, intervals and warranty stay with the frame.</p>
@@ -143,8 +149,9 @@ page("index.html", 0, "Service console",
     <article class="card hm-insight">
       <span class="hm-insight__fig">Repeat faults</span>
       <h3>Failures traced to the frame</h3>
-      <p>Inspection and diagnostic failures at ERS and replacements dispatched from the field land on the same
-      record. A leg that keeps coming back is visible, and quarantining or retiring it rests on evidence.</p>
+      <p>ERS records every inspection and diagnostic failure against the frame serial, and every replacement
+      dispatched from the field is filed under that same serial. A leg that keeps coming back stands out, and
+      quarantining or retiring it rests on evidence.</p>
     </article>
     <article class="card hm-insight">
       <span class="hm-insight__fig">45 days</span>
@@ -156,14 +163,14 @@ page("index.html", 0, "Service console",
     <article class="card hm-insight">
       <span class="hm-insight__fig">56 V &middot; 24 V</span>
       <h3>Battery packs have their own lives</h3>
-      <p>Packs are swapped on the line and charged off it, and each one is tracked on its own, so pack wear
+      <p>Packs are swapped on the line and charged off it, and ERS tracks each one on its own, so pack wear
       never hides inside the leg&rsquo;s history.</p>
     </article>
     <article class="card hm-insight">
       <span class="hm-insight__fig">Firmware</span>
       <h3>What every leg is running</h3>
-      <p>Controllers re-register at check-in and every firmware update is recorded, so the fleet&rsquo;s
-      software state is known rather than assumed.</p>
+      <p>Controllers re-register at check-in on the line, and every firmware update is recorded in the leg
+      registry, so the fleet&rsquo;s software state is known rather than assumed.</p>
     </article>
   </div>
 </section>
