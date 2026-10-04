@@ -13,7 +13,7 @@ import diagrams as D  # noqa: E402
 # ===========================================================================
 # Home — the hub, and the explanation of how the three routes relate
 # ===========================================================================
-page("index.html", 0, "Erektor Support",
+page("index.html", 0, "Service console",
      "Service console for Erektor legs: route a fault code, flag a leg for ERS, dispatch a replacement "
      "to a site, and read the current fault table, firmware manifest and fleet catalog.",
      """
@@ -181,7 +181,7 @@ page("dispatch.html", 0, "Request a replacement leg",
      "Request immediate dispatch of a replacement Erektor leg to a site when a leg cannot finish its session.",
      """
 <section class="wrap wrap--narrow">
-  <p class="crumbs"><a href="index.html">Support</a><span>/</span>Dispatch</p>
+  <p class="crumbs"><a href="index.html">Service console</a><span>/</span>Dispatch</p>
   <span class="eyebrow">Emergency &middot; staffed 24/7</span>
   <h1>Request a replacement leg</h1>
   <p class="lede">Use this when a leg cannot finish its session. We send a healthy leg from the pool; the
@@ -316,7 +316,7 @@ page("maintenance.html", 0, "Flag a leg for ERS",
      "Flag an Erektor leg for the reconditioning line so it is diverted at inspection when it next returns. No site visit.",
      """
 <section class="wrap wrap--narrow">
-  <p class="crumbs"><a href="index.html">Support</a><span>/</span>Maintenance</p>
+  <p class="crumbs"><a href="index.html">Service console</a><span>/</span>Maintenance</p>
   <span class="eyebrow">Planned &middot; no site visit</span>
   <h1>Flag a leg for ERS</h1>
   <p class="lede">Use this when something is wrong but the leg can still finish its session. No truck is
