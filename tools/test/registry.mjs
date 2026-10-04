@@ -181,6 +181,65 @@ ok('a viewer cannot write', r.status === 403, r.body);
 r = await call('DELETE', '/api/registry/legs/L-V3BE101');
 ok('a viewer cannot delete', r.status === 403, r.body);
 
+group('— the controller serial —');
+await call('POST', '/api/registry/session', { code: 'admincode' });
+const enter = (leg) => call('POST', '/api/registry/legs', { variant: 'LEG-S', ...leg });
+const event = (mx, ev) => call('POST', `/api/registry/legs/${mx}/events`, ev);
+
+r = await enter({ mechanical_serial: 'L-V3BE201', electronics_serial: '26001201', controller_serial: 'cc1-01201', controller: 'CC-1' });
+ok('a leg enters with its controller serial', r.status === 201, r.body);
+r = await call('GET', '/api/registry/legs/L-V3BE201');
+ok('...stored upper-case, and on the commissioning event', r.body.leg.controller_serial === 'CC1-01201' &&
+   r.body.events[0].controller_serial === 'CC1-01201', r.body);
+
+r = await enter({ mechanical_serial: 'L-V3BE202', controller_serial: 'CC1-01202' });
+ok('a controller serial with no ClearCore bound is refused', r.status === 422, r.body);
+r = await enter({ mechanical_serial: 'L-V3BE202', electronics_serial: '26001202', controller_serial: 'CC1-1202' });
+ok('a malformed controller serial is refused', r.status === 422, r.body);
+r = await enter({ mechanical_serial: 'L-V3BE202', electronics_serial: '26001202', controller_serial: 'CC1-01202', controller: 'CC-0' });
+ok('a CC1 serial on a CC-0 controller is refused', r.status === 422 && /CC-0/.test(r.body.problems.join(' ')), r.body);
+r = await enter({ mechanical_serial: 'L-V3BE202', electronics_serial: '26001202', controller_serial: 'CC1-01201' });
+ok('a controller serial already fitted elsewhere is refused', r.status === 409 &&
+   /L-V3BE201/.test(r.body.problems.join(' ')), r.body);
+r = await call('POST', '/api/registry/legs', { legs: [
+  { mechanical_serial: 'L-V3BE202', variant: 'LEG-S', electronics_serial: '26001202', controller_serial: 'CC1-01299' },
+  { mechanical_serial: 'R-V3BE202', variant: 'LEG-S', electronics_serial: '26001203', controller_serial: 'CC1-01299' }
+] });
+ok('the same controller serial twice in one batch is refused', r.status === 422, r.body);
+
+r = await enter({ mechanical_serial: 'L-V3BE203', electronics_serial: '26001203', controller_serial: 'CC0-01203' });
+r = await call('GET', '/api/registry/legs/L-V3BE203');
+ok('with no controller given, the model is taken from the serial', r.body.leg.controller === 'CC-0', r.body.leg);
+
+await enter({ mechanical_serial: 'L-V3BE204', state: 'built' });
+r = await event('L-V3BE204', { type: 'controller-serial', controller_serial: 'CC1-01204' });
+ok('a bare frame has no controller to record a serial for', r.status === 422, r.body);
+
+await enter({ mechanical_serial: 'L-V3BE205', electronics_serial: '26001205', controller: 'CC-1' });
+r = await event('L-V3BE205', { type: 'controller-serial' });
+ok('recording a controller serial needs one', r.status === 422, r.body);
+r = await event('L-V3BE205', { type: 'controller-serial', controller_serial: 'CC1-01201' });
+ok('...and refuses one fitted to another leg', r.status === 422 && /L-V3BE201/.test(r.body.problems.join(' ')), r.body);
+r = await event('L-V3BE205', { type: 'controller-serial', controller_serial: 'CC1-01205' });
+ok('a stamp is recorded on a commissioned leg', r.status === 201 && r.body.leg.controller_serial === 'CC1-01205', r.body);
+ok('...without touching the electronics binding or the state', r.body.leg.electronics_serial === '26001205' &&
+   r.body.leg.state === 'commissioned', r.body.leg);
+
+r = await event('L-V3BE201', { type: 'electronics-swap', electronics_serial: '26001290' });
+ok('fitting a new ClearCore with no stamp clears the old one', r.status === 201 &&
+   r.body.leg.controller_serial === null, r.body.leg);
+ok('...while the old event keeps the old stamp',
+   r.body.events.some((e) => e.type === 'commissioned' && e.controller_serial === 'CC1-01201'), r.body.events);
+r = await event('L-V3BE205', { type: 'electronics-swap', electronics_serial: '26001291', controller_serial: 'CC1-01201' });
+ok('the freed controller can be fitted to another leg', r.status === 201 &&
+   r.body.leg.controller_serial === 'CC1-01201' && r.body.leg.electronics_serial === '26001291', r.body);
+r = await event('L-V3BE205', { type: 'commissioned', electronics_serial: '26001291' });
+ok('re-binding the same ClearCore keeps its stamp', r.body.leg && r.body.leg.controller_serial === 'CC1-01201', r.body);
+
+r = await call('GET', '/api/registry/legs?q=CC1-0120');
+ok('the search box finds a leg by controller serial',
+   r.body.legs.some((l) => l.mechanical_serial === 'L-V3BE205'), r.body.legs.map((l) => l.mechanical_serial));
+
 group('— forged and stale sessions —');
 clearCookie();
 r = await call('GET', '/api/registry/legs');
