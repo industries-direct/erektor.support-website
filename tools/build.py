@@ -93,8 +93,8 @@ def shell(depth, title, description, body, page=None, head_extra="", foot_extra=
             )
             for href, label, cls in entries
         )
-    nav = links(PUBLIC_NAV, 4)
-    subnav = links(MEMBER_NAV, 2)
+    nav = links(PUBLIC_NAV, 6)
+    subnav = links(MEMBER_NAV, 4)
     # The masthead names the page beside the wordmark, as the ERS console does;
     # the home page is "Home" there, since its title would repeat the wordmark.
     heading = "Home" if page == "index.html" else title
@@ -131,28 +131,30 @@ def shell(depth, title, description, body, page=None, head_extra="", foot_extra=
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="masthead">
-  <a class="brand" href="{b}index.html" title="Home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="brand-name">EREKTOR <span>SERVICE CONSOLE</span></span></a>
-  <div class="masthead-title">{heading}</div>
-  <nav class="nav" aria-label="Main" data-public>
+<div class="site-head">
+  <header class="masthead">
+    <a class="brand" href="{b}index.html" title="Home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="brand-name">EREKTOR <span>SERVICE CONSOLE</span></span></a>
+    <div class="masthead-title">{heading}</div>
+    <nav class="nav" aria-label="Main" data-public>
 {nav}
-    <a href="/account/signin.html" class="chrome-btn" data-signin{signin_cur}>Sign in</a>
-  </nav>
-  <div class="acct"{MEMBERS}>
-    <span class="acct__avatar" data-acct-initials aria-hidden="true"></span>
-    <span class="acct__who"><strong data-acct-company>Your account</strong><span data-acct-email></span></span>
-    <button type="button" class="chrome-btn" data-acct-signout>Sign out</button>
-  </div>
-  <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
-    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-      <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
-      <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
-    </svg>
-  </button>
-</header>
-<nav class="subnav" aria-label="Your account"{MEMBERS}>
+      <a href="/account/signin.html" class="chrome-btn" data-signin{signin_cur}>Sign in</a>
+    </nav>
+    <div class="acct"{MEMBERS}>
+      <span class="acct__avatar" data-acct-initials aria-hidden="true"></span>
+      <span class="acct__who"><strong data-acct-company>Your account</strong><span data-acct-email></span></span>
+      <button type="button" class="chrome-btn" data-acct-signout>Sign out</button>
+    </div>
+    <button class="themebtn" type="button" aria-label="Toggle colour theme" aria-pressed="false" title="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/>
+      </svg>
+    </button>
+  </header>
+  <nav class="subnav" aria-label="Your account"{MEMBERS}>
 {subnav}
-</nav>
+  </nav>
+</div>
 
 <main id="main">
 {body}
