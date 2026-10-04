@@ -94,6 +94,7 @@
     { "id": "built",            "label": "Frame built",           "sets": "built" },
     { "id": "commissioned",     "label": "Commissioned",          "sets": "commissioned", "binds": true },
     { "id": "electronics-swap", "label": "Electronics swapped",   "binds": true, "note": "Rolls the operational identity over. History stays on the frame." },
+    { "id": "controller-serial", "label": "Controller serial recorded", "stamps": true, "note": "Records the serial stamped on the controller already fitted. The electronics binding does not change." },
     { "id": "firmware",         "label": "Firmware applied" },
     { "id": "released",         "label": "Released to pool",      "sets": "pool" },
     { "id": "assigned",         "label": "Assigned out",          "sets": "transit" },

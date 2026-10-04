@@ -217,6 +217,12 @@ page("internal/leg.html", 1, "Leg record",
       is what a controller screen and a session roster show.</span>
     </div>
     <div>
+      <dt>Controller serial</dt>
+      <dd data-f="controller-serial">&mdash;</dd>
+      <span class="small">Stamped on the controller itself. It belongs to the unit, not the frame, so it moves
+      with the controller when the electronics are swapped.</span>
+    </div>
+    <div>
       <dt>Service interval</dt>
       <dd data-f="interval">&mdash;</dd>
       <span class="small">Motor-hours since the last <em>closed</em> service record. A controller swap does
@@ -261,6 +267,14 @@ page("internal/leg.html", 1, "Leg record",
         <input type="text" id="eel" name="electronics_serial" class="mono" data-serial="electronics" autocomplete="off">
         <p class="field__hint">The ClearCore going in. Binding one that is already on another leg is refused
         &mdash; two live legs cannot answer to the same controller.</p>
+        <p class="field__err" data-serial-err hidden></p>
+      </div>
+
+      <div class="field" data-when="controller" hidden>
+        <label for="ecs">Controller serial</label>
+        <input type="text" id="ecs" name="controller_serial" class="mono" data-serial="controller" autocomplete="off">
+        <p class="field__hint">Stamped on the controller, for example <span class="mono">CC1-00123</span>. Fitting a
+        different ClearCore without one clears the old stamp, since it left with the old unit.</p>
         <p class="field__err" data-serial-err hidden></p>
       </div>
 
@@ -417,6 +431,13 @@ page("internal/intake.html", 1, "Enter legs",
       <label for="iel">Electronics serial <span class="muted">(if already bound)</span></label>
       <input type="text" id="iel" name="electronics_serial" class="mono" data-serial="electronics" autocomplete="off">
       <p class="field__hint">Leave blank for a bare frame. Giving one enters the leg as Commissioned.</p>
+      <p class="field__err" data-serial-err hidden></p>
+    </div>
+    <div class="field">
+      <label for="ics">Controller serial <span class="muted">(if stamped)</span></label>
+      <input type="text" id="ics" name="controller_serial" class="mono" data-serial="controller" autocomplete="off">
+      <p class="field__hint">Stamped on the controller, for example <span class="mono">CC1-00123</span>. Needs the
+      electronics serial above.</p>
       <p class="field__err" data-serial-err hidden></p>
     </div>
     <div class="grid grid--2">

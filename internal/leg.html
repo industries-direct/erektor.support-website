@@ -94,6 +94,12 @@
       is what a controller screen and a session roster show.</span>
     </div>
     <div>
+      <dt>Controller serial</dt>
+      <dd data-f="controller-serial">&mdash;</dd>
+      <span class="small">Stamped on the controller itself. It belongs to the unit, not the frame, so it moves
+      with the controller when the electronics are swapped.</span>
+    </div>
+    <div>
       <dt>Service interval</dt>
       <dd data-f="interval">&mdash;</dd>
       <span class="small">Motor-hours since the last <em>closed</em> service record. A controller swap does
@@ -138,6 +144,14 @@
         <input type="text" id="eel" name="electronics_serial" class="mono" data-serial="electronics" autocomplete="off">
         <p class="field__hint">The ClearCore going in. Binding one that is already on another leg is refused
         &mdash; two live legs cannot answer to the same controller.</p>
+        <p class="field__err" data-serial-err hidden></p>
+      </div>
+
+      <div class="field" data-when="controller" hidden>
+        <label for="ecs">Controller serial</label>
+        <input type="text" id="ecs" name="controller_serial" class="mono" data-serial="controller" autocomplete="off">
+        <p class="field__hint">Stamped on the controller, for example <span class="mono">CC1-00123</span>. Fitting a
+        different ClearCore without one clears the old stamp, since it left with the old unit.</p>
         <p class="field__err" data-serial-err hidden></p>
       </div>
 

@@ -57,7 +57,7 @@ export async function rules(env, request) {
 /* ------------------------------------------------------------ projection */
 
 const COLUMNS = [
-  'mechanical_serial', 'electronics_serial', 'variant', 'controller', 'firmware',
+  'mechanical_serial', 'electronics_serial', 'controller_serial', 'variant', 'controller', 'firmware',
   'state', 'stage', 'holder', 'location', 'flag_code', 'flag_reference',
   'flag_raised_at', 'motor_hours', 'hours_at_service', 'built_at',
   'commissioned_at', 'last_service_at', 'last_seen_at', 'batch', 'notes',
@@ -93,6 +93,17 @@ export function decorate(row, doc, now) {
 
 /* -------------------------------------------------------------- validation */
 
+// The model a controller serial is stamped with, in the catalog's form:
+// CC1-00123 is a CC-1.
+const modelOf = (cs) => 'CC-' + cs.slice(2, cs.indexOf('-'));
+
+/** Why a controller serial cannot go on a leg fitted with `fitted`, or ''. */
+function controllerProblem(cs, fitted) {
+  if (!valid('controller', cs)) return `${cs} is not a controller serial (${EXAMPLE.controller}).`;
+  if (fitted && fitted !== modelOf(cs)) return `${cs} is stamped on a ${modelOf(cs)}, but this leg's controller is ${fitted}.`;
+  return '';
+}
+
 function checkNewLeg(leg, doc) {
   const problems = [];
   const mx = normalise(leg.mechanical_serial);
@@ -101,6 +112,15 @@ function checkNewLeg(leg, doc) {
 
   const el = normalise(leg.electronics_serial);
   if (el && !valid('electronics', el)) problems.push(`${el} is not a controller serial (${EXAMPLE.electronics}).`);
+
+  // The stamp is on the controller, so it only means something on a leg with
+  // a ClearCore bound.
+  const cs = normalise(leg.controller_serial);
+  if (cs) {
+    const problem = controllerProblem(cs, text(leg.controller));
+    if (problem) problems.push(problem);
+    else if (!el) problems.push(`${mx || 'A leg'} has no electronics serial, so it has no controller to carry ${cs}.`);
+  }
 
   if (!text(leg.variant)) problems.push(`${mx || 'A leg'} needs a variant.`);
 
@@ -113,7 +133,7 @@ function checkNewLeg(leg, doc) {
   if (!el && !['built', 'quarantine', 'retired'].includes(state)) {
     problems.push(`${mx || 'A leg'} has no electronics serial, so it cannot be "${state}" yet.`);
   }
-  return { problems, mx, el, state };
+  return { problems, mx, el, cs, state };
 }
 
 /* ------------------------------------------------------------- the writer */
@@ -153,6 +173,35 @@ async function record(env, life, leg, ev, actor) {
     }
     set.electronics_serial = el;
     if (ev.type === 'commissioned' && !leg.commissioned_at) set.commissioned_at = now;
+  }
+
+  // The controller's stamped serial belongs to the controller, as the
+  // electronics serial does. A binding that fits a different ClearCore drops
+  // the old stamp unless the new one is given; recording the stamp of the
+  // controller already fitted leaves the binding alone.
+  if (spec.binds || spec.stamps) {
+    const cs = normalise(ev.controller_serial);
+    const bound = set.electronics_serial || leg.electronics_serial;
+    if (spec.stamps && !cs) {
+      return { problems: [`This event records the serial stamped on the controller (${EXAMPLE.controller}).`] };
+    }
+    if (spec.stamps && !bound) {
+      return { problems: [`${leg.mechanical_serial} has no controller fitted. Commission it first.`] };
+    }
+    if (cs) {
+      const fitted = ev.controller !== undefined ? text(ev.controller) : leg.controller;
+      const problem = controllerProblem(cs, fitted);
+      if (problem) return { problems: [problem] };
+      if (cs !== leg.controller_serial) {
+        const held = await env.REGISTRY
+          .prepare('SELECT mechanical_serial FROM legs WHERE controller_serial = ?').bind(cs).first();
+        if (held) return { problems: [`${cs} is already fitted to ${held.mechanical_serial}.`] };
+      }
+      set.controller_serial = cs;
+      if (!fitted) set.controller = modelOf(cs);
+    } else if (set.electronics_serial !== leg.electronics_serial) {
+      set.controller_serial = null;
+    }
   }
 
   if (ev.controller !== undefined) set.controller = text(ev.controller);
@@ -200,12 +249,13 @@ async function record(env, life, leg, ev, actor) {
     env.REGISTRY.prepare(
       `INSERT INTO leg_events
          (mechanical_serial, at, type, actor, from_state, to_state,
-          electronics_serial, fault_code, reference, hours, detail)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          electronics_serial, controller_serial, fault_code, reference, hours, detail)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(
       leg.mechanical_serial, now, ev.type, actor,
       from, to === from ? null : to,
       set.electronics_serial || leg.electronics_serial || null,
+      set.controller_serial !== undefined ? set.controller_serial : leg.controller_serial || null,
       normalise(ev.fault_code) || null,
       text(ev.reference), hours, text(ev.detail)
     ),
@@ -250,15 +300,15 @@ async function listLegs(env, url, doc) {
     bind.push(new Date(now - doc.reconciliation.staleDays * 864e5).toISOString());
   }
 
-  // One box, either serial, or any free text an operator wrote down. A leg is
+  // One box, any serial, or any free text an operator wrote down. A leg is
   // looked up in the field from whatever number is legible at the time.
   const q = (url.searchParams.get('q') || '').trim();
   if (q) {
     const like = `%${q.toUpperCase()}%`;
     where.push(`(UPPER(mechanical_serial) LIKE ? OR UPPER(COALESCE(electronics_serial,'')) LIKE ?
-                 OR UPPER(COALESCE(holder,'')) LIKE ? OR UPPER(COALESCE(location,'')) LIKE ?
+                 OR UPPER(COALESCE(controller_serial,'')) LIKE ? OR UPPER(COALESCE(holder,'')) LIKE ? OR UPPER(COALESCE(location,'')) LIKE ?
                  OR UPPER(COALESCE(batch,'')) LIKE ?)`);
-    bind.push(like, like, like, like, like);
+    bind.push(like, like, like, like, like, like);
   }
 
   const clause = where.length ? ' WHERE ' + where.join(' AND ') : '';
@@ -375,11 +425,11 @@ export async function reconcileIntake(env, record_) {
       env.REGISTRY.prepare(
         `INSERT INTO leg_events
            (mechanical_serial, at, type, actor, from_state, to_state,
-            electronics_serial, fault_code, reference, hours, detail)
-         VALUES (?, ?, ?, 'portal', ?, NULL, ?, ?, ?, NULL, ?)`
+            electronics_serial, controller_serial, fault_code, reference, hours, detail)
+         VALUES (?, ?, ?, 'portal', ?, NULL, ?, ?, ?, ?, NULL, ?)`
       ).bind(
         leg.mechanical_serial, now, isFlag ? 'flag-raised' : 'dispatch-request',
-        leg.state, leg.electronics_serial, code, record_.reference,
+        leg.state, leg.electronics_serial, leg.controller_serial || null, code, record_.reference,
         text(isFlag ? record_.fields.reason : record_.fields.symptom)
       ),
       env.REGISTRY.prepare(
@@ -406,18 +456,32 @@ export async function prepareLegs(env, doc, incoming, actor) {
   for (const c of checked) {
     if (c.mx && seen.has(c.mx)) problems.push(`${c.mx} appears twice in this batch.`);
     seen.add(c.mx);
+    if (c.cs && seen.has(c.cs)) problems.push(`${c.cs} appears twice in this batch.`);
+    if (c.cs) seen.add(c.cs);
   }
   if (problems.length) return { status: 422, error: { error: 'Nothing was entered.', problems } };
 
   const existing = await env.REGISTRY.prepare(
     `SELECT mechanical_serial FROM legs WHERE mechanical_serial IN (${checked.map(() => '?').join(',')})`
   ).bind(...checked.map((c) => c.mx)).all();
+  const stamped = checked.filter((c) => c.cs);
+  if (stamped.length) {
+    const fitted = await env.REGISTRY.prepare(
+      `SELECT mechanical_serial, controller_serial FROM legs
+        WHERE controller_serial IN (${stamped.map(() => '?').join(',')})`
+    ).bind(...stamped.map((c) => c.cs)).all();
+    existing.results.push(...fitted.results.map((r) => ({
+      mechanical_serial: r.mechanical_serial, fitted: r.controller_serial
+    })));
+  }
   if (existing.results.length) {
     return {
       status: 409,
       error: {
         error: 'Nothing was entered.',
-        problems: existing.results.map((r) => `${r.mechanical_serial} is already in the registry.`)
+        problems: existing.results.map((r) => r.fitted
+          ? `${r.fitted} is already fitted to ${r.mechanical_serial}.`
+          : `${r.mechanical_serial} is already in the registry.`)
       }
     };
   }
@@ -428,22 +492,23 @@ export async function prepareLegs(env, doc, incoming, actor) {
     const l = c.leg;
     statements.push(env.REGISTRY.prepare(
       `INSERT INTO legs
-         (mechanical_serial, electronics_serial, variant, controller, firmware,
+         (mechanical_serial, electronics_serial, controller_serial, variant, controller, firmware,
           state, holder, location, motor_hours, hours_at_service, built_at,
           commissioned_at, last_seen_at, batch, notes, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(
-      c.mx, c.el || null, text(l.variant), text(l.controller), text(l.firmware),
+      c.mx, c.el || null, c.cs || null, text(l.variant),
+      text(l.controller) || (c.cs ? modelOf(c.cs) : null), text(l.firmware),
       c.state, text(l.holder), text(l.location), Number(l.motor_hours) || 0,
       text(l.built_at) || now, c.el ? now : null, now,
       text(l.batch), text(l.notes), now, now
     ));
     statements.push(env.REGISTRY.prepare(
       `INSERT INTO leg_events
-         (mechanical_serial, at, type, actor, from_state, to_state, electronics_serial, detail)
-       VALUES (?, ?, ?, ?, NULL, ?, ?, ?)`
+         (mechanical_serial, at, type, actor, from_state, to_state, electronics_serial, controller_serial, detail)
+       VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)`
     ).bind(
-      c.mx, now, c.el ? 'commissioned' : 'built', actor, c.state, c.el || null,
+      c.mx, now, c.el ? 'commissioned' : 'built', actor, c.state, c.el || null, c.cs || null,
       text(l.batch) ? 'Batch ' + text(l.batch) : null
     ));
   }

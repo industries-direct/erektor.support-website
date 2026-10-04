@@ -255,7 +255,9 @@ The same three facts that shape the public portal decide the schema:
    uniquely-indexed column: a *current binding*, rewritten by a swap. Keying on the
    electronics serial instead would silently reset a leg's wear, interval and history every
    time a ClearCore was changed — which is the one mistake this schema exists to prevent, and
-   the one the test suite checks first.
+   the one the test suite checks first. The controller serial stamped on the controller
+   (`CC1-00123`, `migrations/0004_controller_serial.sql`) is a binding of the same kind: it
+   belongs to the unit, so a swap to a different ClearCore rewrites or clears it.
 3. **Every leg comes home.** So an open flag is a column on the leg rather than a ticket
    somewhere else, because inspection reads flags off the frame as the leg passes.
 

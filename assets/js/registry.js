@@ -341,6 +341,9 @@
       set('[data-f=electronics]', leg.electronics_serial
         ? '<b class="mono">' + esc(leg.electronics_serial) + '</b>'
         : '<span class="muted">not bound</span>');
+      set('[data-f=controller-serial]', leg.controller_serial
+        ? '<b class="mono">' + esc(leg.controller_serial) + '</b>'
+        : '<span class="muted">' + (leg.electronics_serial ? 'not recorded' : 'no controller fitted') + '</span>');
       txt('[data-f=variant]', leg.variant);
       txt('[data-f=controller]', leg.controller || '—');
       txt('[data-f=firmware]', leg.firmware || '—');
@@ -390,7 +393,8 @@
                 (e.fault_code ? ' <span class="pill pill--warn">' + esc(e.fault_code) + '</span>' : '') +
                 (e.reference ? ' <code>' + esc(e.reference) + '</code>' : '') +
                 (e.hours != null ? ' <span class="muted small">' + esc(e.hours) + ' h</span>' : '') +
-                (e.electronics_serial ? '<span class="tl__sub mono">' + esc(e.electronics_serial) + '</span>' : '') +
+                (e.electronics_serial ? '<span class="tl__sub mono">' + esc(e.electronics_serial) +
+                  (e.controller_serial ? ' · ' + esc(e.controller_serial) : '') + '</span>' : '') +
                 (e.detail ? '<span class="tl__sub">' + esc(e.detail) + '</span>' : '') +
               '</span>' +
               '<span class="tl__who muted small">' + esc(e.actor) + '</span></li>';
@@ -434,6 +438,9 @@
         var spec = null;
         life.events.forEach(function (e) { if (e.id === id) spec = e; });
         show(form, '[data-when=binds]', !!(spec && spec.binds));
+        show(form, '[data-when=controller]', !!(spec && (spec.binds || spec.stamps)));
+        var cs = form.querySelector('[name=controller_serial]');
+        if (cs) cs.required = !!(spec && spec.stamps);
         show(form, '[data-when=flag]', id === 'flag-raised');
         show(form, '[data-when=stage]', id === 'check-in' || id === 'stage');
         show(form, '[data-when=move]', id === 'moved' || id === 'delivered' || id === 'assigned');
