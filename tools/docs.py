@@ -4,7 +4,7 @@ from build import page
 import diagrams as D
 
 
-CRUMB = '<p class="crumbs"><a href="../index.html">Support</a><span>/</span><a href="../docs/">Documentation</a><span>/</span>{}</p>'
+CRUMB = '<p class="crumbs"><a href="../index.html">Service console</a><span>/</span><a href="../docs/">Documentation</a><span>/</span>{}</p>'
 
 
 # ===========================================================================
@@ -12,7 +12,7 @@ page("docs/index.html", 1, "Documentation",
      "Product diagrams, operating procedures, the ERS return line, fault codes and safety cases for Erektor legs.",
      """
 <section class="wrap">
-  <p class="crumbs"><a href="../index.html">Support</a><span>/</span>Documentation</p>
+  <p class="crumbs"><a href="../index.html">Service console</a><span>/</span>Documentation</p>
   <span class="eyebrow">Reference</span>
   <h1>Documentation</h1>
   <p class="lede">What a leg is made of, how to run one, what happens when it comes home, and the cases
@@ -413,7 +413,7 @@ page("docs/ers.html", 1, "The return line",
 page("docs/faults.html", 1, "Fault codes",
      "Every Erektor fault code, what it means, and which of the three service routes it puts you on.",
      # Public, unlike the rest of docs/, so its trail skips the gated index.
-     '<p class="crumbs"><a href="../index.html">Support</a><span>/</span>Fault codes</p>' + """
+     '<p class="crumbs"><a href="../index.html">Service console</a><span>/</span>Fault codes</p>' + """
 <section class="wrap" data-triage>
   <span class="eyebrow">Triage</span>
   <h1>Fault codes</h1>
@@ -532,7 +532,7 @@ page("docs/safety.html", 1, "Safety",
 # ===========================================================================
 page("firmware/index.html", 1, "Controller firmware",
      "Current Erektor controller firmware versions, release notes, and how a signed bundle reaches a leg that has no internet path of its own.",
-     '<p class="crumbs"><a href="../index.html">Support</a><span>/</span>Firmware</p>' + """
+     '<p class="crumbs"><a href="../index.html">Service console</a><span>/</span>Firmware</p>' + """
 <section class="wrap">
   <span class="eyebrow">Fleet</span>
   <h1>Controller firmware</h1>

@@ -72,6 +72,13 @@
     }
     document.querySelectorAll('[data-acct-company]').forEach(function (n) { n.textContent = s.company.name; });
     document.querySelectorAll('[data-acct-email]').forEach(function (n) { n.textContent = s.user.email; });
+    // Initials from the company name, as the ERS console does for its operator.
+    var initials = s.company.name.split(/[\s._-]+/).filter(Boolean)
+      .slice(0, 2).map(function (part) { return part.charAt(0); }).join('').toUpperCase();
+    document.querySelectorAll('[data-acct-initials]').forEach(function (n) {
+      n.textContent = initials;
+      n.title = s.company.name + ' · ' + s.user.email;
+    });
   }
 
   try { showSession(JSON.parse(sessionStorage.getItem(SESSION_KEY))); } catch (e) { /* private mode */ }
