@@ -15,7 +15,8 @@ export const env = {
     join(ROOT, 'migrations', '0001_registry.sql'),
     join(ROOT, 'migrations', '0002_manufacturing.sql'),
     join(ROOT, 'migrations', '0003_leg_facility.sql'),
-    join(ROOT, 'migrations', '0004_controller_serial.sql')
+    join(ROOT, 'migrations', '0004_controller_serial.sql'),
+    join(ROOT, 'migrations', '0005_leg_owner.sql')
   ),
   ASSETS: {
     async fetch(input) {

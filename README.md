@@ -324,6 +324,7 @@ which records who did what to which leg.
 ```sh
 node --experimental-sqlite tools/test/registry.mjs
 node --experimental-sqlite tools/test/manufacturing.mjs
+node --experimental-sqlite tools/test/ownership.mjs
 ```
 
 Runs the real Worker against a real SQLite database via a small D1 shim, so the SQL is

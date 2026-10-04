@@ -149,19 +149,22 @@ const LEG_FIELDS = [
 ];
 
 /**
- * The legs assigned to these facilities, with the registry's interval and
- * staleness math applied. They live in a different database from the
- * facilities, so this is a second query rather than a join; an unbound
- * registry just means no legs yet, not a broken dashboard.
+ * The legs this company bought that are at its facilities, with the
+ * registry's interval and staleness math applied. Ownership decides: a leg
+ * sold to another customer never appears here, or anywhere on this account,
+ * even while it sits at one of these facilities. They live in a different
+ * database from the facilities, so this is a second query rather than a
+ * join; an unbound registry just means no legs yet, not a broken dashboard.
  */
-async function legsFor(env, request, facilityIds) {
+async function legsFor(env, request, companyId, facilityIds) {
   if (!env.REGISTRY || !facilityIds.length) return { legs: [], intervalHours: null };
   const { doc, states } = await rules(env, request);
   const rows = await env.REGISTRY.prepare(
     `SELECT ${LEG_FIELDS.join(', ')} FROM legs
-      WHERE facility_id IN (${facilityIds.map(() => '?').join(', ')}) AND state != 'retired'
+      WHERE owner_company_id = ?
+        AND facility_id IN (${facilityIds.map(() => '?').join(', ')}) AND state != 'retired'
       ORDER BY mechanical_serial`
-  ).bind(...facilityIds).all();
+  ).bind(companyId, ...facilityIds).all();
   const now = Date.now();
   return {
     intervalHours: doc.intervals.motorHours,
@@ -187,7 +190,7 @@ async function overview(env, request, user) {
         ORDER BY r.created_at DESC LIMIT 50`
     ).bind(user.company_id)
   ]);
-  const fleet = await legsFor(env, request, facilities.results.map((f) => f.id));
+  const fleet = await legsFor(env, request, user.company_id, facilities.results.map((f) => f.id));
   return {
     user: { email: user.email, name: user.name, role: user.role },
     company: { name: user.company_name },

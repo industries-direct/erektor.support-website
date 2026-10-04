@@ -319,6 +319,7 @@
     var errEl = root.querySelector('[data-error]');
     var current = null;
     var facilities = api('/facilities').then(function (d) { return d.facilities; }, function () { return []; });
+    var companies = api('/companies').then(function (d) { return d.companies; }, function () { return []; });
 
     if (!serial) {
       fail(errEl, new Error('No leg named. Open one from the fleet list.'));
@@ -352,6 +353,10 @@
       facilities.then(function (list) {
         var f = list.filter(function (x) { return x.id === leg.facility_id; })[0];
         txt('[data-f=facility]', f ? f.company + ' — ' + f.name : (leg.facility_id ? 'Facility #' + leg.facility_id : 'Not assigned'));
+      });
+      companies.then(function (list) {
+        var c = list.filter(function (x) { return x.id === leg.owner_company_id; })[0];
+        txt('[data-f=owner]', c ? c.name : (leg.owner_company_id ? 'Company #' + leg.owner_company_id : 'industries.direct'));
       });
       txt('[data-f=batch]', leg.batch || '—');
       txt('[data-f=hours]', leg.motor_hours);
@@ -497,6 +502,18 @@
           });
         }
         select.value = leg.facility_id == null ? '' : String(leg.facility_id);
+      });
+      companies.then(function (list) {
+        var select = form.owner_company_id;
+        if (select.options.length === 1) {
+          list.forEach(function (c) {
+            var o = document.createElement('option');
+            o.value = c.id;
+            o.textContent = c.name;
+            select.appendChild(o);
+          });
+        }
+        select.value = leg.owner_company_id == null ? '' : String(leg.owner_company_id);
       });
       if (!form.dataset.bound) {
         form.dataset.bound = '1';
