@@ -24,6 +24,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # sign-in carries data-members and ships hidden; assets/js/app.js reveals it
 # once /api/account/session says who is there. The Worker is still the gate:
 # this only decides what is shown.
+# The fault code index is parked until the controller emits these codes:
+# docs/faults.html still builds, but nothing links to it. Set True to bring
+# back its tab, footer link and the links into it from other pages.
+FAULT_CODES = False
+FAULTS = "docs/faults.html"
+
 PUBLIC_NAV = [
     ("docs/faults.html", "Fault codes", ""),
 ]
@@ -86,6 +92,7 @@ def shell(depth, title, description, body, page=None, head_extra="", foot_extra=
         if depth == "/" else ""
     )
     def links(entries, indent):
+        entries = [e for e in entries if FAULT_CODES or e[0] != FAULTS]
         return "\n".join(
             '{pad}<a href="{b}{href}"{cur} class="{cls}">{label}</a>'.format(
                 pad=" " * indent, b=b, href=href, cls=cls, label=label,
@@ -109,7 +116,9 @@ def shell(depth, title, description, body, page=None, head_extra="", foot_extra=
                 for href, label, gated in items
             ),
         )
-        for head, items in FOOT_COLS
+        for head, items in (
+            (head, [i for i in items if FAULT_CODES or i[0] != FAULTS]) for head, items in FOOT_COLS
+        )
     )
     return f"""<!DOCTYPE html>
 <html lang="en">

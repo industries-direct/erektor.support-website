@@ -1,6 +1,6 @@
 """Documentation and firmware pages."""
 
-from build import page
+from build import page, FAULT_CODES
 import diagrams as D
 
 
@@ -37,12 +37,12 @@ page("docs/index.html", 1, "Documentation",
       the registry that stops a leg being called lost.</p>
       <div class="card__meta">ERS</div>
     </a>
-    <a class="card card--urgent" href="faults.html">
+""" + ("""    <a class="card card--urgent" href="faults.html">
       <h3>Fault code index</h3>
       <p>Every code, what it means, and which of the three service routes it puts you on.</p>
       <div class="card__meta">Triage</div>
     </a>
-    <a class="card" href="safety.html">
+""" if FAULT_CODES else "") + """    <a class="card" href="safety.html">
       <h3>Safety</h3>
       <p>Working under a held load, the walk-off as the governing load case, and transport securement.</p>
       <div class="card__meta">Read before a walk-off</div>
