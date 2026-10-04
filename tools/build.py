@@ -13,6 +13,7 @@ Product facts live in data/*.json and are read by the pages at runtime, not
 baked in here. This file only owns layout.
 """
 
+import hashlib
 import os
 import re
 
@@ -214,14 +215,29 @@ def page(path, depth, title, description, body, head_extra="", foot_extra=""):
     PAGES[path] = (depth, title, description, body, head_extra, foot_extra)
 
 
+# Scripts and stylesheets are cached for an hour (_headers), and a fix to one
+# would otherwise wait out that hour in every browser that already had it. Each
+# reference carries a hash of the file's contents, so a changed file gets a new
+# URL and is fetched at once. The asset layer ignores the query string.
+ASSET_REF = re.compile(r'(assets/(?:css|js)/[\w.-]+\.(?:css|js))"')
+
+
+def fingerprint(html):
+    def tag(m):
+        with open(os.path.join(ROOT, m.group(1)), "rb") as fh:
+            digest = hashlib.sha256(fh.read()).hexdigest()[:8]
+        return '%s?v=%s"' % (m.group(1), digest)
+    return ASSET_REF.sub(tag, html)
+
+
 def write():
     for path, (depth, title, description, body, head_extra, foot_extra) in PAGES.items():
         full = os.path.join(ROOT, path)
         os.makedirs(os.path.dirname(full), exist_ok=True)
         # docs/index.html is reached through the "docs/" nav entry
         nav_key = "docs/" if path == "docs/index.html" else path
-        html = shell(depth, title, description, body, page=nav_key,
-                     head_extra=head_extra, foot_extra=foot_extra)
+        html = fingerprint(shell(depth, title, description, body, page=nav_key,
+                                 head_extra=head_extra, foot_extra=foot_extra))
         with open(full, "w", encoding="utf-8") as fh:
             fh.write(html)
         print("wrote", path)
