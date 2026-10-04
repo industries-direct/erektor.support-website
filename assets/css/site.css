@@ -251,16 +251,22 @@ main { padding: 2.5rem 0 5rem; }
   .masthead-title { padding-left: 16px; }
   .subnav { padding: 8px 18px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); }
 }
+/* On a phone everything stays on one row: the title takes what is left
+   and wraps within it, rather than the controls dropping to a row of
+   their own. */
 @media (max-width: 650px) {
-  .masthead { flex-wrap: wrap; gap: 10px 12px; padding: 10px 16px 12px; }
+  .masthead { gap: 10px; min-height: 60px; padding: 8px 16px; }
   .brand-mark { width: 22px; height: 22px; }
-  .masthead-title { padding: 0; border: 0; font-size: 20px; }
-  .masthead .nav, .acct { order: 1; width: 100%; }
-  .acct { padding-left: 0; border-left: 0; }
-  .acct .chrome-btn { margin-left: auto; }
-  .nav { justify-content: space-between; }
+  .masthead-title { padding: 0; border: 0; font-size: 18px; }
+  .acct { gap: 8px; padding-left: 0; border-left: 0; }
+  .acct__avatar { width: 32px; height: 32px; font-size: 11px; }
+  .masthead .chrome-btn { padding: 0 12px; }
   .subnav { padding: 8px 16px; }
   .subnav a { min-height: 40px; padding: 0 12px; font-size: 13px; }
+}
+/* Narrowest phones: a long title needs the avatar's room. */
+@media (max-width: 400px) {
+  .acct__avatar { display: none; }
 }
 
 /* -------------------------------------------------------------- typography */
