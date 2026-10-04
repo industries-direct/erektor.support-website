@@ -93,6 +93,13 @@
       "label": "Mechanical serial",
       "description": "Stamped on the leg frame as (side)-(version)(product initial)(manufacture order number), for example L-V3BE123. Permanent for the life of the leg. Motor-hours and gearbox wear accrue against this number, not the electronics.",
       "governs": ["service interval", "wear history", "warranty", "lease record"]
+    },
+    "controller": {
+      "pattern": "^CC[0-9]-[0-9]{5}$",
+      "example": "CC1-00123",
+      "label": "Controller serial",
+      "description": "Stamped on the controller itself as (model)-(build sequence), for example CC1-00123 for production ClearCore build 123; CC0 marks the pilot build. Permanent for the life of the controller and travels with it from leg to leg. The physical unit's stock, repair and return history accrue against this number.",
+      "governs": ["controller inventory", "repair history", "returns", "controller warranty"]
     }
   }
 }

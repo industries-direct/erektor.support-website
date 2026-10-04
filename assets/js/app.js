@@ -486,7 +486,7 @@
         );
       })));
 
-      fill('[data-dash-identity]', rows(['electronics', 'mechanical'].map(function (k) {
+      fill('[data-dash-identity]', rows(['electronics', 'mechanical', 'controller'].map(function (k) {
         var s = hw.serialFormats[k];
         if (!s) return '';
         return row(ERS.esc(s.label), ERS.esc(s.example), ERS.esc(s.governs.join(' · ')));
