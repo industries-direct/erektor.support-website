@@ -22,7 +22,7 @@ page("docs/index.html", 1, "Documentation",
     <a class="card card--docs" href="leg.html">
       <h3>Leg anatomy and diagrams</h3>
       <p>Elevation and plan drawings, the two axes, power, controller and radio &mdash; and why a leg carries
-      two serial numbers that mean different things.</p>
+      three serial numbers that mean different things.</p>
       <div class="card__meta">Diagrams &middot; identity</div>
     </a>
     <a class="card card--docs" href="operating.html">
@@ -155,18 +155,18 @@ page("docs/leg.html", 1, "Leg anatomy",
   </div>
 
   <h2 id="identity">Serials and identity</h2>
-  <p>A leg carries two serial numbers and they are not interchangeable. This is the single most common
+  <p>A leg carries three serial numbers and they are not interchangeable. This is the single most common
   source of misfiled service requests, so it is worth being precise about.</p>
 
   <div class="table-scroll">
     <table>
-      <thead><tr><th>&nbsp;</th><th>Electronics serial</th><th>Mechanical serial</th></tr></thead>
+      <thead><tr><th>&nbsp;</th><th>Electronics serial</th><th>Mechanical serial</th><th>Controller serial</th></tr></thead>
       <tbody>
-        <tr><th scope="row">Format</th><td class="mono">305419896</td><td class="mono">L-V3BE123</td></tr>
-        <tr><th scope="row">Where</th><td>Reported by the ClearCore; shown by the ERS tablet and the session controller roster</td><td>Stamped on the leg frame: (side)-(version)(product initial)(manufacture order number)</td></tr>
-        <tr><th scope="row">Lifetime</th><td>Rolls over when the controller is replaced</td><td>Permanent for the life of the leg</td></tr>
-        <tr><th scope="row">Governs</th><td>Firmware, pairing, session assignment, uplink identity</td><td>Motor-hours, gearbox wear, service interval, warranty, lease record</td></tr>
-        <tr><th scope="row">File against it</th><td><a href="../dispatch.html">Dispatch requests</a></td><td><a href="../maintenance.html">Maintenance flags</a></td></tr>
+        <tr><th scope="row">Format</th><td class="mono">305419896</td><td class="mono">L-V3BE123</td><td class="mono">CC1-00123</td></tr>
+        <tr><th scope="row">Where</th><td>Reported by the ClearCore; shown by the ERS tablet and the session controller roster</td><td>Stamped on the leg frame: (side)-(version)(product initial)(manufacture order number)</td><td>Stamped on the controller: (model)-(build sequence); CC0 is the pilot build</td></tr>
+        <tr><th scope="row">Lifetime</th><td>Rolls over when the controller is replaced</td><td>Permanent for the life of the leg</td><td>Permanent for the life of the controller; moves with it from leg to leg</td></tr>
+        <tr><th scope="row">Governs</th><td>Firmware, pairing, session assignment, uplink identity</td><td>Motor-hours, gearbox wear, service interval, warranty, lease record</td><td>Controller inventory, repair history, returns, controller warranty</td></tr>
+        <tr><th scope="row">File against it</th><td><a href="../dispatch.html">Dispatch requests</a></td><td><a href="../maintenance.html">Maintenance flags</a></td><td>No online form yet</td></tr>
       </tbody>
     </table>
   </div>

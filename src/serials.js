@@ -13,12 +13,16 @@ export const SERIAL = {
   electronics: /^(0|[1-9]\d{0,9})$/,
   // Stamped on the leg: (side)-(version)(product initial)(manufacture order #),
   // e.g. L-V3BE123 for the left leg of manufacture order 123.
-  mechanical: /^[LR]-V\d{1,2}[A-Z]{1,3}\d{3}$/
+  mechanical: /^[LR]-V\d{1,2}[A-Z]{1,3}\d{3}$/,
+  // Stamped on the controller: (model)-(build sequence), e.g. CC1-00123.
+  // It travels with the controller from leg to leg.
+  controller: /^CC\d-\d{5}$/
 };
 
 export const EXAMPLE = {
   electronics: '305419896',
-  mechanical: 'L-V3BE123'
+  mechanical: 'L-V3BE123',
+  controller: 'CC1-00123'
 };
 
 /** Normalise as the field does: trimmed and upper-case, or '' for nothing. */
