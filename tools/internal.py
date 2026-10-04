@@ -61,7 +61,7 @@ page("internal/signin.html", 1, "Registry sign-in",
   <p class="lede">The fleet record: every frame EREKTOR has built, what is bound to it, where it is, and
   what it is carrying. Not part of the public portal.</p>
 
-  <form class="form mt-2" data-signin>
+  <form class="form mt-2" method="post" data-reg-signin>
     <div class="field limit-input">
       <label for="code" class="required">Access code</label>
       <input type="password" id="code" name="code" class="mono" required autocomplete="current-password"
