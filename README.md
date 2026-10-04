@@ -108,6 +108,10 @@ Edit page content in `tools/pages.py`, `tools/docs.py` and `tools/internal.py`, 
 `tools/diagrams.py`, then re-run and commit. Editing the generated `.html` directly works too, but the next run
 of the assembler will overwrite it.
 
+The assembler also stamps every `assets/css` and `assets/js` reference with a hash of the
+file (`app.js?v=762e9359`), so re-run it after editing a script or stylesheet too: that is
+what makes browsers fetch the new copy instead of waiting out the hour they cache it for.
+
 ## Deploying
 
 Deploys come from **GitHub Actions** — `.github/workflows/deploy.yml` runs `wrangler deploy`
