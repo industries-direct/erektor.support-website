@@ -265,7 +265,7 @@ main { padding: 2.5rem 0 5rem; }
   .subnav a { min-height: 40px; padding: 0 12px; font-size: 13px; }
 }
 /* Narrowest phones: a long title needs the avatar's room. */
-@media (max-width: 400px) {
+@media (max-width: 360px) {
   .acct__avatar { display: none; }
 }
 
