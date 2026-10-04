@@ -12,6 +12,8 @@
  *               way as /internal/ and for the same reason.
  *   /docs/*,    behind the same customer sign-in, except the fault code
  *   /firmware/* index, which stays public.
+ *   /           the public home page, or a redirect to the account Overview
+ *               when someone is signed in.
  *   /dispatch,  redirect into the account's request forms.
  *   /maintenance
  *   /internal/* also listed in `run_worker_first`, and for a sharper reason:
@@ -30,7 +32,7 @@
 import { handleServiceRequest } from './requests.js';
 import { handleRegistry } from './registry.js';
 import { gateConfig, sessionFor, signIn, signOut } from './auth.js';
-import { accountForm, handleAccountApi, isMemberPage, serveAccount } from './portal.js';
+import { accountForm, handleAccountApi, isMemberPage, serveAccount, serveHome } from './portal.js';
 
 /** Mirrors the non-CSP entries of _headers, which only cover asset responses. */
 const API_HEADERS = {
@@ -160,6 +162,10 @@ export default {
 
     if (pathname.startsWith('/api/')) {
       return json({ error: 'No such endpoint.' }, 404);
+    }
+
+    if (pathname === '/' || pathname === '/index.html') {
+      return serveHome(request, env);
     }
 
     const form = accountForm(new URL(request.url));

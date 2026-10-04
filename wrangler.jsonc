@@ -33,7 +33,7 @@
     // reason: they are customer-only now (src/portal.js), and the gate only
     // runs if the Worker does.
     "run_worker_first": [
-      "/api/*", "/internal/*", "/account", "/account/*",
+      "/", "/index.html", "/api/*", "/internal/*", "/account", "/account/*",
       "/docs", "/docs/*", "/firmware", "/firmware/*",
       "/dispatch", "/dispatch.html", "/maintenance", "/maintenance.html"
     ]

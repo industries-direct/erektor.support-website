@@ -12,7 +12,7 @@ Like the registry pages, they carry no data of their own. Everything is
 fetched from /api/account/* after the session is checked.
 """
 
-from build import page
+from build import page, FAULT_CODES
 
 NOINDEX = '\n<meta name="robots" content="noindex, nofollow">'
 SCRIPT = '\n<script src="../assets/js/account.js" defer></script>'
@@ -66,8 +66,8 @@ page("account/signin.html", 1, "Account sign-in",
     <p class="note note--warn">The account portal needs JavaScript.</p>
   </noscript>
 
-  <p class="small muted mt-3">No account? Email <a href="mailto:support@erektor.systems">support@erektor.systems</a>.
-  The <a href="../docs/faults.html">fault code index</a> is open to everyone.</p>
+  <p class="small muted mt-3">No account? Email <a href="mailto:support@erektor.systems">support@erektor.systems</a>.""" + ("""
+  The <a href="../docs/faults.html">fault code index</a> is open to everyone.""" if FAULT_CODES else "") + """</p>
 </section>
 """,
      head_extra=NOINDEX, foot_extra=SCRIPT)

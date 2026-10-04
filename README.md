@@ -41,8 +41,9 @@ the index, and the form prefills all follow.
 ## Layout
 
 ```
-index.html              Service console: status bar, fault-code router, the three routes
-                        with live counts, and panels over data/*.json
+index.html              Public home: the Service Console beside ERS, and what the shared
+                        leg record shows a manufacturer. Signed in, / redirects to the
+                        account Overview (src/portal.js serveHome)
 dispatch.html           Request a replacement leg (electronics serial)
 maintenance.html        Flag a leg for the ERS line (mechanical serial)
 docs/
@@ -50,7 +51,8 @@ docs/
   leg.html              Anatomy, SVG diagrams, dual-serial identity
   operating.html        Claim → converge → dock → pair → level → walk off → place → release
   ers.html              The return line, battery swap, intervals, registry
-  faults.html           Triage lookup + full code index
+  faults.html           Triage lookup + full code index. Parked: still built, but
+                        unlinked while FAULT_CODES is False in tools/build.py
   safety.html           Held loads, the walk-off, transport securement
 firmware/index.html     Manifest, release notes, how a bundle reaches a leg
 

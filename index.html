@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ESC | Service console</title>
-<meta name="description" content="Service console for Erektor legs: route a fault code, flag a leg for ERS, dispatch a replacement to a site, and read the current fault table, firmware manifest and fleet catalog.">
+<meta name="description" content="The Erektor Service Console and the Erektor Return System: one account, and one stamped frame serial that carries every leg's history from its first build to its retirement.">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1b1b1b" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
@@ -23,7 +23,7 @@
     <a class="brand" href="index.html" title="Home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="brand-name">EREKTOR <span>SERVICE CONSOLE</span></span></a>
     <div class="masthead-title">Home</div>
     <nav class="nav" aria-label="Main" data-public>
-      <a href="docs/faults.html" class="">Fault codes</a>
+
       <a href="/account/signin.html" class="chrome-btn" data-signin>Sign in</a>
     </nav>
     <div class="acct" data-members hidden>
@@ -43,214 +43,178 @@
     <a href="account/emergency.html" class="nav--urgent">Emergency replacement</a>
     <a href="account/maintenance.html" class="">Schedule maintenance</a>
     <a href="docs/" class="">Documentation</a>
-    <a href="docs/faults.html" class="">Fault codes</a>
     <a href="firmware/index.html" class="">Firmware</a>
   </nav>
 </div>
 
 <main id="main">
 
-<section class="wrap dash-head">
-  <div class="dash-head__id">
-    <span class="eyebrow">Erektor Return System</span>
-    <h1>Service console</h1>
-    <p class="lede">Every leg comes home. One question routes it &mdash; can it finish this session? Fix it on
-    the floor, flag it for ERS, or dispatch a replacement.</p>
+<section class="wrap hm-hero">
+  <div class="hm-hero__text">
+    <span class="eyebrow">Erektor fleet lifecycle</span>
+    <h1>Two consoles. One serial for every leg.</h1>
+    <p class="lede">The Erektor Return System runs the recovery line at each of your facilities, on a dedicated
+    server installed with the line, so what the line records stays on site. The Service Console is online,
+    where your company looks after the fleet while it is out on builds. Every leg carries the serial stamped
+    into its frame through both, so its life reads as one history.</p>
+    <div class="btn-row mt-1">
+      <a class="btn btn--primary" href="/account/signin.html" data-signin>Sign in</a>
+      <a class="btn" href="https://erektor-return.systems/" rel="noopener">Open the Return System &#8599;</a>
+    </div>
+    <p class="small muted mt-0">One account signs in to both.</p>
   </div>
-  <dl class="statbar" aria-label="Portal status">
-    <div>
-      <dt>Dispatch line</dt>
-      <dd><span class="dot dot--ok" aria-hidden="true"></span>Staffed 24/7</dd>
-    </div>
-    <div>
-      <dt>Fault table</dt>
-      <dd class="mono" data-dash-rev="faults">rev &mdash;</dd>
-    </div>
-    <div>
-      <dt>Firmware manifest</dt>
-      <dd class="mono" data-dash-rev="firmware">rev &mdash;</dd>
-    </div>
-    <div>
-      <dt>Local time</dt>
-      <dd class="mono" data-dash-clock>&mdash;</dd>
-    </div>
-  </dl>
-</section>
 
-<section class="wrap console" data-triage aria-labelledby="console-title">
-  <h2 id="console-title" class="console__title">Route a fault code</h2>
-  <div class="console__bar">
-    <label for="triage" class="visually-hidden">Fault code or symptom</label>
-    <span class="console__prompt mono" aria-hidden="true">&gt;</span>
-    <input type="search" id="triage" class="mono console__input" data-triage-input
-           placeholder="LFT-45 — or type a symptom" autocomplete="off">
-  </div>
-  <p class="console__hint">Codes read <code>SUB-nn</code>, for example <code>DRV-40</code> or <code>NET-20</code>.
-  The lookup picks the route and carries the code into the right form.
-  <a href="docs/faults.html">Full fault code index &rarr;</a></p>
-  <div data-triage-out hidden class="mt-1 limit"></div>
-  <noscript>
-    <p class="note note--info">The lookup needs JavaScript. The full
-    <a href="docs/faults.html">fault code index</a> works without it.</p>
-  </noscript>
-</section>
-
-<section class="wrap mt-2" aria-labelledby="routes-title" data-members hidden>
-  <div class="dash-secline">
-    <h2 id="routes-title">Three routes</h2>
-    <p>Sending a technician is the exception. Counts are live from the fault table.</p>
-  </div>
-  <div class="routes">
-    <a class="routetile routetile--self" href="docs/faults.html">
-      <span class="routetile__top">
-        <span class="routetile__k">Leg keeps working</span>
-        <span class="routetile__n mono"><b data-dash-count="self">&mdash;</b><small>codes</small></span>
-      </span>
-      <h3>Fix on the floor</h3>
-      <p>Operator-serviceable. Follow the procedure on the code &mdash; no ticket, no record change.</p>
-      <span class="routetile__cta">Open the procedures &rarr;</span>
-    </a>
-    <a class="routetile routetile--flag" href="account/maintenance.html">
-      <span class="routetile__top">
-        <span class="routetile__k">Finishes the session</span>
-        <span class="routetile__n mono"><b data-dash-count="flag">&mdash;</b><small>codes</small></span>
-      </span>
-      <h3>Flag a leg for ERS</h3>
-      <p>No truck. The flag rides on the leg&rsquo;s record and ERS diverts it at inspection when it comes home.</p>
-      <span class="routetile__cta">Flag a leg &rarr;</span>
-    </a>
-    <a class="routetile routetile--dispatch" href="account/emergency.html">
-      <span class="routetile__top">
-        <span class="routetile__k">Cannot finish the session</span>
-        <span class="routetile__n mono"><b data-dash-count="dispatch">&mdash;</b><small>codes</small></span>
-      </span>
-      <h3>Dispatch a replacement</h3>
-      <p>A healthy leg goes out from the pool; the failed one rides back to check-in with the driver.</p>
-      <span class="routetile__cta">Request a replacement &rarr;</span>
-    </a>
+  <div class="hm-flow" role="img" aria-label="The Return System at the facility and the Service Console online share one account and follow each leg by its frame serial.">
+    <div class="hm-node">
+      <span class="hm-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <div><strong>Erektor Return System</strong><span>On a server at each facility &middot; when a leg comes home</span></div>
+    </div>
+    <div class="hm-link" aria-hidden="true"></div>
+    <div class="hm-node hm-node--record">
+      <span class="hm-node__key mono">Frame serial</span>
+      <div><strong>One account &middot; one serial</strong><span>Your company, facilities and the stamped frame serial</span></div>
+    </div>
+    <div class="hm-link" aria-hidden="true"></div>
+    <div class="hm-node">
+      <span class="hm-mark hm-mark--esc" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <div><strong>Service Console</strong><span>Online &middot; while a leg is out on a build</span></div>
+    </div>
   </div>
 </section>
 
-<section class="wrap mt-3 panels" aria-label="Fleet reference">
-
-  <section class="panel panel--wide" aria-labelledby="p-load">
-    <header class="panel__head">
-      <h2 id="p-load">Fault table by subsystem</h2>
-      <span class="panel__meta mono" data-dash-meta="faults">&mdash;</span>
-    </header>
-    <div class="panel__body" data-dash-subsystems>
-      <p class="muted small">Every code in the table belongs to one subsystem and resolves to one route.
-      <a href="docs/faults.html">Open the index</a> to read them.</p>
-    </div>
-    <footer class="panel__foot">
-      <span class="legend"><i class="swatch swatch--self"></i>Fix on the floor</span>
-      <span class="legend"><i class="swatch swatch--flag"></i>Flag for ERS</span>
-      <span class="legend"><i class="swatch swatch--dispatch"></i>Dispatch</span>
-    </footer>
-  </section>
-
-  <section class="panel" aria-labelledby="p-fw" data-members hidden>
-    <header class="panel__head">
-      <h2 id="p-fw">Controller firmware</h2>
-      <span class="panel__meta mono" data-dash-meta="firmware">&mdash;</span>
-    </header>
-    <div class="panel__body" data-dash-firmware>
-      <p class="muted small">Current versions per target, and how a signed bundle reaches a leg that has no
-      internet path of its own.</p>
-    </div>
-    <footer class="panel__foot">
-      <a href="firmware/index.html">Manifest and release notes &rarr;</a>
-    </footer>
-  </section>
-
-  <section class="panel" aria-labelledby="p-fleet">
-    <header class="panel__head">
-      <h2 id="p-fleet">Fleet</h2>
-      <span class="panel__meta mono" data-dash-meta="hardware">&mdash;</span>
-    </header>
-    <div class="panel__body" data-dash-fleet>
-      <p class="muted small">Leg variants in the pool, the controller each one carries, and which are legacy.</p>
-    </div>
-    <footer class="panel__foot" data-members hidden>
-      <a href="docs/leg.html">Leg anatomy and diagrams &rarr;</a>
-    </footer>
-  </section>
-
-  <section class="panel" aria-labelledby="p-id">
-    <header class="panel__head">
-      <h2 id="p-id">Serials and identity</h2>
-      <span class="panel__meta mono">3 per leg</span>
-    </header>
-    <div class="panel__body" data-dash-identity>
-      <p class="muted small">A leg carries three serial numbers. Firmware and pairing follow the electronics
-      serial; wear, intervals and warranty follow the stamped mechanical serial; the controller's own
-      stamped serial follows the unit through repairs and returns.</p>
-    </div>
-    <footer class="panel__foot" data-members hidden>
-      <a href="docs/leg.html#identity">Read this before filing anything &rarr;</a>
-    </footer>
-  </section>
-
-</section>
-
-<section class="wrap mt-5" >
+<section class="wrap mt-5" aria-labelledby="cmp-title">
   <div class="sec-head">
-    <span class="eyebrow">How the routes relate</span>
-    <h2>Sending a technician is the exception, not the default.</h2>
-    <p>A fielded leg is never repaired where it stands. It shares no wiring, no bus and no rigidity with
-    any other leg, and its module pairing exists only in software &mdash; so the unit of service is the whole
-    leg, swapped from the pool. That makes the interesting question not <em>how do we fix this</em> but
-    <em>can this leg finish its session</em>.</p>
+    <span class="eyebrow">Side by side</span>
+    <h2 id="cmp-title">Each console covers half of a leg&rsquo;s life.</h2>
+    <p>A leg spends its working life going out to builds and coming home again. The Return System records
+    what happens when it comes home; the Service Console covers the time it is out. One account signs in to
+    both.</p>
   </div>
-  
-<figure>
-  <div class="diagram">
-    <svg viewBox="0 0 760 300" role="img" aria-labelledby="dtriT dtriD">
-      <title id="dtriT">The three service routes</title>
-      <desc id="dtriD">A fault code resolves to one of three routes. Operator-serviceable faults are fixed on the floor. Faults that can wait are flagged so ERS diverts the leg at inspection when it returns. Only a leg that cannot finish its session triggers a dispatch.</desc>
-
-      <rect x="24" y="112" width="150" height="66" rx="5" class="d-fill" stroke-width="2"/>
-      <text x="99" y="140" text-anchor="middle" class="d-label">Fault code</text>
-      <text x="99" y="158" text-anchor="middle" class="d-note">on the controller</text>
-
-      <g class="d-fill" stroke-width="2">
-        <rect x="330" y="14" width="180" height="62" rx="5"/>
-        <rect x="330" y="114" width="180" height="62" rx="5"/>
-      </g>
-      <rect x="330" y="214" width="180" height="62" rx="5" class="d-fill" stroke-width="2" stroke="currentColor"/>
-
-      <g class="d-label" text-anchor="middle">
-        <text x="420" y="42">Fix on the floor</text>
-        <text x="420" y="142">Flag for ERS</text>
-        <text x="420" y="242">Dispatch a swap</text>
-      </g>
-      <g class="d-note" text-anchor="middle">
-        <text x="420" y="60">no ticket, no record change</text>
-        <text x="420" y="160">no truck — diverts on return</text>
-        <text x="420" y="260">replacement leg to site now</text>
-      </g>
-
-      <g class="d-accent" stroke-width="2">
-        <path d="M174 138 C 240 138, 250 45, 322 45"/>
-        <path d="M174 145 H 322"/>
-        <path d="M174 152 C 240 152, 250 245, 322 245"/>
-      </g>
-      <g class="d-accent-f">
-        <path d="M330 45 l-9 -5 v10 z"/><path d="M330 145 l-9 -5 v10 z"/><path d="M330 245 l-9 -5 v10 z"/>
-      </g>
-
-      <g class="d-note">
-        <text x="530" y="42">Leg keeps working.</text>
-        <text x="530" y="142">Leg finishes the session,</text>
-        <text x="530" y="158">then leaves the line at inspection.</text>
-        <text x="530" y="242">Leg cannot finish the session.</text>
-        <text x="530" y="258">Failed leg rides back to check-in.</text>
-      </g>
-    </svg>
+  <div class="table-scroll">
+    <table class="hm-compare">
+      <thead>
+        <tr>
+          <th scope="col"><span class="visually-hidden">Compared</span></th>
+          <th scope="col"><span class="hm-colhead"><span class="hm-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Erektor Return System</span></th>
+          <th scope="col"><span class="hm-colhead"><span class="hm-mark hm-mark--esc" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Service Console</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Where it runs</th>
+          <td>At each facility, beside the recovery conveyor</td>
+          <td>In the field and the office, anywhere with a browser</td></tr>
+        <tr><th scope="row">Who uses it</th>
+          <td>Facility operations teams</td>
+          <td>Your field crews and fleet managers</td></tr>
+        <tr><th scope="row">Part of the leg&rsquo;s life</th>
+          <td>Coming home: check-in, inspection, cleaning, battery swap, diagnostics, controller check-in, back to
+          the pool</td>
+          <td>Out on builds: delivery to site, flags raised in the field, replacements dispatched</td></tr>
+        <tr><th scope="row">What you do there</th>
+          <td>Recondition legs and keep the available pool full</td>
+          <td>Request a replacement, schedule maintenance, read the procedures and the firmware manifest</td></tr>
+        <tr><th scope="row">What it records</th>
+          <td>Check-ins, inspection and diagnostic results, pack swaps, service records</td>
+          <td>Maintenance flags, emergency replacements and the fleet&rsquo;s leg registry</td></tr>
+        <tr><th scope="row">Where the data lives</th>
+          <td>On a dedicated server at the facility, installed with the line</td>
+          <td>Online, in the Erektor leg registry</td></tr>
+        <tr><th scope="row">Without the internet</th>
+          <td>Keeps running; the line never waits on a connection</td>
+          <td>Needs a connection</td></tr>
+      </tbody>
+    </table>
   </div>
-  <figcaption>The middle route is the one that is easy to miss. Because every leg returns to ERS anyway, a fault that can wait does not need a truck — it needs a flag on the leg&rsquo;s record. Sending a technician to a site is reserved for a leg that cannot finish its session.</figcaption>
-</figure>
+</section>
 
+<section class="wrap mt-5" aria-labelledby="life-title">
+  <div class="sec-head">
+    <span class="eyebrow">The life of a leg</span>
+    <h2 id="life-title">From stamped frame to retirement, nothing falls between the two.</h2>
+  </div>
+  <ol class="hm-life">
+    <li class="hm-life__end"><b>Built &amp; commissioned</b><span>Frame stamped, electronics bound and tested</span></li>
+    <li class="hm-life__loop">
+      <div class="hm-life__half">
+        <span class="hm-life__who"><span class="hm-mark hm-mark--esc" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Service Console</span>
+        <ol>
+          <li>Assigned out</li><li>Delivered to site</li><li>Working builds</li><li>Flagged or replaced</li>
+        </ol>
+      </div>
+      <div class="hm-life__half">
+        <span class="hm-life__who"><span class="hm-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Return System</span>
+        <ol>
+          <li>Checked in</li><li>Inspected &amp; serviced</li><li>Pack swapped</li><li>Back to the pool</li>
+        </ol>
+      </div>
+      <span class="hm-life__repeat small muted">Repeats for every build, under the same frame serial</span>
+    </li>
+    <li class="hm-life__end"><b>Retired</b><span>Out of the fleet, with its history intact</span></li>
+  </ol>
+</section>
+
+<section class="wrap mt-5" aria-labelledby="ins-title">
+  <div class="sec-head">
+    <span class="eyebrow">What the manufacturer sees</span>
+    <h2 id="ins-title">The lifespan of every Erektor asset, in one place.</h2>
+    <p>Every leg is followed by the serial stamped into its frame, on the line and in the field, so decisions
+    about servicing, reconditioning and retiring it rest on its whole working life, not on whichever site saw
+    it last.</p>
+  </div>
+  <div class="grid grid--3 hm-insights">
+    <article class="card hm-insight">
+      <span class="hm-insight__fig">1 serial</span>
+      <h3>History stays with the frame</h3>
+      <p>Every leg is keyed on its stamped mechanical serial. Swap a controller and the operational identity
+      rolls over, but wear, intervals and warranty stay with the frame.</p>
+    </article>
+    <article class="card hm-insight">
+      <span class="hm-insight__fig">2,500 h</span>
+      <h3>Service by use, not the calendar</h3>
+      <p>Intervals accrue in motor-hours against the frame and are flagged at 85%, so maintenance is booked
+      ahead of time, from how hard each leg has actually worked.</p>
+    </article>
+    <article class="card hm-insight">
+      <span class="hm-insight__fig">Repeat faults</span>
+      <h3>Failures traced to the frame</h3>
+      <p>ERS records every inspection and diagnostic failure against the frame serial, and every replacement
+      dispatched from the field is filed under that same serial. A leg that keeps coming back stands out, and
+      quarantining or retiring it rests on evidence.</p>
+    </article>
+    <article class="card hm-insight">
+      <span class="hm-insight__fig">45 days</span>
+      <h3>No leg quietly disappears</h3>
+      <p>Every departure, delivery and return is logged. A leg the fleet has not heard from in 45 days is
+      reported, and a leg that moved between facilities is settled on the books instead of being written off
+      as lost.</p>
+    </article>
+    <article class="card hm-insight">
+      <span class="hm-insight__fig">56 V &middot; 24 V</span>
+      <h3>Battery packs have their own lives</h3>
+      <p>Packs are swapped on the line and charged off it, and ERS tracks each one on its own, so pack wear
+      never hides inside the leg&rsquo;s history.</p>
+    </article>
+    <article class="card hm-insight">
+      <span class="hm-insight__fig">Firmware</span>
+      <h3>What every leg is running</h3>
+      <p>Controllers re-register at check-in on the line, and every firmware update is recorded in the leg
+      registry, so the fleet&rsquo;s software state is known rather than assumed.</p>
+    </article>
+  </div>
+</section>
+
+<section class="wrap mt-5">
+  <div class="hm-cta">
+    <div>
+      <h2>See your fleet&rsquo;s record.</h2>
+      <p class="muted">Sign in with your Erektor account to see every leg assigned to your facilities, what
+      each one needs next, and every request filed for them.</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn--primary" href="/account/signin.html" data-signin>Sign in</a>
+      <a class="btn" href="mailto:support@erektor.systems">Request an account</a>
+    </div>
+  </div>
 </section>
 
 </main>
@@ -258,9 +222,9 @@
 <footer class="foot">
   <div class="wrap">
     <div class="foot-cols">
-        <div>
+        <div data-members hidden>
           <h4>Service</h4>
-          <ul><li data-members hidden><a href="account/emergency.html">Request a replacement leg</a></li><li data-members hidden><a href="account/maintenance.html">Schedule maintenance</a></li><li><a href="docs/faults.html">Fault code index</a></li></ul>
+          <ul><li data-members hidden><a href="account/emergency.html">Request a replacement leg</a></li><li data-members hidden><a href="account/maintenance.html">Schedule maintenance</a></li></ul>
         </div>
         <div data-members hidden>
           <h4>Documentation</h4>

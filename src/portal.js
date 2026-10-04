@@ -302,6 +302,23 @@ export async function handleAccountApi(request, env) {
   return json({ error: 'No such endpoint.' }, 404);
 }
 
+// The home page is the public introduction. A signed-in customer has no use
+// for it, so they land on their account Overview instead. It is never stored
+// in a cache, so the same URL can answer the two of them differently.
+export async function serveHome(request, env) {
+  const user = env.ACCOUNTS && await A.currentUser(env.ACCOUNTS, request, SITE, COOKIE);
+  if (user) {
+    return new Response(null, {
+      status: 302,
+      headers: { location: '/account/index.html', 'cache-control': 'no-store' }
+    });
+  }
+  const asset = await env.ASSETS.fetch(request);
+  const out = new Response(asset.body, asset);
+  out.headers.set('cache-control', 'no-store');
+  return out;
+}
+
 export async function serveAccount(request, env) {
   if (!env.ACCOUNTS) {
     return new Response('The account portal is not provisioned on this deployment.\n', {
