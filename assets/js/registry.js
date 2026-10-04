@@ -676,7 +676,7 @@
   /* ------------------------------------------------------------- boot */
   document.addEventListener('DOMContentLoaded', function () {
     REG.initBar(document.querySelector('[data-regbar]'));
-    REG.initSignIn(document.querySelector('[data-signin]'));
+    REG.initSignIn(document.querySelector('[data-reg-signin]'));
     REG.initConsole(document.querySelector('[data-console]'));
     REG.initLeg(document.querySelector('[data-leg]'));
     REG.initIntake(document.querySelector('[data-intake]'));
