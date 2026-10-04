@@ -61,7 +61,7 @@ const COLUMNS = [
   'state', 'stage', 'holder', 'location', 'flag_code', 'flag_reference',
   'flag_raised_at', 'motor_hours', 'hours_at_service', 'built_at',
   'commissioned_at', 'last_service_at', 'last_seen_at', 'batch', 'notes',
-  'facility_id', 'created_at', 'updated_at'
+  'facility_id', 'owner_company_id', 'created_at', 'updated_at'
 ];
 
 // Fields an operator edits directly. State is deliberately absent: it moves
@@ -561,6 +561,13 @@ export async function handleRegistry(request, env) {
     return json({ facilities: rows.results });
   }
 
+  // Customers a leg can be sold to, also from ers-accounts.
+  if (parts[0] === 'companies' && method === 'GET') {
+    if (!env.ACCOUNTS) return json({ companies: [] });
+    const rows = await env.ACCOUNTS.prepare('SELECT id, name FROM companies ORDER BY name').all();
+    return json({ companies: rows.results });
+  }
+
   if (parts[0] === 'export' && method === 'GET') {
     const rows = await env.REGISTRY.prepare(
       `SELECT ${COLUMNS.join(', ')} FROM legs ORDER BY mechanical_serial`
@@ -632,8 +639,14 @@ export async function handleRegistry(request, env) {
         if (id !== null && !(Number.isInteger(id) && id > 0)) return json({ error: 'facility_id must be a facility id.' }, 422);
         set.facility_id = id;
       }
+      // The customer that bought it, from ers-accounts. Empty: industries.direct owns it.
+      if (body.owner_company_id !== undefined) {
+        const id = body.owner_company_id === '' || body.owner_company_id === null ? null : Number(body.owner_company_id);
+        if (id !== null && !(Number.isInteger(id) && id > 0)) return json({ error: 'owner_company_id must be a company id.' }, 422);
+        set.owner_company_id = id;
+      }
       if (!Object.keys(set).length) {
-        return json({ error: `Editable here: ${EDITABLE.join(', ')}, facility_id. State moves by recording an event.` }, 422);
+        return json({ error: `Editable here: ${EDITABLE.join(', ')}, facility_id, owner_company_id. State moves by recording an event.` }, 422);
       }
       set.updated_at = new Date().toISOString();
       const keys = Object.keys(set);
