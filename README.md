@@ -367,6 +367,38 @@ Provisioning is the registry's, plus the second migration — `migrations apply`
 
 ---
 
+## Demo environment
+
+`demo.erektor.support` is this Worker deployed with `--env demo` (`wrangler.jsonc`): the same code
+over its own databases of mock data (`erektor-registry-demo`, and `ers-accounts-demo` shared with
+`demo.erektor-return.systems`). One credential opens every gated surface:
+
+| Surface | Sign in with |
+|---|---|
+| `demo.erektor-return.systems` (ERS console) | demo email + password |
+| `demo.erektor.support/account` (customer portal, docs, firmware) | demo email + password |
+| `demo.erektor.support/internal` (registry, manufacturing) | the same password, as the access code |
+
+The demo email is `demo@erektor.systems`. The password is not kept in this repo: its PBKDF2 hash
+is in the ERS repo's `src/demo-seed.js`, and the access code is the `REGISTRY_ACCESS` secret.
+
+With `DEMO` set the Worker rewrites links to erektor-return.systems to the demo console, and
+the scheduled handler resets the registry to `src/demo-seed.js` nightly. The handler does
+nothing unless `DEMO` is set, and the cron exists only on the demo environment. The demo binds
+no email, so portal requests are stored but never sent to the service desk.
+
+One-time setup (the databases already exist):
+
+```sh
+npx wrangler d1 migrations apply erektor-registry-demo --env demo --remote
+openssl rand -base64 48 | npx wrangler secret put REGISTRY_SECRET --env demo
+echo '[{"code":"<demo password>","id":"demo","name":"Demo Operator","role":"admin"}]' | npx wrangler secret put REGISTRY_ACCESS --env demo
+node -e "import('./src/demo-seed.js').then(m=>process.stdout.write(m.default))" > /tmp/registry-seed.sql
+npx wrangler d1 execute erektor-registry-demo --env demo --remote --file /tmp/registry-seed.sql
+```
+
+`.github/workflows/deploy.yml` deploys the demo after production on every push to `main`.
+
 ## Conventions
 
 - **Serial formats** are declared once, in `data/hardware.json`, and drive both client-side
