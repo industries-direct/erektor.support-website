@@ -33,6 +33,29 @@ import { handleServiceRequest } from './requests.js';
 import { handleRegistry } from './registry.js';
 import { gateConfig, sessionFor, signIn, signOut } from './auth.js';
 import { accountForm, handleAccountApi, isMemberPage, serveAccount, serveHome } from './portal.js';
+import DEMO_SEED from './demo-seed.js';
+
+/* The demo deployment (wrangler env "demo", DEMO set): mock data under one
+   shared sign-in. Its links to the Return System go to the demo console,
+   where the same sign-in works. */
+const DEMO_PEER = ['https://erektor-return.systems', 'https://demo.erektor-return.systems'];
+
+function demoLinks(response) {
+  if (!(response.headers.get('content-type') || '').includes('text/html')) return response;
+  return new HTMLRewriter().on('a[href]', {
+    element(a) {
+      const href = a.getAttribute('href');
+      if (href.startsWith(DEMO_PEER[0])) a.setAttribute('href', DEMO_PEER[1] + href.slice(DEMO_PEER[0].length));
+    }
+  }).transform(response);
+}
+
+/** Wipes the demo registry back to src/demo-seed.js, in one transaction. */
+async function reseed(db, sql) {
+  const statements = sql.split('\n').filter((l) => !l.startsWith('--')).join('\n')
+    .split(/;\s*$/m).map((s) => s.trim()).filter(Boolean);
+  await db.batch(statements.map((s) => db.prepare(s)));
+}
 
 /** Mirrors the non-CSP entries of _headers, which only cover asset responses. */
 const API_HEADERS = {
@@ -110,76 +133,87 @@ async function serveInternal(request, env) {
 
 export default {
   async fetch(request, env) {
-    const { pathname } = new URL(request.url);
+    const response = await route(request, env);
+    return env.DEMO ? demoLinks(response) : response;
+  },
 
-    if (pathname === '/api/requests') {
-      if (request.method !== 'POST') {
-        return json(
-          { error: 'Use POST to submit a service request.' },
-          405,
-          { allow: 'POST' }
-        );
-      }
-      try {
-        return harden(await handleServiceRequest(request, env));
-      } catch (err) {
-        // An operator filing this is usually standing next to a leg that has
-        // stopped. Fail loudly enough for the client to fall back to its
-        // copy-and-email path rather than hanging.
-        console.error('intake failed', err);
-        return json({ error: 'Intake is unavailable. Use the emailed summary.' }, 503);
-      }
-    }
-
-    if (pathname === '/api/registry/session') {
-      try {
-        if (request.method === 'POST') return harden(await signIn(request, env));
-        if (request.method === 'DELETE') return harden(signOut());
-        return json({ error: 'Use POST to sign in, DELETE to sign out.' }, 405, { allow: 'POST, DELETE' });
-      } catch (err) {
-        console.error('registry sign-in failed', err);
-        return json({ error: 'Sign-in is unavailable.' }, 503);
-      }
-    }
-
-    if (pathname.startsWith('/api/registry')) {
-      try {
-        return harden(await handleRegistry(request, env));
-      } catch (err) {
-        console.error('registry failed', err);
-        return json({ error: 'The registry is unavailable.' }, 503);
-      }
-    }
-
-    if (pathname.startsWith('/api/account/')) {
-      try {
-        return harden(await handleAccountApi(request, env));
-      } catch (err) {
-        console.error('account portal failed', err);
-        return json({ error: 'The account portal is unavailable.' }, 503);
-      }
-    }
-
-    if (pathname.startsWith('/api/')) {
-      return json({ error: 'No such endpoint.' }, 404);
-    }
-
-    if (pathname === '/' || pathname === '/index.html') {
-      return serveHome(request, env);
-    }
-
-    const form = accountForm(new URL(request.url));
-    if (form) return form;
-
-    if (pathname === '/account' || pathname.startsWith('/account/') || isMemberPage(pathname)) {
-      return serveAccount(request, env);
-    }
-
-    if (pathname === '/internal' || pathname.startsWith('/internal/')) {
-      return serveInternal(request, env);
-    }
-
-    // Not normally reached: the asset layer answers everything else first.
-    return env.ASSETS.fetch(request);
+  async scheduled(controller, env) {
+    // The cron is declared only on the demo environment; this is the second
+    // lock, so a stray trigger can never wipe the production registry.
+    if (env.DEMO) await reseed(env.REGISTRY, DEMO_SEED);
   }
 };
+
+async function route(request, env) {
+  const { pathname } = new URL(request.url);
+
+  if (pathname === '/api/requests') {
+    if (request.method !== 'POST') {
+      return json(
+        { error: 'Use POST to submit a service request.' },
+        405,
+        { allow: 'POST' }
+      );
+    }
+    try {
+      return harden(await handleServiceRequest(request, env));
+    } catch (err) {
+      // An operator filing this is usually standing next to a leg that has
+      // stopped. Fail loudly enough for the client to fall back to its
+      // copy-and-email path rather than hanging.
+      console.error('intake failed', err);
+      return json({ error: 'Intake is unavailable. Use the emailed summary.' }, 503);
+    }
+  }
+
+  if (pathname === '/api/registry/session') {
+    try {
+      if (request.method === 'POST') return harden(await signIn(request, env));
+      if (request.method === 'DELETE') return harden(signOut());
+      return json({ error: 'Use POST to sign in, DELETE to sign out.' }, 405, { allow: 'POST, DELETE' });
+    } catch (err) {
+      console.error('registry sign-in failed', err);
+      return json({ error: 'Sign-in is unavailable.' }, 503);
+    }
+  }
+
+  if (pathname.startsWith('/api/registry')) {
+    try {
+      return harden(await handleRegistry(request, env));
+    } catch (err) {
+      console.error('registry failed', err);
+      return json({ error: 'The registry is unavailable.' }, 503);
+    }
+  }
+
+  if (pathname.startsWith('/api/account/')) {
+    try {
+      return harden(await handleAccountApi(request, env));
+    } catch (err) {
+      console.error('account portal failed', err);
+      return json({ error: 'The account portal is unavailable.' }, 503);
+    }
+  }
+
+  if (pathname.startsWith('/api/')) {
+    return json({ error: 'No such endpoint.' }, 404);
+  }
+
+  if (pathname === '/' || pathname === '/index.html') {
+    return serveHome(request, env);
+  }
+
+  const form = accountForm(new URL(request.url));
+  if (form) return form;
+
+  if (pathname === '/account' || pathname.startsWith('/account/') || isMemberPage(pathname)) {
+    return serveAccount(request, env);
+  }
+
+  if (pathname === '/internal' || pathname.startsWith('/internal/')) {
+    return serveInternal(request, env);
+  }
+
+  // Not normally reached: the asset layer answers everything else first.
+  return env.ASSETS.fetch(request);
+}

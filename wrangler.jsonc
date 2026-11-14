@@ -72,5 +72,32 @@
       "database_name": "ers-accounts",
       "database_id": "5df46a8a-9445-40f8-b351-c6c4f47062ae"
     }
-  ]
+  ],
+
+  // The shareable demo: same code, mock data under one shared sign-in,
+  // re-seeded nightly. Bindings are not inherited (wrangler warns about the
+  // missing send_email; that omission is deliberate), so it has no email and
+  // neither production database. Deploy with --env demo; it also needs
+  // REGISTRY_SECRET and REGISTRY_ACCESS set with --env demo (README).
+  "env": {
+    "demo": {
+      "name": "support-erektor-return-systems-website-demo",
+      "routes": [{ "pattern": "demo.erektor.support", "custom_domain": true }],
+      "vars": { "DEMO": "1" },
+      "triggers": { "crons": ["19 8 * * *"] },
+      "d1_databases": [
+        {
+          "binding": "REGISTRY",
+          "database_name": "erektor-registry-demo",
+          "database_id": "686952b7-9c3e-4bc0-81d5-706f667853a3",
+          "migrations_dir": "migrations"
+        },
+        {
+          "binding": "ACCOUNTS",
+          "database_name": "ers-accounts-demo",
+          "database_id": "d6124d1c-7518-4de8-af87-bc8efe31cda4"
+        }
+      ]
+    }
+  }
 }
